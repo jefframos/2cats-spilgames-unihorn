@@ -1,0 +1,192 @@
+{"frames": {
+
+"backItem.png":
+{
+	"frame": {"x":354,"y":2,"w":72,"h":72},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":72,"h":72},
+	"sourceSize": {"w":72,"h":72},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"barbieEnd.png":
+{
+	"frame": {"x":1154,"y":308,"w":178,"h":504},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":178,"h":504},
+	"sourceSize": {"w":178,"h":504},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"bg.jpg":
+{
+	"frame": {"x":1334,"y":308,"w":320,"h":568},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":320,"h":568},
+	"sourceSize": {"w":320,"h":568},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"bolsa.png":
+{
+	"frame": {"x":324,"y":2,"w":28,"h":70},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":28,"h":70},
+	"sourceSize": {"w":28,"h":70},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"btnJogar.png":
+{
+	"frame": {"x":946,"y":2,"w":241,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":241,"h":128},
+	"sourceSize": {"w":241,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"btnJogarNovamente.png":
+{
+	"frame": {"x":742,"y":2,"w":202,"h":109},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":202,"h":109},
+	"sourceSize": {"w":202,"h":109},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"casaco.png":
+{
+	"frame": {"x":116,"y":2,"w":60,"h":47},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":60,"h":47},
+	"sourceSize": {"w":60,"h":47},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"labirinto1.png":
+{
+	"frame": {"x":2,"y":308,"w":312,"h":306},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":312,"h":306},
+	"sourceSize": {"w":312,"h":306},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"labirinto2.png":
+{
+	"frame": {"x":631,"y":308,"w":313,"h":307},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":313,"h":307},
+	"sourceSize": {"w":313,"h":307},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"labirinto3.png":
+{
+	"frame": {"x":1379,"y":2,"w":314,"h":304},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":314,"h":304},
+	"sourceSize": {"w":314,"h":304},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"labirinto4.png":
+{
+	"frame": {"x":316,"y":308,"w":313,"h":306},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":313,"h":306},
+	"sourceSize": {"w":313,"h":306},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"lock.png":
+{
+	"frame": {"x":270,"y":2,"w":52,"h":57},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":52,"h":57},
+	"sourceSize": {"w":52,"h":57},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"logo.png":
+{
+	"frame": {"x":2,"y":2,"w":112,"h":33},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":112,"h":33},
+	"sourceSize": {"w":112,"h":33},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"parabens.png":
+{
+	"frame": {"x":548,"y":2,"w":192,"h":101},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":101},
+	"sourceSize": {"w":192,"h":101},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"pinOut.png":
+{
+	"frame": {"x":488,"y":2,"w":58,"h":88},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":58,"h":88},
+	"sourceSize": {"w":58,"h":88},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"pinOver.png":
+{
+	"frame": {"x":428,"y":2,"w":58,"h":88},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":58,"h":88},
+	"sourceSize": {"w":58,"h":88},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"saia.png":
+{
+	"frame": {"x":213,"y":2,"w":55,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":51},
+	"sourceSize": {"w":55,"h":51},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"sapato.png":
+{
+	"frame": {"x":178,"y":2,"w":33,"h":48},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":33,"h":48},
+	"sourceSize": {"w":33,"h":48},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"selo.png":
+{
+	"frame": {"x":946,"y":308,"w":206,"h":330},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":206,"h":330},
+	"sourceSize": {"w":206,"h":330},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"seloGame.png":
+{
+	"frame": {"x":1189,"y":2,"w":188,"h":180},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":188,"h":180},
+	"sourceSize": {"w":188,"h":180},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "atlas.png",
+	"format": "RGBA8888",
+	"size": {"w":1695,"h":878},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:f5df2ae506e3466b857a658b5d250017:ce79667e792d340d175883148a812c0e:cbce6b53f0f49e0bf15173c25c41f876$"
+}
+}
