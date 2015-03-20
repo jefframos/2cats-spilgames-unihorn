@@ -31,17 +31,29 @@ var APP;
 var retina = 1;//window.devicePixelRatio >= 2 ? 2 : 1;
 
 function isPortait(){
-	return screen.height > screen.width;
+	return window.innerHeight > window.innerWidth;
+}
+
+function possibleFullscreen(){
+	var elem = gameView;
+	return  elem.requestFullscreen || elem.msRequestFullscreen || elem.mozRequestFullScreen || elem.webkitRequestFullscreen;
 }
 
 function updateResolution(orientation, scale){
 	if(orientation === 'portait'){
 		if(screen.height > screen.width){
 			windowWidth = screen.width * scale;
-			windowHeight =  window.innerHeight * scale;
-			
 			windowWidthVar = screen.width;
-			windowHeightVar =  window.innerHeight;
+			
+			if(possibleFullscreen()){
+				windowHeight =  screen.height * scale;
+				windowHeightVar =  screen.height;
+				
+			}else{
+				windowHeight =  window.outerHeight * scale;
+				windowHeightVar =  window.outerHeight;
+			}
+			
 
 		}else{
 			windowWidth = screen.height * scale;
@@ -65,16 +77,12 @@ function updateResolution(orientation, scale){
 			windowHeightVar = screen.width;
 		}
 	}
-	// windowWidth = screen.height * scale;
-	// windowHeight = screen.width * scale;
 	realWindowWidth = windowWidth;
 	realWindowHeight = windowHeight;
-
-	// alert(realWindowWidth+' - '+screen.width+' - '+scale);
 }
 function update() {
 	requestAnimFrame(update );
-	if(!init && isPortait()){
+	if(!init && (isPortait() || !testMobile())){
 		// resizeProportional = true;
 
 		windowWidth = res.x;
@@ -92,13 +100,10 @@ function update() {
 		}else{
 			renderer = PIXI.autoDetectRenderer(realWindowWidth, realWindowHeight, {antialias:true, resolution:retina, view:gameView});
 		}
-		// renderer = PIXI.autoDetectRecommendedRenderer(realWindowWidth, realWindowHeight, {antialias:true, resolution:window.devicePixelRatio, view:gameView});
-		
-		console.log(renderer);
+
 		renderer.view.style.width = windowWidth+'px';
 		renderer.view.style.height = windowHeight+'px';
 
-		// alert(realWindowWidth+' - '+ realWindowHeight+' - '+ retina +' - '+windowWidth);
 		APP = new Application();
 		APP.build();
 		APP.show();
@@ -140,15 +145,10 @@ var initialize = function(){
 	requestAnimFrame(update);
 };
 
-function possibleFullscreen(){
-	var elem = gameView;
-	return  elem.requestFullscreen || elem.msRequestFullscreen || elem.mozRequestFullScreen || elem.webkitRequestFullscreen;
-}
+
 var isfull = false;
 function fullscreen(){
-	// if(isfull && possibleFullscreen()){
-	// 	return;
-	// }
+
 	var elem = gameView;
 	if (elem.requestFullscreen) {
 		elem.requestFullscreen();
@@ -160,16 +160,6 @@ function fullscreen(){
 		elem.webkitRequestFullscreen();
 	}
 
-	// windowWidth = window.innerWidth * gameScale;
-	// windowHeight = window.innerHeight * gameScale;
-	// realWindowWidth = windowWidth;
-	// realWindowHeight = windowHeight;
-
-
-	// windowWidth = screen.height * gameScale;
-	// windowHeight = screen.width * gameScale;
-	// realWindowWidth = windowWidth;
-	// realWindowHeight = windowHeight;
 
 	updateResolution('portait', gameScale);
 
@@ -188,6 +178,3 @@ function fullscreen(){
 	};
 	App.init();
 })();
-// if(!possibleFullscreen())
-// {
-// }
