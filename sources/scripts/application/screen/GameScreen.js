@@ -98,6 +98,7 @@ var GameScreen = AbstractScreen.extend({
             // self.toTween(function(){
             //     self.screenManager.change('Game');
             // });
+            self.pauseModal.show();
         };
 
         this.backButton = new DefaultButton('UI_button_default_1.png', 'UI_button_default_1.png');
@@ -119,6 +120,10 @@ var GameScreen = AbstractScreen.extend({
 
         
         this.fromTween();
+
+        this.pauseModal = new PauseModal(this);
+    },
+    reset:function(){
     },
     update:function(){
         if(!this.updateable){

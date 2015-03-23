@@ -1429,8 +1429,9 @@ var Application = AbstractApplication.extend({
             self.pinVel.x = 0, self.pinVel.y = 0, self.pin.setOut(), self.pinOver = !1;
         }, this.updateable = !0, this.pauseButton = new DefaultButton("UI_button_pause_1.png", "UI_button_pause_1_over.png", "UI_button_pause_1_over.png"), 
         this.pauseButton.build(), scaleConverter(this.pauseButton.getContent().width, windowWidth, .1, this.pauseButton), 
-        this.pauseButton.setPosition(20, 20), this.addChild(this.pauseButton), this.pauseButton.clickCallback = function() {}, 
-        this.backButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
+        this.pauseButton.setPosition(20, 20), this.addChild(this.pauseButton), this.pauseButton.clickCallback = function() {
+            self.pauseModal.show();
+        }, this.backButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
         this.backButton.build(), this.backButton.addLabel(new PIXI.Text("BACK", {
             font: "50px Vagron",
             fill: "#FFFFFF"
@@ -1440,8 +1441,9 @@ var Application = AbstractApplication.extend({
             self.updateable = !1, self.toTween(function() {
                 self.screenManager.change("Init");
             });
-        }, this.setAudioButtons(), this.fromTween();
+        }, this.setAudioButtons(), this.fromTween(), this.pauseModal = new PauseModal(this);
     },
+    reset: function() {},
     update: function() {
         !this.updateable;
     },
@@ -1995,52 +1997,41 @@ var Application = AbstractApplication.extend({
 }), PauseModal = Class.extend({
     init: function(screen) {
         this.screen = screen, this.container = new PIXI.DisplayObjectContainer(), this.boxContainer = new PIXI.DisplayObjectContainer(), 
-        this.bg = new PIXI.Graphics(), this.bg.beginFill(74275), this.bg.drawRect(0, 0, windowWidth, windowHeight), 
-        this.bg.alpha = 0, this.container.addChild(this.bg), this.container.addChild(this.boxContainer);
+        this.bg = new PIXI.Graphics(), this.bg.beginFill(1383495), this.bg.drawRect(0, 0, windowWidth, windowHeight), 
+        this.bg.alpha = .8, this.container.addChild(this.bg), this.container.addChild(this.boxContainer);
         var self = this;
-        this.backButton = new DefaultButton("voltarButton.png", "voltarButtonOver.png"), 
-        this.backButton.build(), this.backButton.setPosition(0, 0), this.backButton.clickCallback = function() {
+        this.back = new SimpleSprite("UI_modal_back_1.png"), this.boxContainer.addChild(this.back.getContent());
+        var thirdPart = this.back.getContent().width / 3;
+        this.backButton = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
+        this.backButton.build(), this.backButton.setPosition(1 * thirdPart - thirdPart / 2 - this.backButton.getContent().width / 2, this.back.getContent().height / 2 - this.backButton.getContent().height / 2), 
+        this.backButton.clickCallback = function() {
             self.hide(function() {
                 self.screen.screenManager.prevScreen();
             });
-        }, this.boxContainer.addChild(this.backButton.getContent()), this.continueButton = new DefaultButton("continueButtonBig.png", "continueButtonBigOver.png"), 
-        this.continueButton.build(), this.continueButton.setPosition(this.backButton.getContent().width + 20, -this.continueButton.getContent().height / 2 + this.backButton.getContent().height / 2), 
+        }, this.back.getContent().addChild(this.backButton.getContent()), this.continueButton = new DefaultButton("UI_button_play_1_retina.png", "UI_button_play_1_over_retina.png"), 
+        this.continueButton.build(), scaleConverter(this.continueButton.getContent().width, this.back.getContent().width, .3, this.continueButton), 
+        this.continueButton.setPosition(2 * thirdPart - thirdPart / 2 - this.continueButton.getContent().width / 2, this.back.getContent().height / 2 - this.continueButton.getContent().height / 2), 
         this.continueButton.clickCallback = function() {
             self.hide(function() {
                 self.screen.updateable = !0;
             });
-        }, this.boxContainer.addChild(this.continueButton.getContent()), this.restartButton = new DefaultButton("replayButton.png", "replayButtonOver.png"), 
-        this.restartButton.build(), this.restartButton.setPosition(this.continueButton.getContent().width + this.continueButton.getContent().position.x + 20, 0), 
+        }, this.back.getContent().addChild(this.continueButton.getContent()), this.restartButton = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
+        this.restartButton.build(), this.restartButton.setPosition(3 * thirdPart - thirdPart / 2 - this.restartButton.getContent().width / 2, this.back.getContent().height / 2 - this.restartButton.getContent().height / 2), 
         this.restartButton.clickCallback = function() {
             self.hide(function() {
                 self.screen.updateable = !0, self.screen.reset();
             });
-        }, this.boxContainer.addChild(this.restartButton.getContent()), this.audioOn = new DefaultButton("volumeButton_on.png", "volumeButton_on_over.png"), 
-        this.audioOn.build(), scaleConverter(this.audioOn.height, windowHeight, .15, this.audioOn), 
-        this.audioOn.setPosition(20, 20), this.audioOff = new DefaultButton("volumeButton_off.png", "volumeButton_off_over.png"), 
-        this.audioOff.build(), scaleConverter(this.audioOff.height, windowHeight, .15, this.audioOff), 
-        this.audioOff.setPosition(20, 20), console.log(APP.mute), this.container.addChild(APP.mute ? this.audioOff.getContent() : this.audioOn.getContent()), 
-        this.audioOn.clickCallback = function() {
-            APP.mute = !0, Howler.mute(), self.audioOn.getContent().parent && self.audioOn.getContent().parent.removeChild(self.audioOn.getContent()), 
-            self.audioOff.getContent() && self.container.addChild(self.audioOff.getContent());
-        }, this.audioOff.clickCallback = function() {
-            APP.mute = !1, Howler.unmute(), self.audioOff.getContent().parent && self.audioOff.getContent().parent.removeChild(self.audioOff.getContent()), 
-            self.audioOn.getContent() && self.container.addChild(self.audioOn.getContent());
-        }, this.boxContainer.alpha = 0, this.boxContainer.visible = !1, scaleConverter(this.boxContainer.width, windowWidth, .5, this.boxContainer), 
-        this.boxContainer.position.x = windowWidth / 2 - this.boxContainer.width / 2;
+        }, this.back.getContent().addChild(this.restartButton.getContent()), scaleConverter(this.boxContainer.width, windowWidth, .8, this.boxContainer);
     },
     show: function() {
         this.screen.addChild(this), this.screen.blockPause = !0, this.boxContainer.visible = !0, 
         this.container.parent.setChildIndex(this.container, this.container.parent.children.length - 1), 
-        this.container.alpha = 0, this.screen.updateable = !1, TweenLite.to(this.bg, .5, {
-            alpha: .8
-        }), TweenLite.to(this.boxContainer.position, 1, {
-            y: windowHeight / 2 - this.boxContainer.height / 2 - this.continueButton.getContent().position.y,
-            ease: "easeOutBack"
-        }), TweenLite.to(this.boxContainer, .5, {
-            alpha: 1
-        }), TweenLite.to(this.container, .5, {
-            alpha: 1
+        this.screen.updateable = !1, this.boxContainer.position.x = windowWidth / 2 - this.boxContainer.width / 2, 
+        this.boxContainer.position.y = windowHeight / 2 - this.boxContainer.height / 2, 
+        this.bg.alpha = .8, this.boxContainer.alpha = 1, TweenLite.from(this.bg, .5, {
+            alpha: 0
+        }), TweenLite.from(this.boxContainer, .5, {
+            y: -this.boxContainer.height
         });
     },
     hide: function(callback) {
@@ -2048,14 +2039,14 @@ var Application = AbstractApplication.extend({
         this.screen.blockPause = !1, TweenLite.to(this.bg, .5, {
             alpha: 0,
             onComplete: function() {
-                callback && (callback(), self.container.parent && self.container.parent.removeChild(self.container));
+                callback && callback(), self.container.parent && self.container.parent.removeChild(self.container);
             }
         }), TweenLite.to(this.boxContainer.position, 1, {
             y: -this.boxContainer.height,
             ease: "easeInBack"
         }), TweenLite.to(this.boxContainer, .5, {
             alpha: 0
-        }), TweenLite.to(this.container, .5, {
+        }), TweenLite.to(this.bg, .5, {
             alpha: 0
         });
     },
