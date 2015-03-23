@@ -3,18 +3,8 @@ var Application = AbstractApplication.extend({
 	init:function(){
 
         this._super(windowWidth, windowHeight);
-        this.stage.setBackgroundColor(0xfc95dd);
-        // this.stage.setBackgroundColor(0xFF9387);
+        this.stage.setBackgroundColor(0x2c2359);
         this.stage.removeChild(this.loadText);
-        // this.isMobile = testMobile();
-        // this.appContainer = document.getElementById('rect');
-        // this.id = parseInt(Math.random() * 100000000000);
-
-
-        // this.objCounter = new PIXI.Text('', {font:'15px Arial'});
-        // this.stage.addChild(this.objCounter);
-        // this.objCounter.position.y = windowHeight - 40;
-        // this.objCounter.position.x = 20;
 
         this.labelDebug = new PIXI.Text('Debug', {font:'15px Arial'});
         this.stage.addChild(this.labelDebug);
@@ -56,26 +46,7 @@ var Application = AbstractApplication.extend({
     },
     build:function(){
         this._super();
-
-        var assetsToLoader = [];
-
-        if(assetsToLoader.length > 0){
-            this.assetsLoader = new PIXI.AssetLoader(assetsToLoader);
-            var self = this;
-
-            this.assetsLoader.onComplete = function() {
-                self.onAssetsLoaded();
-            };
-            this.assetsLoader.onProgress = function() {
-                console.log('onProgress');
-            };
-            this.assetsLoader.load();
-        }else{
-            this.onAssetsLoaded();
-        }
-    },
-    updatePoints:function(value){
-        this.gameScreen.updatePoints(value);
+        this.initApplication();
     },
     getGameModel:function(){
         return this.gameModel;
@@ -87,11 +58,7 @@ var Application = AbstractApplication.extend({
         this.screenManager.addScreen(this.loadScreen);
         this.screenManager.addScreen(this.gameScreen);
         this.screenManager.addScreen(this.initScreen);
-        this.screenManager.change('Game');
-    },
-    onAssetsLoaded:function()
-    {
-        this.initApplication();
+        this.screenManager.change('Loader');
     },
     show:function(){
     },

@@ -1,4 +1,4 @@
-/*! jefframos 20-03-2015 */
+/*! jefframos 23-03-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -111,8 +111,9 @@ function possibleFullscreen() {
 function updateResolution(orientation, scale) {
     "portait" === orientation ? screen.height > screen.width ? (windowWidth = screen.width * scale, 
     windowWidthVar = screen.width, possibleFullscreen() ? (windowHeight = screen.height * scale, 
-    windowHeightVar = screen.height) : (windowHeight = window.outerHeight * scale, windowHeightVar = window.outerHeight)) : (windowWidth = screen.height * scale, 
-    windowHeight = screen.width * scale, windowWidthVar = screen.height, windowHeightVar = screen.width) : screen.height < screen.width ? (windowWidth = screen.width * scale, 
+    windowHeightVar = screen.height) : (windowHeight = window.devicePixelRatio >= 2 ? window.innerHeight * scale : window.outerHeight * scale, 
+    windowHeightVar = window.outerHeight)) : (windowWidth = screen.height * scale, windowHeight = screen.width * scale, 
+    windowWidthVar = screen.height, windowHeightVar = screen.width) : screen.height < screen.width ? (windowWidth = screen.width * scale, 
     windowHeight = screen.height * scale, windowWidthVar = screen.width, windowHeightVar = screen.height) : (windowWidth = screen.height * scale, 
     windowHeight = screen.width * scale, windowWidthVar = screen.height, windowHeightVar = screen.width), 
     realWindowWidth = windowWidth, realWindowHeight = windowHeight;
@@ -120,7 +121,7 @@ function updateResolution(orientation, scale) {
 
 function update() {
     requestAnimFrame(update), init || !isPortait() && testMobile() || (windowWidth = res.x, 
-    windowHeight = res.y, realWindowWidth = res.x, realWindowHeight = res.y, testMobile() ? (updateResolution("portait", gameScale), 
+    windowHeight = res.y, realWindowWidth = res.x, realWindowHeight = res.y, testMobile() ? (updateResolution(screenOrientation, gameScale), 
     renderer = PIXI.autoDetectRecommendedRenderer(realWindowWidth, realWindowHeight, {
         antialias: !0,
         resolution: retina,
@@ -139,10 +140,11 @@ function update() {
 }
 
 function fullscreen() {
-    var elem = gameView;
-    elem.requestFullscreen ? elem.requestFullscreen() : elem.msRequestFullscreen ? elem.msRequestFullscreen() : elem.mozRequestFullScreen ? elem.mozRequestFullScreen() : elem.webkitRequestFullscreen && elem.webkitRequestFullscreen(), 
-    updateResolution("portait", gameScale), renderer.width = realWindowWidth, renderer.height = realWindowHeight, 
-    isfull = !0;
+    if (!isfull) {
+        var elem = gameView;
+        elem.requestFullscreen ? elem.requestFullscreen() : elem.msRequestFullscreen ? elem.msRequestFullscreen() : elem.mozRequestFullScreen ? elem.mozRequestFullScreen() : elem.webkitRequestFullscreen && elem.webkitRequestFullscreen(), 
+        updateResolution(screenOrientation, gameScale), isfull = !0;
+    }
 }
 
 var DungeonGenerator = Class.extend({
@@ -317,7 +319,7 @@ SmartSocket.SOCKET_ERROR = "socketError";
 
 var Application = AbstractApplication.extend({
     init: function() {
-        this._super(windowWidth, windowHeight), this.stage.setBackgroundColor(16553437), 
+        this._super(windowWidth, windowHeight), this.stage.setBackgroundColor(2892633), 
         this.stage.removeChild(this.loadText), this.labelDebug = new PIXI.Text("Debug", {
             font: "15px Arial"
         }), this.stage.addChild(this.labelDebug), this.labelDebug.position.y = windowHeight - 20, 
@@ -335,20 +337,7 @@ var Application = AbstractApplication.extend({
         }
     },
     build: function() {
-        this._super();
-        var assetsToLoader = [];
-        if (assetsToLoader.length > 0) {
-            this.assetsLoader = new PIXI.AssetLoader(assetsToLoader);
-            var self = this;
-            this.assetsLoader.onComplete = function() {
-                self.onAssetsLoaded();
-            }, this.assetsLoader.onProgress = function() {
-                console.log("onProgress");
-            }, this.assetsLoader.load();
-        } else this.onAssetsLoaded();
-    },
-    updatePoints: function(value) {
-        this.gameScreen.updatePoints(value);
+        this._super(), this.initApplication();
     },
     getGameModel: function() {
         return this.gameModel;
@@ -357,10 +346,7 @@ var Application = AbstractApplication.extend({
         this.initScreen = new InitScreen("Init"), this.gameScreen = new GameScreen("Game"), 
         this.loadScreen = new LoadScreen("Loader"), this.screenManager.addScreen(this.loadScreen), 
         this.screenManager.addScreen(this.gameScreen), this.screenManager.addScreen(this.initScreen), 
-        this.screenManager.change("Game");
-    },
-    onAssetsLoaded: function() {
-        this.initApplication();
+        this.screenManager.change("Loader");
     },
     show: function() {},
     hide: function() {},
@@ -1413,89 +1399,26 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        var assetsToLoader = [ "dist/img/atlas.json" ];
-        this.loader = new PIXI.AssetLoader(assetsToLoader), assetsToLoader.length > 0 && !this.isLoaded ? this.initLoad() : this.onAssetsLoaded(), 
+        var assetsToLoader = [];
+        void 0 !== assetsToLoader && assetsToLoader.length > 0 && !this.isLoaded ? this.initLoad() : this.onAssetsLoaded(), 
         this.pinVel = {
             x: 0,
             y: 0
-        };
+        }, console.log("buid");
     },
     onProgress: function() {
-        console.log("progress"), this._super();
+        this._super();
     },
     onAssetsLoaded: function() {
-        console.log("loaded"), this.initApplication();
+        this.initApplication();
     },
     initApplication: function() {
-        function updateVel(touchData) {
-            self.pinOver = !0, self.pinPos = {
-                x: (touchData.global.x - self.mazeContainer.position.x) / self.mazeContainer.scale.x,
-                y: (touchData.global.y - self.mazeContainer.position.y - .5 * self.pin.getContent().height) / self.mazeContainer.scale.y
-            };
-            var angle = Math.atan2(self.pinPos.y - self.pin.getContent().position.y, self.pinPos.x - self.pin.getContent().position.x);
-            angle = 180 * angle / Math.PI, angle += 90, angle = angle / 180 * Math.PI, self.pinVel.x = self.pinDefaultVelocity * Math.sin(angle), 
-            self.pinVel.y = self.pinDefaultVelocity * -Math.cos(angle);
-        }
-        var bg = new SimpleSprite("bg.jpg");
-        this.container.addChild(bg.getContent()), scaleConverter(bg.getContent().width, windowWidth, 1.2, bg), 
-        bg.getContent().position.x = windowWidth / 2 - bg.getContent().width / 2, bg.getContent().position.y = windowHeight / 2 - bg.getContent().height / 2;
-        var logo = new SimpleSprite("logo.png");
-        this.container.addChild(logo.getContent()), scaleConverter(logo.getContent().height, windowHeight, .05, logo), 
-        logo.getContent().position.x = windowWidth - logo.getContent().width - 20, logo.getContent().position.y = 20, 
-        this.seloGame = new SimpleSprite("seloGame.png"), this.container.addChild(this.seloGame.getContent()), 
-        this.seloGame.getContent().position.x = 20, this.seloGame.getContent().position.y = 20;
+        function updateVel() {}
         var self = this;
-        this.mazeContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.mazeContainer), 
-        this.pin = new DefaultButton("pinOut.png", "pinOver.png"), this.pin.build(), this.mazeContainer.addChild(this.pin.getContent()), 
-        this.pin.getContent().pivot.y = .95 * this.pin.getContent().height, this.pin.getContent().pivot.x = this.pin.getContent().width / 2, 
-        scaleConverter(this.pin.getContent().height, windowHeight, .1, this.pin), this.lockIcons = new PIXI.DisplayObjectContainer(), 
-        this.addChild(this.lockIcons), this.itemLockList = [];
-        for (var i = 0; 4 > i; i++) {
-            var tempIco = new SimpleSprite("backItem.png");
-            this.lockIcons.addChild(tempIco.getContent()), tempIco.getContent().position.x = windowWidth / 4 * i, 
-            this.itemLockList.push(tempIco.getContent());
-        }
-        this.pin.getContent().interactive = !0, this.pinPos = {
-            x: this.pin.getContent().position.x,
-            y: this.pin.getContent().position.y
-        }, this.vecObstacles = [], this.waypoints = [], this.itens = [], this.levels = [], 
-        this.currentLevel = 0;
-        var rectsLevel1 = [ [ 18.5, 11.5, 283.1, 18.8 ], [ 18.5, 275, 283.1, 19.8 ], [ 18.5, 239.75, 51.05, 16.7 ], [ 136, 239, 127.55, 17.2 ], [ 136, 203, 127.55, 13.2 ], [ 58, 203.25, 46.55, 12.7 ], [ 19, 169.5, 46.55, 7.1 ], [ 177, 169, 46.55, 7.1 ], [ 217.5, 130, 46.55, 7.1 ], [ 98, 129.25, 46.55, 9.35 ], [ 247.35, 90.5, 53.05, 12.2 ], [ 136.5, 49.5, 48.05, 16.2 ], [ 58.5, 50.25, 46.55, 15.7 ], [ 19, 11.5, 19, 247.25 ], [ 57.5, 50.8, 15.5, 127.15 ], [ 136.5, 49.8, 9, 168.05 ], [ 212, 9.8, 11, 168.05 ], [ 98, 129, 11.5, 166.8 ], [ 98, 50.3, 11.5, 50.15 ], [ 247.4, 50.3, 16.1, 47.15 ], [ 247.5, 167.8, 16, 88.95 ], [ 176.25, 50.15, 8, 89.55 ], [ 283.45, 49.8, 20, 247.65 ] ];
-        this.levels.push({
-            background: "labirinto1.png",
-            rects: rectsLevel1,
-            initPoint: [ 18.45, 255.75, 20, 18.75 ],
-            endPoint: [ 283.45, 30.75, 20, 18.75 ],
-            itemSrc: "saia.png",
-            item: [ 60.45, 255.75, 20, 18.75 ]
-        });
-        var rectsLevel2 = [ [ 18.5, 11.5, 283.1, 18.8 ], [ 18.5, 275, 283.1, 19.8 ], [ 18.5, 239.75, 51.05, 16.7 ], [ 175.5, 237.5, 86.55, 17.2 ], [ 211.05, 203, 52.5, 13.2 ], [ 58, 203.25, 46.55, 12.7 ], [ 58.5, 167.5, 83.55, 7.1 ], [ 177, 169, 124.05, 7.1 ], [ 216.5, 129, 46.55, 7.1 ], [ 23.5, 127.75, 84.55, 9.35 ], [ 99.85, 89, 122.55, 12.2 ], [ 136.5, 49.5, 87.05, 16.2 ], [ 58.5, 50.25, 46.55, 15.7 ], [ 19, 11.5, 19, 247.25 ], [ 57.5, 50.8, 15.5, 53.6 ], [ 136.5, 129.2, 9, 126.05 ], [ 213, 9.8, 11, 48 ], [ 98, 239.45, 11.5, 54.85 ], [ 98, 50.3, 11.5, 84.9 ], [ 247.4, 50.3, 16.1, 85.25 ], [ 247, 203, 16, 52.7 ], [ 283.45, 49.8, 20, 247.65 ], [ 98.45, 237.5, 46, 17.2 ], [ 175.5, 129.2, 9, 126.05 ], [ 56.95, 204.1, 16, 52.05 ], [ 213, 90.35, 11, 46.65 ] ];
-        this.levels.push({
-            background: "labirinto2.png",
-            rects: rectsLevel2,
-            initPoint: [ 18.45, 255.75, 20, 18.75 ],
-            endPoint: [ 283.45, 30.75, 20, 18.75 ],
-            itemSrc: "casaco.png",
-            item: [ 74.5, 66.25, 20, 18.75 ]
-        });
-        var rectsLevel3 = [ [ 18.5, 11.5, 283.1, 18.8 ], [ 18.5, 275, 283.1, 19.8 ], [ 18.5, 239.75, 51.05, 16.7 ], [ 249.05, 203, 52.5, 13.2 ], [ 58.5, 167.5, 83.55, 7.1 ], [ 216.5, 129, 46.55, 7.1 ], [ 59.5, 127.75, 84.55, 9.35 ], [ 138.35, 88, 45.65, 12.2 ], [ 98.95, 49.5, 164.15, 16.2 ], [ 19, 11.5, 19, 247.25 ], [ 58.5, 12.3, 15.5, 53.6 ], [ 136.5, 167.35, 9, 48.6 ], [ 136, 239.45, 11.5, 54.85 ], [ 98, 50.3, 11.5, 49.15 ], [ 247.4, 50.3, 16.1, 51.15 ], [ 247, 129.6, 16, 86.6 ], [ 283.45, 49.8, 20, 247.65 ], [ 98.45, 237.5, 164.6, 17.2 ], [ 175.5, 90.15, 9, 165.6 ], [ 56.95, 168.9, 16, 87.75 ], [ 214.5, 89.85, 11, 125.6 ], [ 136.5, 87.85, 9, 48.6 ], [ 22.8, 88, 85.65, 12.2 ], [ 97.45, 204.15, 13, 52 ] ];
-        this.levels.push({
-            background: "labirinto3.png",
-            rects: rectsLevel3,
-            initPoint: [ 18.45, 255.75, 20, 18.75 ],
-            endPoint: [ 283.45, 30.75, 20, 18.75 ],
-            itemSrc: "bolsa.png",
-            item: [ 148.55, 255.3, 20, 18.75 ]
-        });
-        var rectsLevel4 = [ [ 18.5, 11.5, 283.1, 18.8 ], [ 18.5, 275, 283.1, 19.8 ], [ 18.5, 239.75, 90.55, 16.7 ], [ 212, 237.5, 50.05, 17.2 ], [ 137.05, 203, 45.5, 13.2 ], [ 58, 203.25, 46.55, 12.7 ], [ 58.5, 167.5, 124.55, 7.1 ], [ 248, 129, 46.55, 7.1 ], [ 137.35, 89, 122.55, 12.2 ], [ 99.45, 49.5, 124.1, 16.2 ], [ 19, 11.5, 19, 247.25 ], [ 57.5, 50.8, 15.5, 124.45 ], [ 136.5, 204.65, 9, 50.55 ], [ 213, 9.8, 11, 48 ], [ 98, 202.7, 11.5, 54.05 ], [ 98, 50.3, 11.5, 124.35 ], [ 247.4, 50.3, 16.1, 85.25 ], [ 283.45, 49.8, 20, 247.65 ], [ 175.5, 129.2, 9, 45 ], [ 136.5, 90.6, 9, 49.5 ], [ 178.5, 129, 46.55, 7.1 ], [ 247, 170, 16, 84.7 ], [ 175.5, 204.25, 9, 89.4 ], [ 212, 131.75, 11.5, 123.2 ] ];
-        this.levels.push({
-            background: "labirinto4.png",
-            rects: rectsLevel4,
-            initPoint: [ 18.45, 255.75, 20, 18.75 ],
-            endPoint: [ 283.45, 30.75, 20, 18.75 ],
-            itemSrc: "sapato.png",
-            item: [ 189.55, 31.25, 20, 18.75 ]
-        }), this.renderLevel(), this.hitTouch = new PIXI.Graphics(), this.hitTouch.interactive = !0, 
+        this.bg = new SimpleSprite("bg1.jpg"), this.addChild(this.bg.getContent()), scaleConverter(this.bg.getContent().width, windowWidth, 1.2, this.bg), 
+        this.bg.getContent().position.x = windowWidth / 2 - this.bg.getContent().width / 2, 
+        this.bg.getContent().position.y = windowHeight / 2 - this.bg.getContent().height / 2, 
+        this.renderLevel(), this.hitTouch = new PIXI.Graphics(), this.hitTouch.interactive = !0, 
         this.hitTouch.beginFill(0), this.hitTouch.drawRect(0, 0, windowWidth, windowHeight), 
         this.addChild(this.hitTouch), this.hitTouch.alpha = 0, this.hitTouch.hitArea = new PIXI.Rectangle(0, 0, windowWidth, windowHeight), 
         this.hitTouch.touchmove = function(touchData) {
@@ -1504,97 +1427,94 @@ var Application = AbstractApplication.extend({
             updateVel(touchData);
         }, this.hitTouch.touchend = function() {
             self.pinVel.x = 0, self.pinVel.y = 0, self.pin.setOut(), self.pinOver = !1;
-        }, this.frontShape.parent.setChildIndex(this.frontShape, this.frontShape.parent.children.length - 1), 
-        TweenLite.to(this.frontShape, .8, {
-            alpha: 0
-        }), this.updateable = !0;
+        }, this.updateable = !0, this.pauseButton = new DefaultButton("UI_button_pause_1.png", "UI_button_pause_1_over.png", "UI_button_pause_1_over.png"), 
+        this.pauseButton.build(), scaleConverter(this.pauseButton.getContent().width, windowWidth, .1, this.pauseButton), 
+        this.pauseButton.setPosition(20, 20), this.addChild(this.pauseButton), this.pauseButton.clickCallback = function() {}, 
+        this.backButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
+        this.backButton.build(), this.backButton.addLabel(new PIXI.Text("BACK", {
+            font: "50px Vagron",
+            fill: "#FFFFFF"
+        }), 40), scaleConverter(this.backButton.getContent().width, windowWidth, .4, this.backButton), 
+        this.backButton.setPosition(windowWidth / 2 - this.backButton.getContent().width / 2, windowHeight - 2.5 * this.backButton.getContent().height), 
+        this.addChild(this.backButton), this.backButton.clickCallback = function() {
+            self.updateable = !1, self.toTween(function() {
+                self.screenManager.change("Init");
+            });
+        }, this.setAudioButtons(), this.fromTween();
     },
     update: function() {
-        if (this.updateable && this.pin && this.pinOver) {
-            this.pin.setOver();
-            var i = 0;
-            if (this.itens) for (i = this.itens.length - 1; i >= 0; i--) this.itens[i].hitArea.contains(this.pin.getContent().position.x, this.pin.getContent().position.y) && this.getItem(i);
-            if (this.waypoints) for (i = this.waypoints.length - 1; i >= 0; i--) this.waypoints[i].hitArea.contains(this.pin.getContent().position.x, this.pin.getContent().position.y) && this.verifyChangeLevel(i);
-            for (i = this.vecObstacles.length - 1; i >= 0; i--) {
-                var obs = this.vecObstacles[i];
-                (obs && obs.hitArea.contains(this.pin.getContent().position.x + this.pinVel.x * this.pinDefaultVelocity, this.pin.getContent().position.y) || obs.hitArea.contains(this.pin.getContent().position.x + this.pinVel.x * this.pinDefaultVelocity, this.pin.getContent().position.y)) && (this.pinVel.x = 0), 
-                (obs && obs.hitArea.contains(this.pin.getContent().position.x, this.pin.getContent().position.y + this.pinVel.y * this.pinDefaultVelocity) || obs.hitArea.contains(this.pin.getContent().position.x, this.pin.getContent().position.y + this.pinVel.y * this.pinDefaultVelocity)) && (this.pinVel.y = 0);
-            }
-            pointDistance(this.pinPos.x, this.pinPos.y, this.pin.getContent().position.x, this.pin.getContent().position.y) > 10 && (this.pin.getContent().position.x += this.pinVel.x, 
-            this.pin.getContent().position.y += this.pinVel.y);
-        }
+        !this.updateable;
     },
-    getItem: function(id) {
-        console.log(this.itemLockList[this.currentLevel], this.itensGraphics[id].getContent()), 
-        this.itensGraphics[id].alpha = .5, this.itemLockList[this.currentLevel].addChild(this.itensGraphics[id].getContent()), 
-        this.itensGraphics[id].getContent().position.x = this.itemLockList[this.currentLevel].position.x - this.itensGraphics[id].getContent().width / 2 + this.itemLockList[this.currentLevel].width / 2, 
-        this.itensGraphics[id].getContent().position.y = this.itemLockList[this.currentLevel].position.y - this.itensGraphics[id].getContent().height / 2 + this.itemLockList[this.currentLevel].height / 2, 
-        this.itens.splice(id, 1);
-    },
-    verifyChangeLevel: function(idWay) {
-        1 === idWay ? (this.currentLevel++, this.currentLevel >= this.levels.length && (this.currentLevel = 0)) : (this.currentLevel--, 
-        this.currentLevel < 0 && (this.currentLevel = this.levels.length - 1)), this.renderLevel(1 === idWay ? 0 : 1);
-    },
-    renderLevel: function(whereInit) {
-        whereInit || (whereInit = 0);
-        var i = 0;
-        if (this.waypoints = [], this.vecObstacles = [], this.itens = [], this.itensGraphics = [], 
-        this.itens.length > 0) for (i = this.itens.length - 1; i >= 0; i--) this.itens[i].getContent() && this.itens[i].getContent().parent && this.itens[i].getContent().parent.removeChild(this.itens[i].getContent());
-        if (this.vecObstacles.length > 0) for (i = this.vecObstacles.length - 1; i >= 0; i--) this.vecObstacles[i].getContent() && this.vecObstacles[i].getContent().parent && this.vecObstacles[i].getContent().parent.removeChild(this.vecObstacles[i].getContent());
-        var levelObj = this.levels[this.currentLevel];
-        if (this.maze && this.maze.getContent() && this.maze.getContent().parent.removeChild(this.maze.getContent()), 
-        this.itensGraphics.length > 0) for (i = this.itensGraphics.length - 1; i >= 0; i--) this.itensGraphics[i].getContent() && this.itensGraphics[i].getContent().parent && this.itensGraphics[i].getContent().parent.removeChild(this.itensGraphics[i].getContent());
-        this.maze = new SimpleSprite(levelObj.background), this.mazeContainer.addChild(this.maze.getContent()), 
-        this.lockIcons.position.x = windowWidth / 2 - this.lockIcons.width / 2, this.lockIcons.position.y = windowHeight - this.lockIcons.height - 20;
-        var scaleMaze = scaleConverter(this.maze.getContent().width, windowWidth, 1, this.mazeContainer);
-        this.mazeContainer.position.x = windowWidth / 2 - scaleMaze * this.maze.getContent().width / 2, 
-        this.mazeContainer.position.y = this.lockIcons.position.y - 20 - scaleMaze * this.maze.getContent().height;
-        var logScale = (this.mazeContainer.position.y - 20) / windowHeight;
-        for (console.log(logScale, windowHeight, this.mazeContainer.position.y), scaleConverter(this.seloGame.getContent().height, windowHeight, logScale, this.seloGame), 
-        i = levelObj.rects.length - 1; i >= 0; i--) {
-            var obs = new PIXI.Graphics();
-            obs.lineStyle(1, 0), obs.drawRect(0, 0, levelObj.rects[i][2], levelObj.rects[i][3]), 
-            obs.position.x = levelObj.rects[i][0], obs.position.y = levelObj.rects[i][1], obs.hitArea = new PIXI.Rectangle(obs.position.x, obs.position.y, obs.width, obs.height), 
-            this.vecObstacles.push(obs);
-        }
-        var tempInitP = new PIXI.Graphics();
-        if (levelObj.item) {
-            console.log(levelObj.item), tempInitP.lineStyle(1, 255), tempInitP.drawRect(0, 0, levelObj.item[2], levelObj.item[3]), 
-            this.mazeContainer.addChild(tempInitP), tempInitP.position.x = levelObj.item[0], 
-            tempInitP.position.y = levelObj.item[1], tempInitP.hitArea = new PIXI.Rectangle(tempInitP.position.x, tempInitP.position.y, tempInitP.width, tempInitP.height), 
-            this.itens.push(tempInitP);
-            var graphicItem = new SimpleSprite(levelObj.itemSrc);
-            graphicItem.getContent().position.x = tempInitP.position.x - graphicItem.getContent().width / 2 + tempInitP.width / 2, 
-            graphicItem.getContent().position.y = tempInitP.position.y - graphicItem.getContent().height / 2 + tempInitP.height / 2, 
-            this.itensGraphics.push(graphicItem), this.mazeContainer.addChild(graphicItem.getContent());
-        }
-        levelObj.initPoint && (tempInitP = new PIXI.Graphics(), tempInitP.lineStyle(1, 16711680), 
-        tempInitP.drawRect(0, 0, levelObj.initPoint[2], levelObj.initPoint[3]), this.mazeContainer.addChild(tempInitP), 
-        tempInitP.position.x = levelObj.initPoint[0], tempInitP.position.y = levelObj.initPoint[1], 
-        tempInitP.hitArea = new PIXI.Rectangle(tempInitP.position.x, tempInitP.position.y, tempInitP.width, tempInitP.height), 
-        this.waypoints.push(tempInitP), 0 === whereInit && (this.pin.getContent().position.x = tempInitP.position.x + tempInitP.width + 1, 
-        this.pin.getContent().position.y = tempInitP.position.y + tempInitP.height / 2)), 
-        levelObj.endPoint && (tempInitP = new PIXI.Graphics(), tempInitP.lineStyle(1, 65280), 
-        tempInitP.drawRect(0, 0, levelObj.endPoint[2], levelObj.endPoint[3]), this.mazeContainer.addChild(tempInitP), 
-        tempInitP.position.x = levelObj.endPoint[0], tempInitP.position.y = levelObj.endPoint[1], 
-        tempInitP.hitArea = new PIXI.Rectangle(tempInitP.position.x, tempInitP.position.y, tempInitP.width, tempInitP.height), 
-        this.waypoints.push(tempInitP), 1 === whereInit && (this.pin.getContent().position.x = tempInitP.position.x - 1, 
-        this.pin.getContent().position.y = tempInitP.position.y + tempInitP.height / 2)), 
-        this.pin.getContent().parent.setChildIndex(this.pin.getContent(), this.pin.getContent().parent.children.length - 1);
+    renderLevel: function() {},
+    setAudioButtons: function() {
         var self = this;
-        this.updateable = !1, this.frontShape.alpha = 1, this.frontShape.parent.setChildIndex(this.frontShape, this.frontShape.parent.children.length - 1), 
-        TweenLite.to(this.frontShape, .8, {
-            alpha: 0,
+        APP.mute = !0, Howler.mute(), this.audioOn = new DefaultButton("volumeButton_on.png", "volumeButton_on_over.png"), 
+        this.audioOn.build(), scaleConverter(this.audioOn.width, windowWidth, .15, this.audioOn), 
+        this.audioOn.setPosition(windowWidth - this.audioOn.getContent().width - 20, 20), 
+        this.audioOff = new DefaultButton("volumeButton_off.png", "volumeButton_off_over.png"), 
+        this.audioOff.build(), scaleConverter(this.audioOff.width, windowWidth, .15, this.audioOff), 
+        this.audioOff.setPosition(windowWidth - this.audioOn.getContent().width - 20, 20), 
+        this.addChild(APP.mute ? this.audioOff : this.audioOn), this.audioOn.clickCallback = function() {
+            APP.mute = !0, Howler.mute(), self.audioOn.getContent().parent && self.audioOn.getContent().parent.removeChild(self.audioOn.getContent()), 
+            self.audioOff.getContent() && self.addChild(self.audioOff);
+        }, this.audioOff.clickCallback = function() {
+            APP.mute = !1, Howler.unmute(), self.audioOff.getContent().parent && self.audioOff.getContent().parent.removeChild(self.audioOff.getContent()), 
+            self.audioOn.getContent() && self.addChild(self.audioOn);
+        };
+    },
+    toTween: function(callback) {
+        TweenLite.to(this.bg.getContent(), .5, {
+            alpha: 0
+        }), TweenLite.to(this.pauseButton.getContent(), .5, {
+            delay: .1,
+            y: -this.pauseButton.getContent().height,
+            ease: "easeOutBack"
+        }), TweenLite.to(this.backButton.getContent(), .5, {
+            delay: .2,
+            y: windowHeight,
+            ease: "easeOutBack",
             onComplete: function() {
-                self.updateable = !0;
+                callback && callback();
             }
+        }), this.audioOn && TweenLite.to(this.audioOn.getContent(), .5, {
+            delay: .1,
+            y: -this.audioOn.getContent().height,
+            ease: "easeOutBack"
+        }), this.audioOff && TweenLite.to(this.audioOff.getContent(), .5, {
+            delay: .1,
+            y: -this.audioOn.getContent().height,
+            ease: "easeOutBack"
+        });
+    },
+    fromTween: function(callback) {
+        TweenLite.from(this.bg.getContent(), .5, {
+            alpha: 0
+        }), TweenLite.from(this.pauseButton.getContent(), .5, {
+            delay: .1,
+            y: -this.audioOn.getContent().height,
+            ease: "easeOutBack"
+        }), TweenLite.from(this.backButton.getContent(), .5, {
+            delay: .2,
+            y: windowHeight,
+            ease: "easeOutBack",
+            onComplete: function() {
+                callback && callback();
+            }
+        }), this.audioOn && TweenLite.from(this.audioOn.getContent(), .5, {
+            delay: .1,
+            y: -this.audioOn.getContent().height,
+            ease: "easeOutBack"
+        }), this.audioOff && TweenLite.from(this.audioOff.getContent(), .5, {
+            delay: .1,
+            y: -this.audioOn.getContent().height,
+            ease: "easeOutBack"
         });
     },
     transitionIn: function() {
-        this.frontShape = new PIXI.Graphics(), this.frontShape.beginFill(16553437), this.frontShape.drawRect(0, 0, windowWidth, windowHeight), 
-        this.addChild(this.frontShape), this.build();
+        this.build();
     },
     transitionOut: function(nextScreen, container) {
+        console.log("out");
         var self = this;
         this.frontShape ? (this.frontShape.parent.setChildIndex(this.frontShape, this.frontShape.parent.children.length - 1), 
         TweenLite.to(this.frontShape, .3, {
@@ -1627,35 +1547,123 @@ var Application = AbstractApplication.extend({
         this.initApplication();
     },
     initApplication: function() {
-        var self = this, bg = new SimpleSprite("bg.jpg");
-        this.container.addChild(bg.getContent()), scaleConverter(bg.getContent().width, windowWidth, 1.2, bg), 
-        bg.getContent().position.x = windowWidth / 2 - bg.getContent().width / 2, bg.getContent().position.y = windowHeight / 2 - bg.getContent().height / 2;
-        var logo = new SimpleSprite("logo.png");
-        this.container.addChild(logo.getContent()), scaleConverter(logo.getContent().height, windowHeight, .05, logo), 
-        logo.getContent().position.x = windowWidth - logo.getContent().width - 20, logo.getContent().position.y = 20;
-        var selo = new SimpleSprite("selo.png");
-        this.container.addChild(selo.getContent()), scaleConverter(selo.getContent().height, windowHeight, .6, selo), 
-        selo.getContent().position.x = windowWidth / 2 - selo.getContent().width / 2, selo.getContent().position.y = 20, 
-        this.fullscreenButton = new DefaultButton("btnJogar.png", "btnJogar.png"), this.fullscreenButton.build(), 
-        this.fullscreenButton.setPosition(windowWidth / 2 - this.fullscreenButton.getContent().width / 2, windowHeight - this.fullscreenButton.getContent().height), 
+        var self = this;
+        this.bg = new SimpleSprite("bg1.jpg"), this.container.addChild(this.bg.getContent()), 
+        scaleConverter(this.bg.getContent().width, windowWidth, 1.2, this.bg), this.bg.getContent().position.x = windowWidth / 2 - this.bg.getContent().width / 2, 
+        this.bg.getContent().position.y = windowHeight / 2 - this.bg.getContent().height / 2, 
+        this.logo = new SimpleSprite("logo.png"), this.container.addChild(this.logo.getContent()), 
+        scaleConverter(this.logo.getContent().width, windowWidth, .5, this.logo), this.logo.getContent().position.x = windowWidth / 2 - this.logo.getContent().width / 2, 
+        this.logo.getContent().position.y = windowHeight / 2 - this.logo.getContent().height / 2, 
+        this.moreGames = new DefaultButton("UI_button_default_2.png", "UI_button_default_2.png"), 
+        this.moreGames.build(), this.moreGames.addLabel(new PIXI.Text("MORE GAMES", {
+            font: "18px Vagron",
+            fill: "#FFFFFF"
+        }), 17, 12), scaleConverter(this.moreGames.getContent().width, windowWidth, .35, this.moreGames), 
+        this.moreGames.setPosition(windowWidth / 2 - this.moreGames.getContent().width / 2, windowHeight - 1.4 * this.moreGames.getContent().height), 
+        this.addChild(this.moreGames), this.moreGames.clickCallback = function() {
+            self.updateable = !1, self.toTween(function() {
+                self.screenManager.change("Game");
+            });
+        }, console.log("cade as fontes?"), this.playButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
+        this.playButton.build(), this.playButton.addLabel(new PIXI.Text("PLAY", {
+            font: "50px Vagron",
+            fill: "#FFFFFF"
+        }), 45, 2), scaleConverter(this.playButton.getContent().width, windowWidth, .4, this.playButton), 
+        this.playButton.setPosition(windowWidth / 2 - this.playButton.getContent().width / 2, windowHeight - 2.5 * this.playButton.getContent().height), 
+        this.addChild(this.playButton), this.playButton.clickCallback = function() {
+            self.updateable = !1, self.toTween(function() {
+                self.screenManager.change("Game");
+            });
+        }, possibleFullscreen() && (this.fullscreenButton = new DefaultButton("fullscreen.png", "fullscreen.png"), 
+        this.fullscreenButton.build(), scaleConverter(this.fullscreenButton.getContent().width, windowWidth, .1, this.fullscreenButton), 
+        this.fullscreenButton.setPosition(windowWidth - this.fullscreenButton.getContent().width - 20, windowHeight - this.fullscreenButton.getContent().height - 20), 
         this.addChild(this.fullscreenButton), this.fullscreenButton.clickCallback = function() {
-            self.screenManager.change("Game"), self.updateable = !1;
-        }, TweenLite.from(selo.getContent(), .8, {
-            y: -selo.getContent().height
-        }), TweenLite.from(logo.getContent(), .5, {
+            fullscreen();
+        }), this.setAudioButtons(), this.fromTween();
+    },
+    toTween: function(callback) {
+        TweenLite.to(this.bg.getContent(), .5, {
             delay: .7,
-            y: -logo.getContent().height
-        }), TweenLite.from(this.fullscreenButton.getContent(), .5, {
-            delay: .6,
-            y: windowHeight
-        }), this.frontShape.parent.setChildIndex(this.frontShape, this.frontShape.parent.children.length - 1), 
-        TweenLite.to(this.frontShape, .8, {
             alpha: 0
+        }), TweenLite.to(this.logo.getContent(), .5, {
+            delay: .1,
+            alpha: 0
+        }), this.audioOn && TweenLite.to(this.audioOn.getContent(), .5, {
+            delay: .1,
+            y: -this.audioOn.getContent().height,
+            ease: "easeOutBack"
+        }), this.audioOff && TweenLite.to(this.audioOff.getContent(), .5, {
+            delay: .1,
+            y: -this.audioOn.getContent().height,
+            ease: "easeOutBack"
+        }), TweenLite.to(this.fullscreenButton.getContent(), .5, {
+            delay: .3,
+            y: windowHeight,
+            ease: "easeOutBack"
+        }), TweenLite.to(this.moreGames.getContent(), .5, {
+            delay: .4,
+            y: windowHeight,
+            ease: "easeOutBack"
+        }), TweenLite.to(this.playButton.getContent(), .5, {
+            delay: .5,
+            y: windowHeight,
+            ease: "easeOutBack",
+            onComplete: function() {
+                callback && callback();
+            }
         });
     },
+    fromTween: function(callback) {
+        TweenLite.from(this.bg.getContent(), .5, {
+            alpha: 0
+        }), TweenLite.from(this.logo.getContent(), .5, {
+            delay: .1,
+            alpha: 0
+        }), this.audioOn && TweenLite.from(this.audioOn.getContent(), .5, {
+            delay: .1,
+            y: -this.audioOn.getContent().height,
+            ease: "easeOutBack"
+        }), this.audioOff && TweenLite.from(this.audioOff.getContent(), .5, {
+            delay: .1,
+            y: -this.audioOn.getContent().height,
+            ease: "easeOutBack"
+        }), TweenLite.from(this.fullscreenButton.getContent(), .5, {
+            delay: .3,
+            y: windowHeight,
+            ease: "easeOutBack"
+        }), TweenLite.from(this.playButton.getContent(), .5, {
+            delay: .4,
+            y: windowHeight,
+            ease: "easeOutBack"
+        }), TweenLite.from(this.moreGames.getContent(), .5, {
+            delay: .5,
+            y: windowHeight,
+            ease: "easeOutBack",
+            onComplete: function() {
+                callback && callback();
+            }
+        });
+    },
+    setAudioButtons: function() {
+        var self = this;
+        APP.mute = !0, Howler.mute(), this.audioOn = new DefaultButton("volumeButton_on.png", "volumeButton_on_over.png"), 
+        this.audioOn.build(), scaleConverter(this.audioOn.width, windowWidth, .15, this.audioOn), 
+        this.audioOn.setPosition(windowWidth - this.audioOn.getContent().width - 20, 20), 
+        this.audioOff = new DefaultButton("volumeButton_off.png", "volumeButton_off_over.png"), 
+        this.audioOff.build(), scaleConverter(this.audioOff.width, windowWidth, .15, this.audioOff), 
+        this.audioOff.setPosition(windowWidth - this.audioOn.getContent().width - 20, 20), 
+        this.addChild(APP.mute ? this.audioOff : this.audioOn), this.audioOn.clickCallback = function() {
+            APP.mute = !0, Howler.mute(), self.audioOn.getContent().parent && self.audioOn.getContent().parent.removeChild(self.audioOn.getContent()), 
+            self.audioOff.getContent() && self.addChild(self.audioOff);
+        }, this.audioOff.clickCallback = function() {
+            APP.mute = !1, Howler.unmute(), self.audioOff.getContent().parent && self.audioOff.getContent().parent.removeChild(self.audioOff.getContent()), 
+            self.audioOn.getContent() && self.addChild(self.audioOn);
+        };
+    },
     transitionIn: function() {
-        this.frontShape = new PIXI.Graphics(), this.frontShape.beginFill(16553437), this.frontShape.drawRect(0, 0, windowWidth, windowHeight), 
-        this.addChild(this.frontShape), this.build();
+        console.log("init"), this.frontShape = new PIXI.Graphics(), this.frontShape.beginFill(2892633), 
+        this.frontShape.drawRect(0, 0, windowWidth, windowHeight), this.addChild(this.frontShape), 
+        this.build();
     },
     transitionOut: function(nextScreen, container) {
         var self = this;
@@ -1677,68 +1685,44 @@ var Application = AbstractApplication.extend({
     build: function() {
         this._super();
         var assetsToLoader = [ "dist/img/atlas.json" ];
-        if (assetsToLoader.length > 0 && !this.isLoaded) {
-            this.loader = new PIXI.AssetLoader(assetsToLoader), this.loaderContainer = new PIXI.DisplayObjectContainer(), 
-            this.addChild(this.loaderContainer), this.frontShape && this.frontShape.parent.removeChild(this.frontShape), 
-            frontShape = new PIXI.Graphics(), frontShape.beginFill(16553437), frontShape.drawRect(0, 0, windowWidth, windowHeight), 
-            this.loaderContainer.addChild(frontShape);
-            var barHeight = 20;
-            this.bulletBar = new LifeBarHUD(.6 * windowWidth, barHeight, 0, 16727717, 16474302), 
-            this.loaderContainer.addChild(this.bulletBar.getContent()), this.bulletBar.getContent().position.x = windowWidth / 2 - this.bulletBar.getContent().width / 2, 
-            this.bulletBar.getContent().position.y = windowHeight - this.bulletBar.getContent().height - .1 * windowHeight, 
-            this.bulletBar.updateBar(0, 100), this.initLoad();
-        } else this.onAssetsLoaded();
-        this.updateable = !0;
+        assetsToLoader.length > 0 && !this.isLoaded ? (this.loader = new PIXI.AssetLoader(assetsToLoader), 
+        this.initLoad()) : this.onAssetsLoaded();
     },
-    update: function() {
-        !this.isLoaded && this.ready && (this.initApplication(), APP.labelDebug.visible = !1), 
-        this.updateable && this.labelLoader && (this.blinkAccum--, this.blinkAccum <= 0 && (this.labelLoader.alpha = this.labelLoader.alpha ? 0 : 1, 
-        this.blinkAccum = 20 + 10 * this.labelLoader.alpha));
+    initLoad: function() {
+        var barHeight = 20;
+        this.loaderContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.loaderContainer), 
+        this.loaderBar = new LifeBarHUD(.6 * windowWidth, barHeight, 0, 10956153, 857662), 
+        this.loaderContainer.addChild(this.loaderBar.getContent()), this.loaderBar.getContent().position.x = windowWidth / 2 - this.loaderBar.getContent().width / 2, 
+        this.loaderBar.getContent().position.y = windowHeight - this.loaderBar.getContent().height - .1 * windowHeight, 
+        this.loaderBar.updateBar(0, 100), this._super();
+        var text = new PIXI.Text("PLAY", {
+            font: "50px Vagron",
+            fill: "#FFFFFF"
+        });
+        this.addChild(text), text.alpha = 0;
     },
     onProgress: function() {
-        this._super(), this.bulletBar.updateBar(Math.floor(100 * this.loadPercent), 100);
+        this._super(), this.loaderBar.updateBar(Math.floor(100 * this.loadPercent), 100);
     },
     onAssetsLoaded: function() {
         this.ready = !0;
+        var self = this;
+        TweenLite.to(this.loaderBar.getContent(), .5, {
+            delay: .2,
+            alpha: 0,
+            onComplete: function() {
+                self.initApplication();
+            }
+        });
     },
     initApplication: function() {
-        this.isLoaded = !0, this.blinkAccum = 40, this.labelLoader = new PIXI.Text("", {
-            align: "center",
-            font: "20px roboto",
-            fill: "#000",
-            wordWrap: !0,
-            wordWrapWidth: 600
-        }), this.loaderContainer.addChild(this.labelLoader), this.labelLoader.setText("Toque para continuar"), 
-        scaleConverter(this.labelLoader.width, windowWidth, .3, this.labelLoader), this.labelLoader.position.x = windowWidth / 2 - this.labelLoader.width / 2, 
-        this.labelLoader.position.y = this.bulletBar.getContent().position.y + this.bulletBar.getContent().height / 2 - this.labelLoader.height / 2, 
-        TweenLite.to(this.bulletBar.getContent(), .5, {
-            alpha: 0
-        });
-        var self = this;
-        this.fullscreenButton = new DefaultButton("bg.jpg", "bg.jpg"), this.fullscreenButton.build(windowWidth, windowHeight), 
-        this.fullscreenButton.setPosition(windowWidth - this.fullscreenButton.getContent().width - 20, windowHeight - this.fullscreenButton.getContent().height - 20), 
-        this.addChild(this.fullscreenButton), this.fullscreenButton.getContent().alpha = 0, 
-        this.fullscreenButton.clickCallback = function() {
-            testMobile() && fullscreen(), self.updateable = !1;
-            var endTimeline = new TimelineLite({
-                onComplete: function() {
-                    self.screenManager.change("Init");
-                }
-            });
-            endTimeline.append(TweenLite.to(self.labelLoader, .2, {
-                alpha: 0
-            })), endTimeline.append(TweenLite.to(self.bulletBar.getContent(), .2, {
-                alpha: 0
-            }));
-        };
+        this.isLoaded = !0;
+        this.screenManager.change("Init");
     },
     transitionIn: function() {
-        return this.isLoaded ? (this.frontShape = new PIXI.Graphics(), this.frontShape.beginFill(16553437), 
-        this.frontShape.drawRect(0, 0, windowWidth, windowHeight), this.addChild(this.frontShape), 
-        void this.build()) : void this.build();
+        return this.isLoaded ? void this.build() : void this.build();
     },
     transitionOut: function(nextScreen, container) {
-        console.log("transitionOut");
         var self = this;
         this.frontShape ? (this.frontShape.parent.setChildIndex(this.frontShape, this.frontShape.parent.children.length - 1), 
         TweenLite.to(this.frontShape, .3, {
@@ -2233,11 +2217,13 @@ var Application = AbstractApplication.extend({
         this.sprite.alpha = 0, this.updateable = !0, this.kill = !0;
     }
 }), res = {
-    x: 425,
+    x: 375,
     y: 600
-}, resizeProportional = !0, windowWidth = res.x, windowHeight = res.y, realWindowWidth = res.x, realWindowHeight = res.y, gameScale = 1.3, windowWidthVar = window.innerHeight, windowHeightVar = window.innerWidth, gameView = document.getElementById("game");
+}, resizeProportional = !0, windowWidth = res.x, windowHeight = res.y, realWindowWidth = res.x, realWindowHeight = res.y, gameScale = 1.3, screenOrientation = "portait", windowWidthVar = window.innerHeight, windowHeightVar = window.innerWidth, gameView = document.getElementById("game");
 
-console.log(gameView);
+testMobile() || (document.body.className = ""), console.log(gameView), window.addEventListener("orientationchange", function() {
+    window.scrollTo(0, 0);
+}, !1);
 
 var ratio = 1, init = !1, renderer, APP, retina = 1, initialize = function() {
     PIXI.BaseTexture.SCALE_MODE = PIXI.scaleModes.NEAREST, requestAnimFrame(update);
