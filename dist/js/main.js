@@ -1564,7 +1564,7 @@ var Application = AbstractApplication.extend({
             self.updateable = !1, self.toTween(function() {
                 self.screenManager.change("Game");
             });
-        }, console.log("cade as fontes?"), this.playButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
+        }, this.playButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
         this.playButton.build(), this.playButton.addLabel(new PIXI.Text("PLAY", {
             font: "50px Vagron",
             fill: "#FFFFFF"
@@ -1574,11 +1574,11 @@ var Application = AbstractApplication.extend({
             self.updateable = !1, self.toTween(function() {
                 self.screenManager.change("Game");
             });
-        }, possibleFullscreen() && (this.fullscreenButton = new DefaultButton("fullscreen.png", "fullscreen.png"), 
+        }, possibleFullscreen() && !isfull && (this.fullscreenButton = new DefaultButton("fullscreen.png", "fullscreen.png"), 
         this.fullscreenButton.build(), scaleConverter(this.fullscreenButton.getContent().width, windowWidth, .1, this.fullscreenButton), 
         this.fullscreenButton.setPosition(windowWidth - this.fullscreenButton.getContent().width - 20, windowHeight - this.fullscreenButton.getContent().height - 20), 
         this.addChild(this.fullscreenButton), this.fullscreenButton.clickCallback = function() {
-            fullscreen();
+            fullscreen(), self.fullscreenButton.getContent().alpha = 0;
         }), this.setAudioButtons(), this.fromTween();
     },
     toTween: function(callback) {

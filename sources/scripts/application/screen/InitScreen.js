@@ -67,7 +67,6 @@ var InitScreen = AbstractScreen.extend({
         };
 
 
-        console.log('cade as fontes?');
         this.playButton = new DefaultButton('UI_button_default_1.png', 'UI_button_default_1.png');
         this.playButton.build();
         this.playButton.addLabel(new PIXI.Text('PLAY', {font:'50px Vagron', fill:'#FFFFFF'}), 45,2);
@@ -84,7 +83,7 @@ var InitScreen = AbstractScreen.extend({
         };
 
 
-        if(possibleFullscreen()){
+        if(possibleFullscreen() && !isfull){
             this.fullscreenButton = new DefaultButton('fullscreen.png', 'fullscreen.png');
             this.fullscreenButton.build();
             scaleConverter(this.fullscreenButton.getContent().width, windowWidth, 0.1, this.fullscreenButton);
@@ -94,6 +93,7 @@ var InitScreen = AbstractScreen.extend({
           
             this.fullscreenButton.clickCallback = function(){
                 fullscreen();
+                self.fullscreenButton.getContent().alpha = 0;
             };
         }
 
