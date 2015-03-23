@@ -1466,22 +1466,22 @@ var Application = AbstractApplication.extend({
         TweenLite.to(this.bg.getContent(), .5, {
             alpha: 0
         }), TweenLite.to(this.pauseButton.getContent(), .5, {
-            delay: .1,
+            delay: .3,
             y: -this.pauseButton.getContent().height,
             ease: "easeOutBack"
         }), TweenLite.to(this.backButton.getContent(), .5, {
-            delay: .2,
+            delay: .1,
             y: windowHeight,
             ease: "easeOutBack",
             onComplete: function() {
                 callback && callback();
             }
         }), this.audioOn && TweenLite.to(this.audioOn.getContent(), .5, {
-            delay: .1,
+            delay: .4,
             y: -this.audioOn.getContent().height,
             ease: "easeOutBack"
         }), this.audioOff && TweenLite.to(this.audioOff.getContent(), .5, {
-            delay: .1,
+            delay: .4,
             y: -this.audioOn.getContent().height,
             ease: "easeOutBack"
         });
@@ -1494,18 +1494,18 @@ var Application = AbstractApplication.extend({
             y: -this.audioOn.getContent().height,
             ease: "easeOutBack"
         }), TweenLite.from(this.backButton.getContent(), .5, {
-            delay: .2,
+            delay: .4,
             y: windowHeight,
             ease: "easeOutBack",
             onComplete: function() {
                 callback && callback();
             }
         }), this.audioOn && TweenLite.from(this.audioOn.getContent(), .5, {
-            delay: .1,
+            delay: .3,
             y: -this.audioOn.getContent().height,
             ease: "easeOutBack"
         }), this.audioOff && TweenLite.from(this.audioOff.getContent(), .5, {
-            delay: .1,
+            delay: .3,
             y: -this.audioOn.getContent().height,
             ease: "easeOutBack"
         });
@@ -1596,7 +1596,7 @@ var Application = AbstractApplication.extend({
             delay: .1,
             y: -this.audioOn.getContent().height,
             ease: "easeOutBack"
-        }), TweenLite.to(this.fullscreenButton.getContent(), .5, {
+        }), this.fullscreenButton && TweenLite.to(this.fullscreenButton.getContent(), .5, {
             delay: .3,
             y: windowHeight,
             ease: "easeOutBack"
@@ -1627,7 +1627,7 @@ var Application = AbstractApplication.extend({
             delay: .1,
             y: -this.audioOn.getContent().height,
             ease: "easeOutBack"
-        }), TweenLite.from(this.fullscreenButton.getContent(), .5, {
+        }), this.fullscreenButton && TweenLite.from(this.fullscreenButton.getContent(), .5, {
             delay: .3,
             y: windowHeight,
             ease: "easeOutBack"

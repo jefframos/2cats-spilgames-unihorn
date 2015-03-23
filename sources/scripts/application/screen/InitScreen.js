@@ -114,7 +114,9 @@ var InitScreen = AbstractScreen.extend({
             TweenLite.to(this.audioOff.getContent(), 0.5, {delay:0.1,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
         }
 
-        TweenLite.to(this.fullscreenButton.getContent(), 0.5, {delay:0.3, y:windowHeight, ease:'easeOutBack'});
+        if(this.fullscreenButton){
+            TweenLite.to(this.fullscreenButton.getContent(), 0.5, {delay:0.3, y:windowHeight, ease:'easeOutBack'});
+        }
         TweenLite.to(this.moreGames.getContent(), 0.5, {delay:0.4, y:windowHeight, ease:'easeOutBack'});
         TweenLite.to(this.playButton.getContent(), 0.5, {delay:0.5, y:windowHeight, ease:'easeOutBack', onComplete:function(){
             if(callback){
@@ -132,8 +134,9 @@ var InitScreen = AbstractScreen.extend({
         if(this.audioOff){
             TweenLite.from(this.audioOff.getContent(), 0.5, {delay:0.1,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
         }
-
-        TweenLite.from(this.fullscreenButton.getContent(), 0.5, {delay:0.3, y:windowHeight, ease:'easeOutBack'});
+        if(this.fullscreenButton){
+            TweenLite.from(this.fullscreenButton.getContent(), 0.5, {delay:0.3, y:windowHeight, ease:'easeOutBack'});
+        }
         TweenLite.from(this.playButton.getContent(), 0.5, {delay:0.4, y:windowHeight, ease:'easeOutBack'});
         TweenLite.from(this.moreGames.getContent(), 0.5, {delay:0.5, y:windowHeight, ease:'easeOutBack', onComplete:function(){
             if(callback){
