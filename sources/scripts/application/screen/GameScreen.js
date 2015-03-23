@@ -181,18 +181,18 @@ var GameScreen = AbstractScreen.extend({
     toTween:function(callback){
         TweenLite.to(this.bg.getContent(), 0.5, {alpha:0});
 
-        TweenLite.to(this.pauseButton.getContent(), 0.5, {delay:0.1,y:-this.pauseButton.getContent().height, ease:'easeOutBack'});
-        TweenLite.to(this.backButton.getContent(), 0.5, {delay:0.2,y:windowHeight, ease:'easeOutBack', onComplete:function(){
+        TweenLite.to(this.pauseButton.getContent(), 0.5, {delay:0.3,y:-this.pauseButton.getContent().height, ease:'easeOutBack'});
+        TweenLite.to(this.backButton.getContent(), 0.5, {delay:0.1,y:windowHeight, ease:'easeOutBack', onComplete:function(){
             if(callback){
                 callback();
             }
         }});
        
         if(this.audioOn){
-            TweenLite.to(this.audioOn.getContent(), 0.5, {delay:0.1,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
+            TweenLite.to(this.audioOn.getContent(), 0.5, {delay:0.4,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
         }
         if(this.audioOff){
-            TweenLite.to(this.audioOff.getContent(), 0.5, {delay:0.1,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
+            TweenLite.to(this.audioOff.getContent(), 0.5, {delay:0.4,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
         }
     },
     fromTween:function(callback){
@@ -200,17 +200,17 @@ var GameScreen = AbstractScreen.extend({
 
         TweenLite.from(this.pauseButton.getContent(), 0.5, {delay:0.1,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
 
-        TweenLite.from(this.backButton.getContent(), 0.5, {delay:0.2,y:windowHeight, ease:'easeOutBack', onComplete:function(){
+        TweenLite.from(this.backButton.getContent(), 0.5, {delay:0.4,y:windowHeight, ease:'easeOutBack', onComplete:function(){
             if(callback){
                 callback();
             }
         }});
        
         if(this.audioOn){
-            TweenLite.from(this.audioOn.getContent(), 0.5, {delay:0.1,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
+            TweenLite.from(this.audioOn.getContent(), 0.5, {delay:0.3,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
         }
         if(this.audioOff){
-            TweenLite.from(this.audioOff.getContent(), 0.5, {delay:0.1,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
+            TweenLite.from(this.audioOff.getContent(), 0.5, {delay:0.3,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
         }
     },
     transitionIn:function()
