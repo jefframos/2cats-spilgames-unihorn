@@ -28,7 +28,7 @@ init:function()
 	},
 	change:function(screenLabel)
 	{
-		if(ScreenManager.debug)console.log("change to",screenLabel);
+		if(ScreenManager.debug)console.log(this.currentScreen.screenLabel,"change to",screenLabel);
 		//if(this.currentScreen.screenLabel != screenLabel)
 		{
 			for(var i = 0; i < this.childs.length; i++){

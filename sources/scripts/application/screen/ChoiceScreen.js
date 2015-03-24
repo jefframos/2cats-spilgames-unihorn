@@ -1,5 +1,5 @@
 /*jshint undef:false */
-var InitScreen = AbstractScreen.extend({
+var ChoiceScreen = AbstractScreen.extend({
     init: function (label) {
         this._super(label);
         this.isLoaded = false;
@@ -44,15 +44,15 @@ var InitScreen = AbstractScreen.extend({
         this.bg.getContent().position.x = windowWidth / 2 - this.bg.getContent().width / 2;
         this.bg.getContent().position.y = windowHeight / 2 - this.bg.getContent().height / 2;
 
-        this.logo = new SimpleSprite('logo.png');
-        this.container.addChild(this.logo.getContent());
-        scaleConverter(this.logo.getContent().width, windowWidth, 0.5, this.logo);
-        this.logo.getContent().position.x = windowWidth / 2 - this.logo.getContent().width / 2;
-        this.logo.getContent().position.y = windowHeight / 2 - this.logo.getContent().height / 2;
+        this.textScreen = new PIXI.Text('CHOICE SCREEN', {font:'50px Vagron', fill:'#FFFFFF'});
+        scaleConverter(this.textScreen.width, windowWidth, 0.5, this.textScreen);
+        this.textScreen.position.x = windowWidth / 2 - this.textScreen.width / 2;
+        this.textScreen.position.y = windowHeight / 2 - this.textScreen.height / 2;
+        this.container.addChild(this.textScreen);
 
         this.moreGames = new DefaultButton('UI_button_default_2.png', 'UI_button_default_2.png');
         this.moreGames.build();
-        this.moreGames.addLabel(new PIXI.Text('MORE GAMES', {font:'18px Vagron', fill:'#FFFFFF'}), 17, 12);
+        this.moreGames.addLabel(new PIXI.Text('BACK', {font:'18px Vagron', fill:'#FFFFFF'}), 52, 12);
         scaleConverter(this.moreGames.getContent().width, windowWidth, 0.35, this.moreGames);
         this.moreGames.setPosition(windowWidth / 2 - this.moreGames.getContent().width/2,
             windowHeight - this.moreGames.getContent().height *1.4);
@@ -60,9 +60,9 @@ var InitScreen = AbstractScreen.extend({
       
         this.moreGames.clickCallback = function(){
             self.updateable = false;
-            // self.toTween(function(){
-            //     self.screenManager.change('Game');
-            // });
+            self.toTween(function(){
+                self.screenManager.change('Init');
+            });
         };
 
 
@@ -77,7 +77,7 @@ var InitScreen = AbstractScreen.extend({
         this.playButton.clickCallback = function(){
             self.updateable = false;
             self.toTween(function(){
-                self.screenManager.change('Choice');
+                self.screenManager.change('Game');
             });
         };
 
@@ -103,7 +103,7 @@ var InitScreen = AbstractScreen.extend({
     },
     toTween:function(callback){
         TweenLite.to(this.bg.getContent(), 0.5, {delay:0.7, alpha:0, ease:'easeOutCubic'});
-        TweenLite.to(this.logo.getContent(), 0.5, {delay:0.1, alpha:0});
+        TweenLite.to(this.textScreen, 0.5, {delay:0.1, alpha:0});
 
        
         if(this.audioOn){
@@ -124,8 +124,9 @@ var InitScreen = AbstractScreen.extend({
         }});
     },
     fromTween:function(callback){
+        console.log('from');
         TweenLite.from(this.bg.getContent(), 0.5, {alpha:0, ease:'easeOutCubic'});
-        TweenLite.from(this.logo.getContent(), 0.5, {delay:0.1, alpha:0});
+        TweenLite.from(this.textScreen, 0.5, {delay:0.1, alpha:0});
        
         if(this.audioOn){
             TweenLite.from(this.audioOn.getContent(), 0.5, {delay:0.1,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
@@ -200,10 +201,9 @@ var InitScreen = AbstractScreen.extend({
     //     this.addChild(this.frontShape);
     //     this.build();
 
-    // },
+    // }, 
     // transitionOut:function(nextScreen, container)
     // {
-    //     console.log('out');
     //     // this._super();
     //     var self = this;
     //     if(this.frontShape){

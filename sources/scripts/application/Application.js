@@ -14,6 +14,7 @@ var Application = AbstractApplication.extend({
         this.mute = false;
 
         this.audioController = new AudioController();
+        
 	},
     update:function(){
         this._super();
@@ -46,18 +47,19 @@ var Application = AbstractApplication.extend({
     },
     build:function(){
         this._super();
+        this.cookieManager = new CookieManager();
+        this.gameModel = new AppModel();
         this.initApplication();
-    },
-    getGameModel:function(){
-        return this.gameModel;
     },
     initApplication:function(){
         this.initScreen = new InitScreen('Init');
+        this.choiceScreen = new ChoiceScreen('Choice');
         this.gameScreen = new GameScreen('Game');
         this.loadScreen = new LoadScreen('Loader');
         this.screenManager.addScreen(this.loadScreen);
-        this.screenManager.addScreen(this.gameScreen);
         this.screenManager.addScreen(this.initScreen);
+        this.screenManager.addScreen(this.choiceScreen);
+        this.screenManager.addScreen(this.gameScreen);
         this.screenManager.change('Loader');
     },
     show:function(){
@@ -67,38 +69,3 @@ var Application = AbstractApplication.extend({
     destroy:function(){
     }
 });
-
-
-//cookies
-// function setCookie(cname, cvalue, exdays) {
-//     var d = new Date();
-//     d.setTime(d.getTime() + (exdays*24*60*60*1000));
-//     var expires = "expires="+d.toUTCString();
-//     document.cookie = cname + "=" + cvalue + "; " + expires;
-// }
-
-// function getCookie(cname) {
-//     var name = cname + "=";
-//     var ca = document.cookie.split(';');
-//     for(var i=0; i<ca.length; i++) {
-//         var c = ca[i];
-//         while (c.charAt(0)==' ') c = c.substring(1);
-//         if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
-//     }
-//     return "";
-// }
-// function readCookie(name) {
-//     return (name = new RegExp('(?:^|;\\s*)' + ('' + name).replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') + '=([^;]*)').exec(document.cookie)) && name[1];
-// }
-
-// function checkCookie() {
-//     var user = getCookie("username");
-//     if (user != "") {
-//         alert("Welcome again " + user);
-//     } else {
-//         user = prompt("Please enter your name:", "");
-//         if (user != "" && user != null) {
-//             setCookie("username", user, 365);
-//         }
-//     }
-// }

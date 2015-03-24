@@ -1,4 +1,4 @@
-/*! jefframos 16-03-2015 */
+/*! jefframos 24-03-2015 */
 !function() {
     var cache = {}, ctx = null, usingWebAudio = !0, noAudio = !1;
     try {
@@ -7995,7 +7995,7 @@ var DefaultButton = Class.extend({
         this.change(this.lastScreenLabel);
     },
     change: function(screenLabel) {
-        ScreenManager.debug && console.log("change to", screenLabel);
+        ScreenManager.debug && console.log(this.currentScreen.screenLabel, "change to", screenLabel);
         for (var i = 0; i < this.childs.length; i++) this.childs[i].screenLabel == screenLabel && (this.nextScreen = this.childs[i], 
         this.currentScreen && this.currentScreen.getContent().parent ? (this.currentScreen.transitionOut(this.nextScreen, this.container), 
         this.container.addChild(this.nextScreen.getContent())) : (this.nextScreen.transitionIn(), 

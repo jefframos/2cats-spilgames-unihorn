@@ -1,4 +1,4 @@
-/*! jefframos 23-03-2015 */
+/*! jefframos 24-03-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -337,15 +337,14 @@ var Application = AbstractApplication.extend({
         }
     },
     build: function() {
-        this._super(), this.initApplication();
-    },
-    getGameModel: function() {
-        return this.gameModel;
+        this._super(), this.cookieManager = new CookieManager(), this.gameModel = new AppModel(), 
+        this.initApplication();
     },
     initApplication: function() {
-        this.initScreen = new InitScreen("Init"), this.gameScreen = new GameScreen("Game"), 
-        this.loadScreen = new LoadScreen("Loader"), this.screenManager.addScreen(this.loadScreen), 
-        this.screenManager.addScreen(this.gameScreen), this.screenManager.addScreen(this.initScreen), 
+        this.initScreen = new InitScreen("Init"), this.choiceScreen = new ChoiceScreen("Choice"), 
+        this.gameScreen = new GameScreen("Game"), this.loadScreen = new LoadScreen("Loader"), 
+        this.screenManager.addScreen(this.loadScreen), this.screenManager.addScreen(this.initScreen), 
+        this.screenManager.addScreen(this.choiceScreen), this.screenManager.addScreen(this.gameScreen), 
         this.screenManager.change("Loader");
     },
     show: function() {},
@@ -891,394 +890,13 @@ var Application = AbstractApplication.extend({
 }), AppModel = Class.extend({
     init: function() {
         this.currentPlayerModel = {}, console.log(APP);
-        var points = parseInt(APP.cookieManager.getCookie("totalPoints")), tempBirds = parseInt(APP.cookieManager.getCookie("totalBirds")), high = parseInt(APP.cookieManager.getCookie("highScore"));
-        this.highScore = high ? high : 0, this.totalPoints = points ? points : 0, this.totalBirds = tempBirds ? tempBirds : 1, 
-        this.currentPoints = 0, this.obstacleModels = [ new BirdModel({
-            source: "obstaculo1.png",
-            particles: [ "smoke.png", "smoke.png" ],
-            sizePercent: .1
-        }, {
-            target: null,
-            demage: .2,
-            vel: -3,
-            behaviour: new BirdBehaviourSinoid({
-                sinAcc: .2
-            })
-        }) ], this.playerModels = [ new PlayerModel({
-            label: "alcemar",
-            inGame: "alcemarGame.png",
-            bullet: "alcemarFire.png",
-            bulletRotation: !0,
-            bulletParticle: "partalcemar.png",
-            color: 11719780,
-            thumb: "thumb_alcemar",
-            coverSource: "dist/img/UI/covers/alcemarGrande.png",
-            labelSource: "Label_Alcemar.png",
-            specSource: "power_alcemar.png",
-            icoSpecSource: "especial_alcemar.png"
-        }, {
-            maxEnergy: 8600,
-            energyCoast: 1.5,
-            vel: .5,
-            bulletForce: 2.2,
-            bulletVel: 6,
-            bulletCoast: .08,
-            toSpec: 600,
-            bulletBehaviour: new GiantShootBehaviour({
-                vel: 2.5,
-                invencible: !0,
-                bulletForce: 60,
-                size: .8
-            })
-        }), new PlayerModel({
-            label: "piangers",
-            inGame: "piangersNGame.png",
-            bullet: "piangersFire.png",
-            bulletRotation: !0,
-            bulletParticle: "partpiangers1.png",
-            color: 7654879,
-            thumb: "thumb_piangers",
-            coverSource: "dist/img/UI/covers/piangersGrande.png",
-            labelSource: "Label_Piangers.png",
-            icoSpecSource: "especial_piangers.png"
-        }, {
-            maxEnergy: 7800,
-            energyCoast: 1.7,
-            vel: 2.5,
-            bulletForce: 1.3,
-            bulletCoast: .095,
-            bulletVel: 7,
-            toAble: 10,
-            toSpec: 450,
-            bulletBehaviour: new SequenceBehaviour({
-                angleOpen: 0,
-                totalFires: 40
-            })
-        }), new PlayerModel({
-            label: "potter",
-            inGame: "poterGame.png",
-            bullet: "potterFire.png",
-            bulletRotation: !0,
-            bulletParticle: "partpotter.png",
-            color: 16428876,
-            thumb: "thumb_poter",
-            coverSource: "dist/img/UI/covers/poterGrande.png",
-            labelSource: "Label_Potter.png",
-            icoSpecSource: "especial_potter.png"
-        }, {
-            energyCoast: 2,
-            vel: 1.5,
-            bulletForce: 1.5,
-            bulletCoast: .125,
-            bulletVel: 7,
-            toAble: 350,
-            toSpec: 700,
-            bulletBehaviour: new MultipleBehaviour({
-                vel: 3,
-                totalFires: 8,
-                bulletForce: 10,
-                size: .15,
-                angleOpen: .25
-            })
-        }), new PlayerModel({
-            label: "arthur",
-            inGame: "arthurGame.png",
-            bullet: "arthurFire.png",
-            bulletParticle: "partarthur.png",
-            color: 11764665,
-            thumb: "thumb_arthur",
-            coverSource: "dist/img/UI/covers/arthurGrande.png",
-            labelSource: "Label_Arthur.png",
-            icoSpecSource: "especial_arthur.png"
-        }, {
-            energyCoast: 2.3,
-            vel: 1.3,
-            bulletForce: 2.1,
-            bulletCoast: .15,
-            bulletVel: 5,
-            toAble: 800,
-            toSpec: 900,
-            bulletBehaviour: new SequenceBehaviour()
-        }), new PlayerModel({
-            label: "pora",
-            inGame: "poraGame.png",
-            bullet: "poraFire.png",
-            bulletRotation: !0,
-            bulletParticle: "partexplosao.png",
-            color: 16633351,
-            thumb: "thumb_pora",
-            coverSource: "dist/img/UI/covers/poraGrande.png",
-            labelSource: "Label_Pora.png",
-            icoSpecSource: "especial_pora.png"
-        }, {
-            maxEnergy: 6300,
-            energyCoast: 2.6,
-            vel: 1.5,
-            bulletForce: 1.3,
-            bulletCoast: .12,
-            bulletVel: 5,
-            toAble: 1200,
-            toSpec: 1e3,
-            bulletBehaviour: new MultipleBehaviour({
-                vel: 3.5,
-                invencible: !0,
-                totalFires: 5,
-                bulletForce: 5,
-                size: .5
-            })
-        }), new PlayerModel({
-            label: "jeiso",
-            inGame: "jesoGame.png",
-            bullet: "jeisoFire.png",
-            bulletParticle: "partjeiso.png",
-            color: 8963136,
-            thumb: "thumb_jeiso",
-            coverSource: "dist/img/UI/covers/jeisoGrande.png",
-            labelSource: "Label_Jeiso.png",
-            icoSpecSource: "especial_jeiso.png"
-        }, {
-            maxEnergy: 8200,
-            energyCoast: 1.6,
-            vel: 3,
-            bulletForce: 1,
-            bulletCoast: .05,
-            bulletVel: 8,
-            toAble: 2500,
-            toSpec: 300,
-            bulletBehaviour: new HomingBehaviour({
-                invencible: !0,
-                bulletForce: 99,
-                vel: 4
-            })
-        }), new PlayerModel({
-            label: "pi",
-            inGame: "piGame.png",
-            bullet: "piFire.png",
-            bulletRotation: !0,
-            bulletParticle: "partpi.png",
-            color: 9399727,
-            thumb: "thumb_pi",
-            coverSource: "dist/img/UI/covers/piGrande.png",
-            labelSource: "Label_MrPi.png",
-            icoSpecSource: "especial_mr_pi.png"
-        }, {
-            maxEnergy: 6500,
-            energyCoast: 3,
-            vel: .8,
-            bulletForce: 1.2,
-            bulletCoast: .11,
-            bulletVel: 4,
-            toAble: 4e3,
-            toSpec: 3e3,
-            bulletBehaviour: new AkumaBehaviour()
-        }), new PlayerModel({
-            label: "fetter",
-            inGame: "feterGame.png",
-            bullet: "feterFire.png",
-            bulletParticle: "partexplosao.png",
-            color: 15614755,
-            thumb: "thumb_feter",
-            coverSource: "dist/img/UI/covers/feterGrande.png",
-            labelSource: "Label_Fetter.png",
-            icoSpecSource: "especial_fetter.png"
-        }, {
-            energyCoast: 2.2,
-            vel: 1.5,
-            bulletForce: 3,
-            bulletVel: 6,
-            bulletCoast: .15,
-            toAble: 5e3,
-            toSpec: 1200,
-            bulletBehaviour: new RainBehaviour()
-        }), new PlayerModel({
-            label: "neto",
-            inGame: "netoGame.png",
-            bullet: "netoFire.png",
-            bulletParticle: "partneto.png",
-            color: 11772272,
-            thumb: "thumb_neto",
-            coverSource: "dist/img/UI/covers/netoGrande.png",
-            labelSource: "Label_Neto.png",
-            icoSpecSource: "especial_neto.png"
-        }, {
-            maxEnergy: 5800,
-            energyCoast: 2.5,
-            vel: 2,
-            bulletForce: 3,
-            bulletCoast: .15,
-            bulletVel: 5,
-            toAble: 8e3,
-            toSpec: 1600,
-            bulletBehaviour: new SequenceBehaviour({
-                angleOpen: 0,
-                totalFires: 25,
-                sinoid: !0,
-                vel: 2
-            })
-        }), new PlayerModel({
-            label: "rodaika",
-            inGame: "rodaikaGame.png",
-            bullet: "rodaikaFire.png",
-            bulletParticle: "partrodaika2.png",
-            color: 15893674,
-            thumb: "thumb_rodaika",
-            coverSource: "dist/img/UI/covers/rodaikaGrande.png",
-            labelSource: "Label_Rodaika.png",
-            specSource: "power_rodaika.png",
-            icoSpecSource: "especial_rodaika.png"
-        }, {
-            maxEnergy: 6e3,
-            energyCoast: 3,
-            vel: 2,
-            bulletForce: 1,
-            bulletCoast: .13,
-            bulletVel: 5,
-            toAble: 15e3,
-            toSpec: 1300,
-            bulletBehaviour: new RandomBehaviour()
-        }) ], this.birdModels = [ new BirdModel({
-            source: [ "caralinhoAnima0001.png", "caralinhoAnima0002.png", "caralinhoAnima0003.png", "caralinhoAnima0002.png" ],
-            particles: [ "cabeca2.png", "penas2.png" ],
-            egg: "ovo_belga.png",
-            cover: "caralinho.png",
-            sizePercent: .1,
-            label: "CARALINHO DA TERRA"
-        }, {
-            target: null,
-            hp: 1,
-            demage: .2,
-            vel: -3.5,
-            behaviour: new BirdBehaviourDefault(),
-            toNext: 22,
-            money: 1
-        }), new BirdModel({
-            source: [ "belgaAnima0001.png", "belgaAnima0002.png", "belgaAnima0003.png", "belgaAnima0002.png" ],
-            particles: [ "cabeca5.png", "penas5.png" ],
-            egg: "ovo_belga.png",
-            cover: "belga.png",
-            sizePercent: .15,
-            label: "CARALHO BELGA"
-        }, {
-            target: null,
-            hp: 3,
-            demage: .2,
-            vel: -1.5,
-            behaviour: new BirdBehaviourSinoid({
-                sinAcc: .05
-            }),
-            toNext: 110,
-            money: 3
-        }), new BirdModel({
-            source: [ "lambecuAnima0001.png", "lambecuAnima0002.png", "lambecuAnima0003.png", "lambecuAnima0004.png" ],
-            particles: [ "cabeca4.png", "penas4.png" ],
-            egg: "ovo_lambecu.png",
-            cover: "lambecu.png",
-            sizePercent: .15,
-            label: "LAMBECU FRANCÊS"
-        }, {
-            target: null,
-            hp: 6,
-            demage: .2,
-            vel: -1.5,
-            behaviour: new BirdBehaviourSinoid({
-                sinAcc: .05,
-                velY: -3
-            }),
-            toNext: 150,
-            money: 4
-        }), new BirdModel({
-            source: [ "roxoAnima0001.png", "roxoAnima0002.png", "roxoAnima0003.png", "roxoAnima0004.png" ],
-            particles: [ "cabeca6.png", "penas6.png" ],
-            egg: "ovo_papacu.png",
-            cover: "roxo.png",
-            sizePercent: .2,
-            label: "PAPACU DE CABEÇA ROXA"
-        }, {
-            target: null,
-            hp: 12,
-            demage: .2,
-            vel: -2,
-            behaviour: new BirdBehaviourDiag({
-                accX: 0
-            }),
-            toNext: 150,
-            money: 6
-        }), new BirdModel({
-            source: [ "papodebagoAnima0001.png", "papodebagoAnima0002.png", "papodebagoAnima0003.png", "papodebagoAnima0004.png" ],
-            particles: [ "cabeca7.png", "penas7.png" ],
-            egg: "ovo_galo.png",
-            cover: "papodebago.png",
-            sizePercent: .15,
-            label: "GALINHO PAPO DE BAGO"
-        }, {
-            target: null,
-            hp: 4,
-            demage: .2,
-            vel: -3,
-            behaviour: new BirdBehaviourDiag({
-                accX: -.01
-            }),
-            toNext: 80,
-            money: 8
-        }), new BirdModel({
-            source: [ "nocututinhaAnima0001.png", "nocututinhaAnima0002.png", "nocututinhaAnima0003.png", "nocututinhaAnima0004.png" ],
-            particles: [ "cabeca3.png", "penas3.png" ],
-            egg: "ovo_nocu.png",
-            cover: "nocu.png",
-            sizePercent: .25,
-            label: "NOCUTUTINHA"
-        }, {
-            target: null,
-            hp: 12,
-            demage: .2,
-            vel: -2,
-            behaviour: new BirdBehaviourSinoid2({
-                sinAcc: .08,
-                velY: -8
-            }),
-            toNext: 250,
-            money: 15
-        }), new BirdModel({
-            source: [ "calopsudaAnima0001.png", "calopsudaAnima0002.png", "calopsudaAnima0003.png", "calopsudaAnima0004.png" ],
-            particles: [ "cabeca8.png", "penas8.png" ],
-            egg: "ovo_calopsuda.png",
-            cover: "calopsuda.png",
-            sizePercent: .28,
-            label: "CALOPSUDA"
-        }, {
-            target: null,
-            hp: 40,
-            demage: .2,
-            vel: -.8,
-            behaviour: new BirdBehaviourSinoid2({
-                sinAcc: .05,
-                velY: -6
-            }),
-            toNext: 180,
-            money: 25
-        }), new BirdModel({
-            source: [ "nigerianoAnima0001.png", "nigerianoAnima0002.png", "nigerianoAnima0003.png", "nigerianoAnima0004.png" ],
-            particles: [ "cabeca1.png", "penas1.png" ],
-            egg: "ovo_nigeriano.png",
-            cover: "nigeriano.png",
-            sizePercent: .3,
-            label: "PIÇUDÃO AZUL NIGERIANO"
-        }, {
-            target: null,
-            hp: 50,
-            demage: .2,
-            vel: -.5,
-            behaviour: new BirdBehaviourSinoid2({
-                sinAcc: .08,
-                velY: -2
-            }),
-            toNext: 450,
-            money: 50
-        }) ], this.setModel(0), this.totalPlayers = 0;
+        var points = parseInt(APP.cookieManager.getCookie("totalPoints")), high = parseInt(APP.cookieManager.getCookie("highScore"));
+        this.highScore = high ? high : 0, this.totalPoints = points ? points : 0, this.currentPoints = 0, 
+        this.playerModels = [], this.enemiesModels = [], this.setModel(0), this.totalPlayers = 0;
         for (var i = this.playerModels.length - 1; i >= 0; i--) this.playerModels[i].toAble <= this.totalPoints && (this.playerModels[i].able = !0, 
         this.totalPlayers++);
         this.birdProbs = [ 0, 1, 0, 0, 0, 2, 0, 0, 0, 1, 2, 3, 0, 0, 2, 0, 3, 4, 4, 4, 4, 4, 0, 5, 5, 5, 5, 5, 0, 6, 6, 6, 6, 0, 7, 7, 7, 7, 4, 5, 6, 7 ], 
-        this.currentHorde = 0, this.killedBirds = [];
+        this.currentHorde = 0;
     },
     setModel: function(id) {
         this.currentID = id, this.currentPlayerModel = this.playerModels[id];
@@ -1297,7 +915,7 @@ var Application = AbstractApplication.extend({
         var id = Math.floor(this.obstacleModels.length * Math.random()), obs = new Obstacle(this.obstacleModels[id], screen);
         return obs;
     },
-    getNewBird: function(player, screen) {
+    getNewEnemy: function(player, screen) {
         this.currentHorde++;
         var max = this.birdProbs.length;
         this.currentHorde < max && (max = this.currentHorde);
@@ -1390,6 +1008,146 @@ var Application = AbstractApplication.extend({
     build: function() {},
     destroy: function() {},
     serialize: function() {}
+}), ChoiceScreen = AbstractScreen.extend({
+    init: function(label) {
+        this._super(label), this.isLoaded = !1, APP.labelDebug.visible = !1;
+    },
+    destroy: function() {
+        this._super();
+    },
+    build: function() {
+        this._super();
+        var assetsToLoader = [ "dist/img/atlas.json" ];
+        this.loader = new PIXI.AssetLoader(assetsToLoader), assetsToLoader.length > 0 ? this.initLoad() : this.onAssetsLoaded(), 
+        this.updateable = !0;
+    },
+    update: function() {
+        !this.updateable;
+    },
+    onProgress: function() {
+        this._super();
+    },
+    onAssetsLoaded: function() {
+        this.initApplication();
+    },
+    initApplication: function() {
+        var self = this;
+        this.bg = new SimpleSprite("bg1.jpg"), this.container.addChild(this.bg.getContent()), 
+        scaleConverter(this.bg.getContent().width, windowWidth, 1.2, this.bg), this.bg.getContent().position.x = windowWidth / 2 - this.bg.getContent().width / 2, 
+        this.bg.getContent().position.y = windowHeight / 2 - this.bg.getContent().height / 2, 
+        this.textScreen = new PIXI.Text("CHOICE SCREEN", {
+            font: "50px Vagron",
+            fill: "#FFFFFF"
+        }), scaleConverter(this.textScreen.width, windowWidth, .5, this.textScreen), this.textScreen.position.x = windowWidth / 2 - this.textScreen.width / 2, 
+        this.textScreen.position.y = windowHeight / 2 - this.textScreen.height / 2, this.container.addChild(this.textScreen), 
+        this.moreGames = new DefaultButton("UI_button_default_2.png", "UI_button_default_2.png"), 
+        this.moreGames.build(), this.moreGames.addLabel(new PIXI.Text("BACK", {
+            font: "18px Vagron",
+            fill: "#FFFFFF"
+        }), 52, 12), scaleConverter(this.moreGames.getContent().width, windowWidth, .35, this.moreGames), 
+        this.moreGames.setPosition(windowWidth / 2 - this.moreGames.getContent().width / 2, windowHeight - 1.4 * this.moreGames.getContent().height), 
+        this.addChild(this.moreGames), this.moreGames.clickCallback = function() {
+            self.updateable = !1, self.toTween(function() {
+                self.screenManager.change("Init");
+            });
+        }, this.playButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
+        this.playButton.build(), this.playButton.addLabel(new PIXI.Text("PLAY", {
+            font: "50px Vagron",
+            fill: "#FFFFFF"
+        }), 45, 2), scaleConverter(this.playButton.getContent().width, windowWidth, .4, this.playButton), 
+        this.playButton.setPosition(windowWidth / 2 - this.playButton.getContent().width / 2, windowHeight - 2.5 * this.playButton.getContent().height), 
+        this.addChild(this.playButton), this.playButton.clickCallback = function() {
+            self.updateable = !1, self.toTween(function() {
+                self.screenManager.change("Game");
+            });
+        }, possibleFullscreen() && !isfull && (this.fullscreenButton = new DefaultButton("fullscreen.png", "fullscreen.png"), 
+        this.fullscreenButton.build(), scaleConverter(this.fullscreenButton.getContent().width, windowWidth, .1, this.fullscreenButton), 
+        this.fullscreenButton.setPosition(windowWidth - this.fullscreenButton.getContent().width - 20, windowHeight - this.fullscreenButton.getContent().height - 20), 
+        this.addChild(this.fullscreenButton), this.fullscreenButton.clickCallback = function() {
+            fullscreen(), self.fullscreenButton.getContent().alpha = 0;
+        }), this.setAudioButtons(), this.fromTween();
+    },
+    toTween: function(callback) {
+        TweenLite.to(this.bg.getContent(), .5, {
+            delay: .7,
+            alpha: 0,
+            ease: "easeOutCubic"
+        }), TweenLite.to(this.textScreen, .5, {
+            delay: .1,
+            alpha: 0
+        }), this.audioOn && TweenLite.to(this.audioOn.getContent(), .5, {
+            delay: .1,
+            y: -this.audioOn.getContent().height,
+            ease: "easeOutBack"
+        }), this.audioOff && TweenLite.to(this.audioOff.getContent(), .5, {
+            delay: .1,
+            y: -this.audioOn.getContent().height,
+            ease: "easeOutBack"
+        }), this.fullscreenButton && TweenLite.to(this.fullscreenButton.getContent(), .5, {
+            delay: .3,
+            y: windowHeight,
+            ease: "easeOutBack"
+        }), TweenLite.to(this.moreGames.getContent(), .5, {
+            delay: .4,
+            y: windowHeight,
+            ease: "easeOutBack"
+        }), TweenLite.to(this.playButton.getContent(), .5, {
+            delay: .5,
+            y: windowHeight,
+            ease: "easeOutBack",
+            onComplete: function() {
+                callback && callback();
+            }
+        });
+    },
+    fromTween: function(callback) {
+        console.log("from"), TweenLite.from(this.bg.getContent(), .5, {
+            alpha: 0,
+            ease: "easeOutCubic"
+        }), TweenLite.from(this.textScreen, .5, {
+            delay: .1,
+            alpha: 0
+        }), this.audioOn && TweenLite.from(this.audioOn.getContent(), .5, {
+            delay: .1,
+            y: -this.audioOn.getContent().height,
+            ease: "easeOutBack"
+        }), this.audioOff && TweenLite.from(this.audioOff.getContent(), .5, {
+            delay: .1,
+            y: -this.audioOn.getContent().height,
+            ease: "easeOutBack"
+        }), this.fullscreenButton && TweenLite.from(this.fullscreenButton.getContent(), .5, {
+            delay: .3,
+            y: windowHeight,
+            ease: "easeOutBack"
+        }), TweenLite.from(this.playButton.getContent(), .5, {
+            delay: .4,
+            y: windowHeight,
+            ease: "easeOutBack"
+        }), TweenLite.from(this.moreGames.getContent(), .5, {
+            delay: .5,
+            y: windowHeight,
+            ease: "easeOutBack",
+            onComplete: function() {
+                callback && callback();
+            }
+        });
+    },
+    setAudioButtons: function() {
+        var self = this;
+        APP.mute = !0, Howler.mute(), this.audioOn = new DefaultButton("volumeButton_on.png", "volumeButton_on_over.png"), 
+        this.audioOn.build(), scaleConverter(this.audioOn.width, windowWidth, .15, this.audioOn), 
+        this.audioOn.setPosition(windowWidth - this.audioOn.getContent().width - 20, 20), 
+        this.audioOff = new DefaultButton("volumeButton_off.png", "volumeButton_off_over.png"), 
+        this.audioOff.build(), scaleConverter(this.audioOff.width, windowWidth, .15, this.audioOff), 
+        this.audioOff.setPosition(windowWidth - this.audioOn.getContent().width - 20, 20), 
+        this.addChild(APP.mute ? this.audioOff : this.audioOn), this.audioOn.clickCallback = function() {
+            APP.mute = !0, Howler.mute(), self.audioOn.getContent().parent && self.audioOn.getContent().parent.removeChild(self.audioOn.getContent()), 
+            self.audioOff.getContent() && self.addChild(self.audioOff);
+        }, this.audioOff.clickCallback = function() {
+            APP.mute = !1, Howler.unmute(), self.audioOff.getContent().parent && self.audioOff.getContent().parent.removeChild(self.audioOff.getContent()), 
+            self.audioOn.getContent() && self.addChild(self.audioOn);
+        };
+    }
 }), GameScreen = AbstractScreen.extend({
     init: function(label) {
         this._super(label), this.isLoaded = !1, APP.labelDebug.visible = !1, this.pinDefaultVelocity = 3;
@@ -1536,8 +1294,8 @@ var Application = AbstractApplication.extend({
     build: function() {
         this._super();
         var assetsToLoader = [ "dist/img/atlas.json" ];
-        this.loader = new PIXI.AssetLoader(assetsToLoader), assetsToLoader.length > 0 ? (console.log(this.initLoad), 
-        this.initLoad()) : this.onAssetsLoaded(), this.updateable = !0;
+        this.loader = new PIXI.AssetLoader(assetsToLoader), assetsToLoader.length > 0 ? this.initLoad() : this.onAssetsLoaded(), 
+        this.updateable = !0;
     },
     update: function() {
         !this.updateable;
@@ -1563,9 +1321,7 @@ var Application = AbstractApplication.extend({
         }), 17, 12), scaleConverter(this.moreGames.getContent().width, windowWidth, .35, this.moreGames), 
         this.moreGames.setPosition(windowWidth / 2 - this.moreGames.getContent().width / 2, windowHeight - 1.4 * this.moreGames.getContent().height), 
         this.addChild(this.moreGames), this.moreGames.clickCallback = function() {
-            self.updateable = !1, self.toTween(function() {
-                self.screenManager.change("Game");
-            });
+            self.updateable = !1;
         }, this.playButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
         this.playButton.build(), this.playButton.addLabel(new PIXI.Text("PLAY", {
             font: "50px Vagron",
@@ -1574,7 +1330,7 @@ var Application = AbstractApplication.extend({
         this.playButton.setPosition(windowWidth / 2 - this.playButton.getContent().width / 2, windowHeight - 2.5 * this.playButton.getContent().height), 
         this.addChild(this.playButton), this.playButton.clickCallback = function() {
             self.updateable = !1, self.toTween(function() {
-                self.screenManager.change("Game");
+                self.screenManager.change("Choice");
             });
         }, possibleFullscreen() && !isfull && (this.fullscreenButton = new DefaultButton("fullscreen.png", "fullscreen.png"), 
         this.fullscreenButton.build(), scaleConverter(this.fullscreenButton.getContent().width, windowWidth, .1, this.fullscreenButton), 
@@ -1586,7 +1342,8 @@ var Application = AbstractApplication.extend({
     toTween: function(callback) {
         TweenLite.to(this.bg.getContent(), .5, {
             delay: .7,
-            alpha: 0
+            alpha: 0,
+            ease: "easeOutCubic"
         }), TweenLite.to(this.logo.getContent(), .5, {
             delay: .1,
             alpha: 0
@@ -1617,7 +1374,8 @@ var Application = AbstractApplication.extend({
     },
     fromTween: function(callback) {
         TweenLite.from(this.bg.getContent(), .5, {
-            alpha: 0
+            alpha: 0,
+            ease: "easeOutCubic"
         }), TweenLite.from(this.logo.getContent(), .5, {
             delay: .1,
             alpha: 0
@@ -1661,21 +1419,6 @@ var Application = AbstractApplication.extend({
             APP.mute = !1, Howler.unmute(), self.audioOff.getContent().parent && self.audioOff.getContent().parent.removeChild(self.audioOff.getContent()), 
             self.audioOn.getContent() && self.addChild(self.audioOn);
         };
-    },
-    transitionIn: function() {
-        console.log("init"), this.frontShape = new PIXI.Graphics(), this.frontShape.beginFill(2892633), 
-        this.frontShape.drawRect(0, 0, windowWidth, windowHeight), this.addChild(this.frontShape), 
-        this.build();
-    },
-    transitionOut: function(nextScreen, container) {
-        var self = this;
-        this.frontShape ? (this.frontShape.parent.setChildIndex(this.frontShape, this.frontShape.parent.children.length - 1), 
-        TweenLite.to(this.frontShape, .3, {
-            alpha: 1,
-            onComplete: function() {
-                self.destroy(), container.removeChild(self.getContent()), nextScreen.transitionIn();
-            }
-        })) : (self.destroy(), container.removeChild(self.getContent()), nextScreen.transitionIn());
     }
 }), LoadScreen = AbstractScreen.extend({
     init: function(label) {
