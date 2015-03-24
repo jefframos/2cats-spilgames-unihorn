@@ -123,11 +123,13 @@ var GameScreen = AbstractScreen.extend({
 
         this.pauseModal = new PauseModal(this);
 
-        GameAPI.GameBreak.request(function(){
-            self.pauseModal.show();
-        }, function(){
-            self.pauseModal.hide();
-        });
+        if(APP.withAPI){
+            GameAPI.GameBreak.request(function(){
+                self.pauseModal.show();
+            }, function(){
+                self.pauseModal.hide();
+            });
+        }
     },
     reset:function(){
     },

@@ -50,21 +50,26 @@ var InitScreen = AbstractScreen.extend({
         this.logo.getContent().position.x = windowWidth / 2 - this.logo.getContent().width / 2;
         this.logo.getContent().position.y = windowHeight / 2 - this.logo.getContent().height / 2;
 
-        this.moreGames = new DefaultButton('UI_button_default_2.png', 'UI_button_default_2.png');
-        this.moreGames.build();
-        this.moreGames.addLabel(new PIXI.Text('MORE GAMES', {font:'18px Vagron', fill:'#FFFFFF'}), 17, 12);
-        scaleConverter(this.moreGames.getContent().width, windowWidth, 0.35, this.moreGames);
-        this.moreGames.setPosition(windowWidth / 2 - this.moreGames.getContent().width/2,
-            windowHeight - this.moreGames.getContent().height *1.4);
-        this.addChild(this.moreGames);
-      
-        this.moreGames.clickCallback = function(){
-            self.updateable = false;
-            APP.buttonProperties.action();
-            // self.toTween(function(){
-            //     self.screenManager.change('Game');
-            // });
-        };
+
+        if(APP.withAPI){
+            this.moreGames = new DefaultButton('UI_button_default_2.png', 'UI_button_default_2.png');
+            this.moreGames.build();
+            this.moreGames.addLabel(new PIXI.Text('MORE GAMES', {font:'18px Vagron', fill:'#FFFFFF'}), 17, 12);
+            scaleConverter(this.moreGames.getContent().width, windowWidth, 0.35, this.moreGames);
+            this.moreGames.setPosition(windowWidth / 2 - this.moreGames.getContent().width/2,
+                windowHeight - this.moreGames.getContent().height *1.4);
+            this.addChild(this.moreGames);
+          
+            this.moreGames.clickCallback = function(){
+                self.updateable = false;
+                if(APP.withAPI){
+                    APP.buttonProperties.action();
+                }
+                // self.toTween(function(){
+                //     self.screenManager.change('Game');
+                // });
+            };
+        }
 
 
         this.playButton = new DefaultButton('UI_button_default_1.png', 'UI_button_default_1.png');
@@ -117,7 +122,9 @@ var InitScreen = AbstractScreen.extend({
         if(this.fullscreenButton){
             TweenLite.to(this.fullscreenButton.getContent(), 0.5, {delay:0.3, y:windowHeight, ease:'easeOutBack'});
         }
-        TweenLite.to(this.moreGames.getContent(), 0.5, {delay:0.4, y:windowHeight, ease:'easeOutBack'});
+        if(this.moreGames){
+            TweenLite.to(this.moreGames.getContent(), 0.5, {delay:0.4, y:windowHeight, ease:'easeOutBack'});
+        }
         TweenLite.to(this.playButton.getContent(), 0.5, {delay:0.5, y:windowHeight, ease:'easeOutBack', onComplete:function(){
             if(callback){
                 callback();
@@ -137,12 +144,14 @@ var InitScreen = AbstractScreen.extend({
         if(this.fullscreenButton){
             TweenLite.from(this.fullscreenButton.getContent(), 0.5, {delay:0.3, y:windowHeight, ease:'easeOutBack'});
         }
-        TweenLite.from(this.playButton.getContent(), 0.5, {delay:0.4, y:windowHeight, ease:'easeOutBack'});
-        TweenLite.from(this.moreGames.getContent(), 0.5, {delay:0.5, y:windowHeight, ease:'easeOutBack', onComplete:function(){
+        TweenLite.from(this.playButton.getContent(), 0.5, {delay:0.4, y:windowHeight, ease:'easeOutBack', onComplete:function(){
             if(callback){
                 callback();
             }
         }});
+        if(this.moreGames){
+            TweenLite.from(this.moreGames.getContent(), 0.5, {delay:0.5, y:windowHeight, ease:'easeOutBack'});
+        }
     },
     setAudioButtons:function(){
         var self = this;

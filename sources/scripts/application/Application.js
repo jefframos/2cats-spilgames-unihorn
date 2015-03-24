@@ -6,7 +6,7 @@ var Application = AbstractApplication.extend({
         this.stage.setBackgroundColor(0x2c2359);
         this.stage.removeChild(this.loadText);
 
-        this.labelDebug = new PIXI.Text('Debug', {font:'15px Arial'});
+        this.labelDebug = new PIXI.Text('', {font:'15px Arial'});
         this.stage.addChild(this.labelDebug);
         this.labelDebug.position.y = windowHeight - 20;
         this.labelDebug.position.x = 20;
@@ -14,13 +14,15 @@ var Application = AbstractApplication.extend({
         this.mute = false;
 
         this.audioController = new AudioController();
+
+        this.withAPI = false;
         
 	},
     update:function(){
         this._super();
-        if(this.apiLogo && this.apiLogo.getContent().height > 1 && this.apiLogo.getContent().position.x === 0){
+        if(this.withAPI && this.apiLogo && this.apiLogo.getContent().height > 1 && this.apiLogo.getContent().position.x === 0){
             this.apiLogo.getContent().position.y = windowHeight - this.apiLogo.getContent().height;
-            this.apiLogo.getContent().position.x = 20;
+            // this.apiLogo.getContent().position.x = 20;
         }
         if(!this.screenManager)  {
             return;
@@ -35,6 +37,9 @@ var Application = AbstractApplication.extend({
         
     },
     apiLoaded:function(apiInstance){
+        if(!this.withAPI){
+            return;
+        }
         this.apiInstance = apiInstance;
 
 
@@ -76,10 +81,11 @@ var Application = AbstractApplication.extend({
         this._super();
         this.cookieManager = new CookieManager();
         this.gameModel = new AppModel();
-        // this.initApplication();
+        if(!this.withAPI){
+            this.initApplication();
+        }
     },
     initApplication:function(){
-        console.log(this);
         this.initScreen = new InitScreen('Init');
         this.choiceScreen = new ChoiceScreen('Choice');
         this.gameScreen = new GameScreen('Game');

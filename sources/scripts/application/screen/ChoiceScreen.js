@@ -102,9 +102,8 @@ var ChoiceScreen = AbstractScreen.extend({
         this.fromTween();
     },
     toTween:function(callback){
-        TweenLite.to(this.bg.getContent(), 0.5, {delay:0.7, alpha:0, ease:'easeOutCubic'});
+        TweenLite.to(this.bg.getContent(), 0.5, {alpha:0, ease:'easeOutCubic'});
         TweenLite.to(this.textScreen, 0.5, {delay:0.1, alpha:0});
-
        
         if(this.audioOn){
             TweenLite.to(this.audioOn.getContent(), 0.5, {delay:0.1,y:-this.audioOn.getContent().height, ease:'easeOutBack'});

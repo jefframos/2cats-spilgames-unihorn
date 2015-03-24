@@ -320,25 +320,28 @@ SmartSocket.SOCKET_ERROR = "socketError";
 var Application = AbstractApplication.extend({
     init: function() {
         this._super(windowWidth, windowHeight), this.stage.setBackgroundColor(2892633), 
-        this.stage.removeChild(this.loadText), this.labelDebug = new PIXI.Text("Debug", {
+        this.stage.removeChild(this.loadText), this.labelDebug = new PIXI.Text("", {
             font: "15px Arial"
         }), this.stage.addChild(this.labelDebug), this.labelDebug.position.y = windowHeight - 20, 
-        this.labelDebug.position.x = 20, this.mute = !1, this.audioController = new AudioController();
+        this.labelDebug.position.x = 20, this.mute = !1, this.audioController = new AudioController(), 
+        this.withAPI = !1;
     },
     update: function() {
-        this._super(), this.apiLogo && this.apiLogo.getContent().height > 1 && 0 === this.apiLogo.getContent().position.x && (this.apiLogo.getContent().position.y = windowHeight - this.apiLogo.getContent().height, 
-        this.apiLogo.getContent().position.x = 20), this.screenManager && !this.screenManager.currentScreen;
+        this._super(), this.withAPI && this.apiLogo && this.apiLogo.getContent().height > 1 && 0 === this.apiLogo.getContent().position.x && (this.apiLogo.getContent().position.y = windowHeight - this.apiLogo.getContent().height), 
+        this.screenManager && !this.screenManager.currentScreen;
     },
     apiLoaded: function(apiInstance) {
-        this.apiInstance = apiInstance;
-        var logoData = apiInstance.Branding.getLogo();
-        this.apiLogo = new DefaultButton(logoData.image, logoData.image), this.apiLogo.build(), 
-        this.apiLogo.clickCallback = function() {
-            logoData.action();
-        }, this.stage.addChild(this.apiLogo.getContent()), this.buttonProperties = apiInstance.Branding.getLink("more_games"), 
-        this.apiInstance.Branding.displaySplashScreen(function() {
-            APP.initApplication();
-        });
+        if (this.withAPI) {
+            this.apiInstance = apiInstance;
+            var logoData = apiInstance.Branding.getLogo();
+            this.apiLogo = new DefaultButton(logoData.image, logoData.image), this.apiLogo.build(), 
+            this.apiLogo.clickCallback = function() {
+                logoData.action();
+            }, this.stage.addChild(this.apiLogo.getContent()), this.buttonProperties = apiInstance.Branding.getLink("more_games"), 
+            this.apiInstance.Branding.displaySplashScreen(function() {
+                APP.initApplication();
+            });
+        }
     },
     recursiveCounter: function(obj) {
         var j = 0;
@@ -349,10 +352,11 @@ var Application = AbstractApplication.extend({
         }
     },
     build: function() {
-        this._super(), this.cookieManager = new CookieManager(), this.gameModel = new AppModel();
+        this._super(), this.cookieManager = new CookieManager(), this.gameModel = new AppModel(), 
+        this.withAPI || this.initApplication();
     },
     initApplication: function() {
-        console.log(this), this.initScreen = new InitScreen("Init"), this.choiceScreen = new ChoiceScreen("Choice"), 
+        this.initScreen = new InitScreen("Init"), this.choiceScreen = new ChoiceScreen("Choice"), 
         this.gameScreen = new GameScreen("Game"), this.loadScreen = new LoadScreen("Loader"), 
         this.screenManager.addScreen(this.loadScreen), this.screenManager.addScreen(this.initScreen), 
         this.screenManager.addScreen(this.choiceScreen), this.screenManager.addScreen(this.gameScreen), 
@@ -1080,7 +1084,6 @@ var Application = AbstractApplication.extend({
     },
     toTween: function(callback) {
         TweenLite.to(this.bg.getContent(), .5, {
-            delay: .7,
             alpha: 0,
             ease: "easeOutCubic"
         }), TweenLite.to(this.textScreen, .5, {
@@ -1211,7 +1214,7 @@ var Application = AbstractApplication.extend({
                 self.screenManager.change("Init");
             });
         }, this.setAudioButtons(), this.fromTween(), this.pauseModal = new PauseModal(this), 
-        GameAPI.GameBreak.request(function() {
+        APP.withAPI && GameAPI.GameBreak.request(function() {
             self.pauseModal.show();
         }, function() {
             self.pauseModal.hide();
@@ -1330,15 +1333,15 @@ var Application = AbstractApplication.extend({
         this.logo = new SimpleSprite("logo.png"), this.container.addChild(this.logo.getContent()), 
         scaleConverter(this.logo.getContent().width, windowWidth, .5, this.logo), this.logo.getContent().position.x = windowWidth / 2 - this.logo.getContent().width / 2, 
         this.logo.getContent().position.y = windowHeight / 2 - this.logo.getContent().height / 2, 
-        this.moreGames = new DefaultButton("UI_button_default_2.png", "UI_button_default_2.png"), 
+        APP.withAPI && (this.moreGames = new DefaultButton("UI_button_default_2.png", "UI_button_default_2.png"), 
         this.moreGames.build(), this.moreGames.addLabel(new PIXI.Text("MORE GAMES", {
             font: "18px Vagron",
             fill: "#FFFFFF"
         }), 17, 12), scaleConverter(this.moreGames.getContent().width, windowWidth, .35, this.moreGames), 
         this.moreGames.setPosition(windowWidth / 2 - this.moreGames.getContent().width / 2, windowHeight - 1.4 * this.moreGames.getContent().height), 
         this.addChild(this.moreGames), this.moreGames.clickCallback = function() {
-            self.updateable = !1, APP.buttonProperties.action();
-        }, this.playButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
+            self.updateable = !1, APP.withAPI && APP.buttonProperties.action();
+        }), this.playButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
         this.playButton.build(), this.playButton.addLabel(new PIXI.Text("PLAY", {
             font: "50px Vagron",
             fill: "#FFFFFF"
@@ -1375,7 +1378,7 @@ var Application = AbstractApplication.extend({
             delay: .3,
             y: windowHeight,
             ease: "easeOutBack"
-        }), TweenLite.to(this.moreGames.getContent(), .5, {
+        }), this.moreGames && TweenLite.to(this.moreGames.getContent(), .5, {
             delay: .4,
             y: windowHeight,
             ease: "easeOutBack"
@@ -1410,14 +1413,14 @@ var Application = AbstractApplication.extend({
         }), TweenLite.from(this.playButton.getContent(), .5, {
             delay: .4,
             y: windowHeight,
-            ease: "easeOutBack"
-        }), TweenLite.from(this.moreGames.getContent(), .5, {
-            delay: .5,
-            y: windowHeight,
             ease: "easeOutBack",
             onComplete: function() {
                 callback && callback();
             }
+        }), this.moreGames && TweenLite.from(this.moreGames.getContent(), .5, {
+            delay: .5,
+            y: windowHeight,
+            ease: "easeOutBack"
         });
     },
     setAudioButtons: function() {
