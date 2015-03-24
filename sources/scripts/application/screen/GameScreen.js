@@ -57,9 +57,6 @@ var GameScreen = AbstractScreen.extend({
         this.hitTouch.hitArea = new PIXI.Rectangle(0, 0, windowWidth, windowHeight);
         this.hornPos = {x:windowWidth / 2, y:windowHeight/1.2};
         function updateVel(touchData){
-            //self.hornPos = {x:windowWidth / 2, y:windowHeight/1.5};//  - self.mazeContainer.position.y  - self.pin.getContent().height};
-
-            // var angle = Math.atan2(self.hornPos.y - touchData.global.y, self.hornPos.x - touchData.global.x);
             var angle = Math.atan2(touchData.global.y - self.hornPos.y, touchData.global.x - self.hornPos.x);
             
             // angle = angle * 180 / Math.PI;
@@ -67,9 +64,6 @@ var GameScreen = AbstractScreen.extend({
             // angle = angle / 180 * Math.PI;
 
             self.shoot(angle);
-            console.log('(shoot)');
-            // self.pinVel.x = self.pinDefaultVelocity * Math.sin(angle);
-            // self.pinVel.y = self.pinDefaultVelocity * -Math.cos(angle);
         }
         // this.hitTouch.touchmove = function(touchData){
         //     updateVel(touchData);
@@ -119,7 +113,9 @@ var GameScreen = AbstractScreen.extend({
         
         this.fromTween();
 
+        //MODAIS
         this.pauseModal = new PauseModal(this);
+        this.endModal = new EndModal(this);
 
         if(APP.withAPI){
             GameAPI.GameBreak.request(function(){

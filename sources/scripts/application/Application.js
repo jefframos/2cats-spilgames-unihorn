@@ -23,8 +23,9 @@ var Application = AbstractApplication.extend({
     update:function(){
         this._super();
         if(this.withAPI && this.apiLogo && this.apiLogo.getContent().height > 1 && this.apiLogo.getContent().position.x === 0){
-            this.apiLogo.getContent().position.y = windowHeight - this.apiLogo.getContent().height;
-            // this.apiLogo.getContent().position.x = 20;
+            // this.apiLogo.getContent().position.y = windowHeight - this.apiLogo.getContent().height;
+            scaleConverter(this.apiLogo.getContent().width, windowWidth, 0.5, this.apiLogo);
+            this.apiLogo.getContent().position.x = windowWidth / 2 - this.apiLogo.getContent().width / 2;
         }
         if(!this.screenManager)  {
             return;
