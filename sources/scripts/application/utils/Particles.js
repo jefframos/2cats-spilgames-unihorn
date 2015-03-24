@@ -49,7 +49,7 @@ var Particles = Entity.extend({
         }
         this.getContent().rotation = this.rotation;
         // TweenLite.to(this.sprite, 0.5, {alpha:1});
-        console.log(this.sprite.scale.x, this.maxScale);
+        // console.log(this.sprite.scale.x, this.maxScale);
     },
     update: function(){
         this._super();

@@ -89,7 +89,6 @@ var Bullet = Entity.extend({
         }
 
         if(!this.collideArea.contains(this.getPosition().x, this.getPosition().y)){
-            console.log('MATA');
             this.kill = true;
         }
         // this.collideArea = new PIXI.Graphics();

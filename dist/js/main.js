@@ -704,8 +704,7 @@ var Application = AbstractApplication.extend({
             this.velocity.y = -Math.cos(angle) * this.defaultVelocity;
         } else this.homingStart--;
         this.sinoid && (this.velocity.y = 5 * Math.sin(this.sin) * this.velocity.x, this.sin += .2, 
-        this.getContent().rotation = 0), this.collideArea.contains(this.getPosition().x, this.getPosition().y) || (console.log("MATA"), 
-        this.kill = !0);
+        this.getContent().rotation = 0), this.collideArea.contains(this.getPosition().x, this.getPosition().y) || (this.kill = !0);
     },
     updateableParticles: function() {
         if (this.particlesCounter--, this.particlesCounter <= 0) {
@@ -1519,7 +1518,7 @@ var Application = AbstractApplication.extend({
     },
     initApplication: function() {
         this.isLoaded = !0;
-        this.screenManager.change("Game");
+        this.screenManager.change("Init");
     },
     transitionIn: function() {
         return this.isLoaded ? void this.build() : void this.build();
@@ -1998,8 +1997,7 @@ var Application = AbstractApplication.extend({
         this.updateable = !0, this.sprite = this.imgSource instanceof PIXI.Text ? this.imgSource : new PIXI.Sprite.fromFrame(this.imgSource), 
         this.sprite.anchor.x = .5, this.sprite.anchor.y = .5, this.sprite.alpha = 1, this.sprite.scale.x = this.maxScale * this.maxInitScale, 
         this.sprite.scale.y = this.maxScale * this.maxInitScale, -1 === this.growType && (this.sprite.scale.x = this.maxScale, 
-        this.sprite.scale.y = this.maxScale), this.getContent().rotation = this.rotation, 
-        console.log(this.sprite.scale.x, this.maxScale);
+        this.sprite.scale.y = this.maxScale), this.getContent().rotation = this.rotation;
     },
     update: function() {
         this._super(), 0 !== this.gravity && (this.velocity.y += this.gravity), this.timeLive--, 
