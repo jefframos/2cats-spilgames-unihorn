@@ -1248,12 +1248,14 @@ var Application = AbstractApplication.extend({
         this.layer = new Layer(), this.layer.build("EntityLayer"), this.layerManager.addLayer(this.layer);
     },
     shoot: function(angle) {
-        var timeLive = 100, vel = 10, bullet = new Bullet({
-            x: Math.cos(angle) * vel,
-            y: Math.sin(angle) * vel
-        }, timeLive, 5, null, !0);
-        bullet.build(), scaleConverter(bullet.getContent().height, windowHeight, .06, bullet), 
-        bullet.startScaleTween(), bullet.setPosition(this.hornPos.x, this.hornPos.y), this.layer.addChild(bullet);
+        if (!this.blockPause) {
+            var timeLive = 100, vel = 10, bullet = new Bullet({
+                x: Math.cos(angle) * vel,
+                y: Math.sin(angle) * vel
+            }, timeLive, 5, null, !0);
+            bullet.build(), scaleConverter(bullet.getContent().height, windowHeight, .06, bullet), 
+            bullet.startScaleTween(), bullet.setPosition(this.hornPos.x, this.hornPos.y), this.layer.addChild(bullet);
+        }
     },
     reset: function() {
         this.destroy(), this.build();
@@ -1835,17 +1837,17 @@ var Application = AbstractApplication.extend({
     },
     hide: function(callback) {
         var self = this;
-        this.screen.blockPause = !1, TweenLite.to(this.bg, .5, {
+        this.screen.blockPause = !1, this.screen.updateable = !0, TweenLite.to(this.bg, .5, {
+            delay: .1,
             alpha: 0,
             onComplete: function() {
-                callback && callback(), self.container.parent && self.container.parent.removeChild(self.container);
+                self.container.parent && self.container.parent.removeChild(self.container), callback && callback(), 
+                self.kill = !0;
             }
-        }), TweenLite.to(this.boxContainer.position, 1, {
+        }), TweenLite.to(this.boxContainer.position, .5, {
             y: -this.boxContainer.height,
             ease: "easeInBack"
         }), TweenLite.to(this.boxContainer, .5, {
-            alpha: 0
-        }), TweenLite.to(this.bg, .5, {
             alpha: 0
         });
     },

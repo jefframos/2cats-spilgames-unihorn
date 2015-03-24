@@ -140,6 +140,9 @@ var GameScreen = AbstractScreen.extend({
         this.layerManager.addLayer(this.layer);
     },
     shoot:function(angle) {
+        if(this.blockPause){
+            return;
+        }
         var timeLive = 100;
 
         var vel = 10;

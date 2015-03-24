@@ -56,7 +56,7 @@ var PauseModal = Class.extend({
 
 		scaleConverter(this.boxContainer.width, windowWidth, 0.8, this.boxContainer);
 	},
-	show:function(points){
+	show:function(){
 		this.screen.addChild(this);
 		this.screen.blockPause = true;
 		this.boxContainer.visible = true;
@@ -70,25 +70,23 @@ var PauseModal = Class.extend({
 
 		TweenLite.from(this.bg, 0.5, {alpha:0});
 		TweenLite.from(this.boxContainer, 0.5, {y:-this.boxContainer.height});
-		// TweenLite.to(this.boxContainer.position, 1, {y:windowHeight / 2 - this.boxContainer.height / 2 - this.continueButton.getContent().position.y, ease:'easeOutBack'});
-		// TweenLite.to(this.boxContainer, 0.5, {alpha:1});
-		// TweenLite.to(this.container, 0.5, {alpha:1});
 	},
 	hide:function(callback){
 		var self = this;
 		this.screen.blockPause = false;
-
-		TweenLite.to(this.bg, 0.5, {alpha:0, onComplete:function(){
-			if(callback){
-				callback();
-			}
+		this.screen.updateable = true;
+		TweenLite.to(this.bg, 0.5, {delay:0.1, alpha:0, onComplete:function(){
 			if(self.container.parent){
 				self.container.parent.removeChild(self.container);
 			}
+			if(callback){
+				callback();
+			}
+			self.kill = true;
 		}});
-		TweenLite.to(this.boxContainer.position, 1, {y:-this.boxContainer.height, ease:'easeInBack'});
+		TweenLite.to(this.boxContainer.position, 0.5, {y:-this.boxContainer.height, ease:'easeInBack'});
 		TweenLite.to(this.boxContainer, 0.5, {alpha:0});
-		TweenLite.to(this.bg, 0.5, {alpha:0});
+		// TweenLite.to(this.bg, 0.5, {alpha:0});
 	},
 	getContent:function(){
 		return this.container;
