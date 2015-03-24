@@ -324,7 +324,7 @@ var Application = AbstractApplication.extend({
             font: "15px Arial"
         }), this.stage.addChild(this.labelDebug), this.labelDebug.position.y = windowHeight - 20, 
         this.labelDebug.position.x = 20, this.mute = !1, this.audioController = new AudioController(), 
-        this.withAPI = !1;
+        this.withAPI = !0, "#withoutAPI" === window.location.hash && (this.withAPI = !1);
     },
     update: function() {
         this._super(), this.withAPI && this.apiLogo && this.apiLogo.getContent().height > 1 && 0 === this.apiLogo.getContent().position.x && (this.apiLogo.getContent().position.y = windowHeight - this.apiLogo.getContent().height), 

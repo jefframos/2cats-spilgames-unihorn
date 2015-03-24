@@ -15,8 +15,10 @@ var Application = AbstractApplication.extend({
 
         this.audioController = new AudioController();
 
-        this.withAPI = false;
-        
+        this.withAPI = true;
+        if(window.location.hash === '#withoutAPI'){
+            this.withAPI = false;
+        }
 	},
     update:function(){
         this._super();
