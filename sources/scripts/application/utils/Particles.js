@@ -25,6 +25,9 @@ var Particles = Entity.extend({
         if(rotation){
             this.rotation = rotation;
         }
+        this.maxScale = 1;
+        this.growType = 1;
+        this.maxInitScale = 0.2;
 
     },
     build: function(){
@@ -38,10 +41,15 @@ var Particles = Entity.extend({
         this.sprite.anchor.x = 0.5;
         this.sprite.anchor.y = 0.5;
         this.sprite.alpha = 1;
-        this.sprite.scale.x = 0.2;
-        this.sprite.scale.y = 0.2;
+        this.sprite.scale.x = this.maxScale * this.maxInitScale;
+        this.sprite.scale.y = this.maxScale * this.maxInitScale;
+        if(this.growType === -1){
+            this.sprite.scale.x = this.maxScale;
+            this.sprite.scale.y = this.maxScale;
+        }
         this.getContent().rotation = this.rotation;
         // TweenLite.to(this.sprite, 0.5, {alpha:1});
+        console.log(this.sprite.scale.x, this.maxScale);
     },
     update: function(){
         this._super();
@@ -63,8 +71,10 @@ var Particles = Entity.extend({
                 this.preKill();
             }
         }
-
-        if(this.sprite.scale.x >= 1){
+        if(this.sprite.scale.x < 0){
+            this.preKill();
+        }
+        if(this.sprite.scale.x > this.maxScale){
             return;
         }
         this.sprite.scale.x += this.scaledecress;

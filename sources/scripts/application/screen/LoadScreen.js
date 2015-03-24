@@ -3,7 +3,6 @@ var LoadScreen = AbstractScreen.extend({
     init: function (label) {
         this._super(label);
         this.isLoaded = false;
-        APP.labelDebug.visible = false;
         // alert(this.isLoaded);
     },
     destroy: function () {
@@ -52,7 +51,7 @@ var LoadScreen = AbstractScreen.extend({
     initApplication:function(){
         this.isLoaded = true;
         var self = this;
-        this.screenManager.change('Init');
+        this.screenManager.change('Game');
     },
     transitionIn:function()
     {

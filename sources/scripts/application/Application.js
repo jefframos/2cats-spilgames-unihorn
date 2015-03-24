@@ -30,9 +30,9 @@ var Application = AbstractApplication.extend({
         if(!this.screenManager.currentScreen){
             return;
         }
-        // this.childsCounter = 1;
-        // this.recursiveCounter(this.screenManager.currentScreen);
-        // this.objCounter.setText(this.childsCounter);
+        this.childsCounter = 1;
+        this.recursiveCounter(this.screenManager.currentScreen);
+        this.labelDebug.setText(this.childsCounter);
         // Retrieves the logo from Spil
         
     },

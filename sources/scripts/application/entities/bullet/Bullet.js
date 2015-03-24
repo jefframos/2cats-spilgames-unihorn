@@ -1,6 +1,6 @@
 /*jshint undef:false */
 var Bullet = Entity.extend({
-    init:function(vel, timeLive, power, bulletSource, particle, rotation){
+    init:function(vel, timeLive, power, particle, rotation){
         this._super( true );
         this.updateable = false;
         this.deading = false;
@@ -18,13 +18,16 @@ var Bullet = Entity.extend({
         this.defaultVelocity = 1;
         // this.defaultVelocity.y = vel.y;
         //console.log(bulletSource);
-        this.imgSource = bulletSource;
-        this.particleSource = particle;
+        this.imgSource = 'bullet.png';
+        this.particleSource = particle?particle:this.imgSource;
         this.isRotation = rotation;
         if(this.isRotation){
             this.accumRot = Math.random() * 0.1 - 0.05;
         }
         this.sin = 0;
+    },
+    startScaleTween: function(){
+        TweenLite.from(this.getContent().scale, 0.3, {x:0, y:0, ease:'easeOutBack'});
     },
     build: function(){
 
@@ -38,12 +41,18 @@ var Bullet = Entity.extend({
 
         this.getContent().alpha = 0.5;
         TweenLite.to(this.getContent(), 0.3, {alpha:1});
-
+        
         this.birdsCollided = [];
+
+        this.particlesCounterMax = (Math.abs(this.velocity.x) + Math.abs(this.velocity.y)) / 3;
+        this.particlesCounter = this.particlesCounterMax *2;
+
+        this.collideArea = new PIXI.Rectangle(-50, -50, windowWidth + 100, windowHeight + 100);
     },
     update: function(){
         this._super();
         this.layer.collideChilds(this);
+        this.updateableParticles();
         if(!this.targetEntity || (this.targetEntity && this.targetEntity.kill)){
             this.timeLive --;
         }
@@ -79,8 +88,9 @@ var Bullet = Entity.extend({
             this.getContent().rotation = 0;
         }
 
-        if(this.collideArea){
-            return;
+        if(!this.collideArea.contains(this.getPosition().x, this.getPosition().y)){
+            console.log('MATA');
+            this.kill = true;
         }
         // this.collideArea = new PIXI.Graphics();
         // this.collideArea.lineStyle(1,0x665544);
@@ -89,6 +99,38 @@ var Bullet = Entity.extend({
         // if(this.fall){
         //     this.velocity.y -= 0.1;
         // }
+    },
+    updateableParticles:function(){
+        this.particlesCounter --;
+        if(this.particlesCounter <= 0)
+        {
+            this.particlesCounter = this.particlesCounterMax;
+
+            //efeito 1
+            // var particle = new Particles({x: 0, y:0}, 120, this.particleSource, Math.random() * 0.05);
+            // particle.maxScale = this.getContent().scale.x;
+            // particle.growType = -1;
+            // particle.build();
+            // particle.gravity = 0.1;
+            // particle.alphadecress = 0.08;
+            // particle.scaledecress = -0.08;
+            // particle.setPosition(this.getPosition().x - (Math.random() + this.getContent().width * 0.1) / 2,
+            //     this.getPosition().y);
+            // this.layer.addChild(particle);
+
+            //efeito 2
+            var particle = new Particles({x: Math.random() * 4 - 2, y:Math.random()}, 120, this.particleSource, Math.random() * 0.05);
+            particle.maxScale = this.getContent().scale.x;
+            particle.maxInitScale = 0.4;
+            // particle.growType = -1;
+            particle.build();
+            particle.gravity = 0.1 * Math.random() + 0.2;
+            particle.alphadecress = 0.05;
+            particle.scaledecress = 0.03;
+            particle.setPosition(this.getPosition().x - (Math.random() + this.getContent().width * 0.1) / 2,
+                this.getPosition().y);
+            this.layer.addChild(particle);
+        }
     },
     setHoming:function(entity, timetostart, angle){
         this.homingStart = timetostart;

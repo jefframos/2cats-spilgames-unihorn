@@ -328,7 +328,8 @@ var Application = AbstractApplication.extend({
     },
     update: function() {
         this._super(), this.withAPI && this.apiLogo && this.apiLogo.getContent().height > 1 && 0 === this.apiLogo.getContent().position.x && (this.apiLogo.getContent().position.y = windowHeight - this.apiLogo.getContent().height), 
-        this.screenManager && !this.screenManager.currentScreen;
+        this.screenManager && this.screenManager.currentScreen && (this.childsCounter = 1, 
+        this.recursiveCounter(this.screenManager.currentScreen), this.labelDebug.setText(this.childsCounter));
     },
     apiLoaded: function(apiInstance) {
         if (this.withAPI) {
@@ -668,23 +669,31 @@ var Application = AbstractApplication.extend({
     destroy: function() {},
     serialize: function() {}
 }), Bullet = Entity.extend({
-    init: function(vel, timeLive, power, bulletSource, particle, rotation) {
+    init: function(vel, timeLive, power, particle, rotation) {
         this._super(!0), this.updateable = !1, this.deading = !1, this.range = 80, this.width = 1, 
         this.height = 1, this.type = "bullet", this.target = "enemy", this.fireType = "physical", 
         this.node = null, this.velocity.x = vel.x, this.velocity.y = vel.y, this.timeLive = timeLive, 
-        this.power = power, this.defaultVelocity = 1, this.imgSource = bulletSource, this.particleSource = particle, 
+        this.power = power, this.defaultVelocity = 1, this.imgSource = "bullet.png", this.particleSource = particle ? particle : this.imgSource, 
         this.isRotation = rotation, this.isRotation && (this.accumRot = .1 * Math.random() - .05), 
         this.sin = 0;
+    },
+    startScaleTween: function() {
+        TweenLite.from(this.getContent().scale, .3, {
+            x: 0,
+            y: 0,
+            ease: "easeOutBack"
+        });
     },
     build: function() {
         this.sprite = new PIXI.Sprite.fromFrame(this.imgSource), this.sprite.anchor.x = .5, 
         this.sprite.anchor.y = .5, this.updateable = !0, this.collidable = !0, this.getContent().alpha = .5, 
         TweenLite.to(this.getContent(), .3, {
             alpha: 1
-        }), this.birdsCollided = [];
+        }), this.birdsCollided = [], this.particlesCounterMax = (Math.abs(this.velocity.x) + Math.abs(this.velocity.y)) / 3, 
+        this.particlesCounter = 2 * this.particlesCounterMax, this.collideArea = new PIXI.Rectangle(-50, -50, windowWidth + 100, windowHeight + 100);
     },
     update: function() {
-        if (this._super(), this.layer.collideChilds(this), (!this.targetEntity || this.targetEntity && this.targetEntity.kill) && this.timeLive--, 
+        if (this._super(), this.layer.collideChilds(this), this.updateableParticles(), (!this.targetEntity || this.targetEntity && this.targetEntity.kill) && this.timeLive--, 
         (this.timeLive <= 0 || this.getPosition() > windowWidth + 20) && (this.kill = !0), 
         this.range = this.sprite.height / 2, this.isRotation && (this.sprite.rotation += this.accumRot), 
         this.targetEntity && !this.targetEntity.kill) if (this.homingStart <= 0) {
@@ -695,7 +704,21 @@ var Application = AbstractApplication.extend({
             this.velocity.y = -Math.cos(angle) * this.defaultVelocity;
         } else this.homingStart--;
         this.sinoid && (this.velocity.y = 5 * Math.sin(this.sin) * this.velocity.x, this.sin += .2, 
-        this.getContent().rotation = 0), this.collideArea;
+        this.getContent().rotation = 0), this.collideArea.contains(this.getPosition().x, this.getPosition().y) || (console.log("MATA"), 
+        this.kill = !0);
+    },
+    updateableParticles: function() {
+        if (this.particlesCounter--, this.particlesCounter <= 0) {
+            this.particlesCounter = this.particlesCounterMax;
+            var particle = new Particles({
+                x: 4 * Math.random() - 2,
+                y: Math.random()
+            }, 120, this.particleSource, .05 * Math.random());
+            particle.maxScale = this.getContent().scale.x, particle.maxInitScale = .4, particle.build(), 
+            particle.gravity = .1 * Math.random() + .2, particle.alphadecress = .05, particle.scaledecress = .03, 
+            particle.setPosition(this.getPosition().x - (Math.random() + .1 * this.getContent().width) / 2, this.getPosition().y), 
+            this.layer.addChild(particle);
+        }
     },
     setHoming: function(entity, timetostart, angle) {
         this.homingStart = timetostart, this.targetEntity = entity, this.getContent().rotation = angle;
@@ -1025,7 +1048,7 @@ var Application = AbstractApplication.extend({
     serialize: function() {}
 }), ChoiceScreen = AbstractScreen.extend({
     init: function(label) {
-        this._super(label), this.isLoaded = !1, APP.labelDebug.visible = !1;
+        this._super(label), this.isLoaded = !1;
     },
     destroy: function() {
         this._super();
@@ -1164,7 +1187,7 @@ var Application = AbstractApplication.extend({
     }
 }), GameScreen = AbstractScreen.extend({
     init: function(label) {
-        this._super(label), this.isLoaded = !1, APP.labelDebug.visible = !1, this.pinDefaultVelocity = 3;
+        this._super(label), this.isLoaded = !1, this.pinDefaultVelocity = 3;
     },
     destroy: function() {
         this._super();
@@ -1185,7 +1208,10 @@ var Application = AbstractApplication.extend({
         this.initApplication();
     },
     initApplication: function() {
-        function updateVel() {}
+        function updateVel(touchData) {
+            var angle = Math.atan2(touchData.global.y - self.hornPos.y, touchData.global.x - self.hornPos.x);
+            self.shoot(angle), console.log("(shoot)");
+        }
         var self = this;
         this.bg = new SimpleSprite("bg1.jpg"), this.addChild(this.bg.getContent()), scaleConverter(this.bg.getContent().width, windowWidth, 1.2, this.bg), 
         this.bg.getContent().position.x = windowWidth / 2 - this.bg.getContent().width / 2, 
@@ -1193,12 +1219,13 @@ var Application = AbstractApplication.extend({
         this.renderLevel(), this.hitTouch = new PIXI.Graphics(), this.hitTouch.interactive = !0, 
         this.hitTouch.beginFill(0), this.hitTouch.drawRect(0, 0, windowWidth, windowHeight), 
         this.addChild(this.hitTouch), this.hitTouch.alpha = 0, this.hitTouch.hitArea = new PIXI.Rectangle(0, 0, windowWidth, windowHeight), 
-        this.hitTouch.touchmove = function(touchData) {
-            updateVel(touchData);
+        this.hornPos = {
+            x: windowWidth / 2,
+            y: windowHeight / 1.2
+        }, this.hitTouch.mouseup = function(mouseData) {
+            updateVel(mouseData);
         }, this.hitTouch.touchstart = function(touchData) {
             updateVel(touchData);
-        }, this.hitTouch.touchend = function() {
-            self.pinVel.x = 0, self.pinVel.y = 0, self.pin.setOut(), self.pinOver = !1;
         }, this.updateable = !0, this.pauseButton = new DefaultButton("UI_button_pause_1.png", "UI_button_pause_1_over.png", "UI_button_pause_1_over.png"), 
         this.pauseButton.build(), scaleConverter(this.pauseButton.getContent().width, windowWidth, .1, this.pauseButton), 
         this.pauseButton.setPosition(20, 20), this.addChild(this.pauseButton), this.pauseButton.clickCallback = function() {
@@ -1218,11 +1245,22 @@ var Application = AbstractApplication.extend({
             self.pauseModal.show();
         }, function() {
             self.pauseModal.hide();
-        });
+        }), this.layerManager = new LayerManager(), this.layerManager.build("Main"), this.addChild(this.layerManager), 
+        this.layer = new Layer(), this.layer.build("EntityLayer"), this.layerManager.addLayer(this.layer);
     },
-    reset: function() {},
+    shoot: function(angle) {
+        var timeLive = 100, vel = 10, bullet = new Bullet({
+            x: Math.cos(angle) * vel,
+            y: Math.sin(angle) * vel
+        }, timeLive, 5, null, !0);
+        bullet.build(), scaleConverter(bullet.getContent().height, windowHeight, .06, bullet), 
+        bullet.startScaleTween(), bullet.setPosition(this.hornPos.x, this.hornPos.y), this.layer.addChild(bullet);
+    },
+    reset: function() {
+        this.destroy(), this.build();
+    },
     update: function() {
-        !this.updateable;
+        this.updateable && this._super();
     },
     renderLevel: function() {},
     setAudioButtons: function() {
@@ -1305,7 +1343,7 @@ var Application = AbstractApplication.extend({
     }
 }), InitScreen = AbstractScreen.extend({
     init: function(label) {
-        this._super(label), this.isLoaded = !1, APP.labelDebug.visible = !1;
+        this._super(label), this.isLoaded = !1;
     },
     destroy: function() {
         this._super();
@@ -1441,7 +1479,7 @@ var Application = AbstractApplication.extend({
     }
 }), LoadScreen = AbstractScreen.extend({
     init: function(label) {
-        this._super(label), this.isLoaded = !1, APP.labelDebug.visible = !1;
+        this._super(label), this.isLoaded = !1;
     },
     destroy: function() {
         this._super();
@@ -1481,7 +1519,7 @@ var Application = AbstractApplication.extend({
     },
     initApplication: function() {
         this.isLoaded = !0;
-        this.screenManager.change("Init");
+        this.screenManager.change("Game");
     },
     transitionIn: function() {
         return this.isLoaded ? void this.build() : void this.build();
@@ -1953,18 +1991,22 @@ var Application = AbstractApplication.extend({
         this.width = 1, this.height = 1, this.type = "fire", this.target = "enemy", this.fireType = "physical", 
         this.node = null, this.velocity.x = vel.x, this.velocity.y = vel.y, this.timeLive = timeLive, 
         this.power = 1, this.defaultVelocity = 1, this.imgSource = source, this.alphadecress = .03, 
-        this.scaledecress = .03, this.gravity = 0, rotation && (this.rotation = rotation);
+        this.scaledecress = .03, this.gravity = 0, rotation && (this.rotation = rotation), 
+        this.maxScale = 1, this.growType = 1, this.maxInitScale = .2;
     },
     build: function() {
         this.updateable = !0, this.sprite = this.imgSource instanceof PIXI.Text ? this.imgSource : new PIXI.Sprite.fromFrame(this.imgSource), 
-        this.sprite.anchor.x = .5, this.sprite.anchor.y = .5, this.sprite.alpha = 1, this.sprite.scale.x = .2, 
-        this.sprite.scale.y = .2, this.getContent().rotation = this.rotation;
+        this.sprite.anchor.x = .5, this.sprite.anchor.y = .5, this.sprite.alpha = 1, this.sprite.scale.x = this.maxScale * this.maxInitScale, 
+        this.sprite.scale.y = this.maxScale * this.maxInitScale, -1 === this.growType && (this.sprite.scale.x = this.maxScale, 
+        this.sprite.scale.y = this.maxScale), this.getContent().rotation = this.rotation, 
+        console.log(this.sprite.scale.x, this.maxScale);
     },
     update: function() {
         this._super(), 0 !== this.gravity && (this.velocity.y += this.gravity), this.timeLive--, 
         this.timeLive <= 0 && this.preKill(), this.range = this.width, this.rotation && (this.getContent().rotation += this.rotation), 
         this.sprite.alpha > 0 && (this.sprite.alpha -= this.alphadecress, this.sprite.alpha <= 0 && this.preKill()), 
-        this.sprite.scale.x >= 1 || (this.sprite.scale.x += this.scaledecress, this.sprite.scale.y += this.scaledecress);
+        this.sprite.scale.x < 0 && this.preKill(), this.sprite.scale.x > this.maxScale || (this.sprite.scale.x += this.scaledecress, 
+        this.sprite.scale.y += this.scaledecress);
     },
     preKill: function() {
         this.sprite.alpha = 0, this.updateable = !0, this.kill = !0;

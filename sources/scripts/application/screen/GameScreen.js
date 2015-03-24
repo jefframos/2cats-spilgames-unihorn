@@ -3,7 +3,6 @@ var GameScreen = AbstractScreen.extend({
     init: function (label) {
         this._super(label);
         this.isLoaded = false;
-        APP.labelDebug.visible = false;
         this.pinDefaultVelocity = 3;
     },
     destroy: function () {
@@ -56,32 +55,36 @@ var GameScreen = AbstractScreen.extend({
         this.addChild(this.hitTouch);
         this.hitTouch.alpha = 0;
         this.hitTouch.hitArea = new PIXI.Rectangle(0, 0, windowWidth, windowHeight);
-
+        this.hornPos = {x:windowWidth / 2, y:windowHeight/1.2};
         function updateVel(touchData){
-            // self.pinOver = true;
-            // self.pinPos = {x:(touchData.global.x - self.mazeContainer.position.x) / self.mazeContainer.scale.x,// - self.mazeContainer.position.x - self.pin.getContent().width,
-            //     y: (touchData.global.y - self.mazeContainer.position.y - self.pin.getContent().height * 0.5) / self.mazeContainer.scale.y };//  - self.mazeContainer.position.y  - self.pin.getContent().height};
+            //self.hornPos = {x:windowWidth / 2, y:windowHeight/1.5};//  - self.mazeContainer.position.y  - self.pin.getContent().height};
 
-            // var angle = Math.atan2(self.pinPos.y - self.pin.getContent().position.y, self.pinPos.x - self.pin.getContent().position.x);
+            // var angle = Math.atan2(self.hornPos.y - touchData.global.y, self.hornPos.x - touchData.global.x);
+            var angle = Math.atan2(touchData.global.y - self.hornPos.y, touchData.global.x - self.hornPos.x);
+            
             // angle = angle * 180 / Math.PI;
             // angle += 90;
             // angle = angle / 180 * Math.PI;
+
+            self.shoot(angle);
+            console.log('(shoot)');
             // self.pinVel.x = self.pinDefaultVelocity * Math.sin(angle);
             // self.pinVel.y = self.pinDefaultVelocity * -Math.cos(angle);
         }
-        this.hitTouch.touchmove = function(touchData){
-            updateVel(touchData);
+        // this.hitTouch.touchmove = function(touchData){
+        //     updateVel(touchData);
+        // };
+
+        this.hitTouch.mouseup = function(mouseData){
+            updateVel(mouseData);
         };
 
         this.hitTouch.touchstart = function(touchData){
             updateVel(touchData);
         };
-        this.hitTouch.touchend = function(touchData){
-            self.pinVel.x = 0;
-            self.pinVel.y = 0;
-            self.pin.setOut();
-            self.pinOver = false;
-        };
+        // this.hitTouch.touchend = function(touchData){
+        //     updateVel(touchData);
+        // };
 
         this.updateable = true;
 
@@ -94,10 +97,6 @@ var GameScreen = AbstractScreen.extend({
         this.addChild(this.pauseButton);
       
         this.pauseButton.clickCallback = function(){
-            // self.updateable = false;
-            // self.toTween(function(){
-            //     self.screenManager.change('Game');
-            // });
             self.pauseModal.show();
         };
 
@@ -117,7 +116,6 @@ var GameScreen = AbstractScreen.extend({
         };
 
         this.setAudioButtons();
-
         
         this.fromTween();
 
@@ -130,13 +128,41 @@ var GameScreen = AbstractScreen.extend({
                 self.pauseModal.hide();
             });
         }
+
+        this.layerManager = new LayerManager();
+        this.layerManager.build('Main');
+
+        this.addChild(this.layerManager);
+
+        //adiciona uma camada
+        this.layer = new Layer();
+        this.layer.build('EntityLayer');
+        this.layerManager.addLayer(this.layer);
+    },
+    shoot:function(angle) {
+        var timeLive = 100;
+
+        var vel = 10;
+
+        var bullet = new Bullet({x:Math.cos(angle) * vel,
+            y:Math.sin(angle) * vel},
+            timeLive, 5, null, true);
+        bullet.build();
+        scaleConverter(bullet.getContent().height,windowHeight, 0.06, bullet);
+        bullet.startScaleTween();
+        //UTILIZAR O ANGULO PARA CALCULAR A POSIÇÃO CORRETA DO TIRO
+        bullet.setPosition(this.hornPos.x, this.hornPos.y);
+        this.layer.addChild(bullet);
     },
     reset:function(){
+        this.destroy();
+        this.build();
     },
     update:function(){
         if(!this.updateable){
             return;
         }
+        this._super();
     },
     renderLevel:function(whereInit){
 

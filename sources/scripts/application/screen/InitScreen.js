@@ -3,7 +3,6 @@ var InitScreen = AbstractScreen.extend({
     init: function (label) {
         this._super(label);
         this.isLoaded = false;
-        APP.labelDebug.visible = false;
         // alert(this.isLoaded);
     },
     destroy: function () {
