@@ -122,6 +122,12 @@ var GameScreen = AbstractScreen.extend({
         this.fromTween();
 
         this.pauseModal = new PauseModal(this);
+
+        GameAPI.GameBreak.request(function(){
+            self.pauseModal.show();
+        }, function(){
+            self.pauseModal.hide();
+        });
     },
     reset:function(){
     },

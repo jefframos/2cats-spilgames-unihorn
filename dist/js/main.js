@@ -326,7 +326,19 @@ var Application = AbstractApplication.extend({
         this.labelDebug.position.x = 20, this.mute = !1, this.audioController = new AudioController();
     },
     update: function() {
-        this._super(), this.screenManager && !this.screenManager.currentScreen;
+        this._super(), this.apiLogo && this.apiLogo.getContent().height > 1 && 0 === this.apiLogo.getContent().position.x && (this.apiLogo.getContent().position.y = windowHeight - this.apiLogo.getContent().height, 
+        this.apiLogo.getContent().position.x = 20), this.screenManager && !this.screenManager.currentScreen;
+    },
+    apiLoaded: function(apiInstance) {
+        this.apiInstance = apiInstance;
+        var logoData = apiInstance.Branding.getLogo();
+        this.apiLogo = new DefaultButton(logoData.image, logoData.image), this.apiLogo.build(), 
+        this.apiLogo.clickCallback = function() {
+            logoData.action();
+        }, this.stage.addChild(this.apiLogo.getContent()), this.buttonProperties = apiInstance.Branding.getLink("more_games"), 
+        this.apiInstance.Branding.displaySplashScreen(function() {
+            APP.initApplication();
+        });
     },
     recursiveCounter: function(obj) {
         var j = 0;
@@ -337,11 +349,10 @@ var Application = AbstractApplication.extend({
         }
     },
     build: function() {
-        this._super(), this.cookieManager = new CookieManager(), this.gameModel = new AppModel(), 
-        this.initApplication();
+        this._super(), this.cookieManager = new CookieManager(), this.gameModel = new AppModel();
     },
     initApplication: function() {
-        this.initScreen = new InitScreen("Init"), this.choiceScreen = new ChoiceScreen("Choice"), 
+        console.log(this), this.initScreen = new InitScreen("Init"), this.choiceScreen = new ChoiceScreen("Choice"), 
         this.gameScreen = new GameScreen("Game"), this.loadScreen = new LoadScreen("Loader"), 
         this.screenManager.addScreen(this.loadScreen), this.screenManager.addScreen(this.initScreen), 
         this.screenManager.addScreen(this.choiceScreen), this.screenManager.addScreen(this.gameScreen), 
@@ -1199,7 +1210,12 @@ var Application = AbstractApplication.extend({
             self.updateable = !1, self.toTween(function() {
                 self.screenManager.change("Init");
             });
-        }, this.setAudioButtons(), this.fromTween(), this.pauseModal = new PauseModal(this);
+        }, this.setAudioButtons(), this.fromTween(), this.pauseModal = new PauseModal(this), 
+        GameAPI.GameBreak.request(function() {
+            self.pauseModal.show();
+        }, function() {
+            self.pauseModal.hide();
+        });
     },
     reset: function() {},
     update: function() {
@@ -1321,7 +1337,7 @@ var Application = AbstractApplication.extend({
         }), 17, 12), scaleConverter(this.moreGames.getContent().width, windowWidth, .35, this.moreGames), 
         this.moreGames.setPosition(windowWidth / 2 - this.moreGames.getContent().width / 2, windowHeight - 1.4 * this.moreGames.getContent().height), 
         this.addChild(this.moreGames), this.moreGames.clickCallback = function() {
-            self.updateable = !1;
+            self.updateable = !1, APP.buttonProperties.action();
         }, this.playButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
         this.playButton.build(), this.playButton.addLabel(new PIXI.Text("PLAY", {
             font: "50px Vagron",

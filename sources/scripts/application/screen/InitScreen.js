@@ -60,6 +60,7 @@ var InitScreen = AbstractScreen.extend({
       
         this.moreGames.clickCallback = function(){
             self.updateable = false;
+            APP.buttonProperties.action();
             // self.toTween(function(){
             //     self.screenManager.change('Game');
             // });

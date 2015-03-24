@@ -55,7 +55,6 @@ var PauseModal = Class.extend({
 		this.back.getContent().addChild(this.restartButton.getContent());
 
 		scaleConverter(this.boxContainer.width, windowWidth, 0.8, this.boxContainer);
-		
 	},
 	show:function(points){
 		this.screen.addChild(this);

@@ -18,6 +18,10 @@ var Application = AbstractApplication.extend({
 	},
     update:function(){
         this._super();
+        if(this.apiLogo && this.apiLogo.getContent().height > 1 && this.apiLogo.getContent().position.x === 0){
+            this.apiLogo.getContent().position.y = windowHeight - this.apiLogo.getContent().height;
+            this.apiLogo.getContent().position.x = 20;
+        }
         if(!this.screenManager)  {
             return;
         }
@@ -27,6 +31,29 @@ var Application = AbstractApplication.extend({
         // this.childsCounter = 1;
         // this.recursiveCounter(this.screenManager.currentScreen);
         // this.objCounter.setText(this.childsCounter);
+        // Retrieves the logo from Spil
+        
+    },
+    apiLoaded:function(apiInstance){
+        this.apiInstance = apiInstance;
+
+
+        //added logo api functions
+        var logoData = apiInstance.Branding.getLogo();
+        this.apiLogo = new DefaultButton(logoData.image,logoData.image);
+        this.apiLogo.build();
+        this.apiLogo.clickCallback = function(){
+            logoData.action();
+        };
+        this.stage.addChild(this.apiLogo.getContent());
+
+        //more games function
+        this.buttonProperties = apiInstance.Branding.getLink('more_games');
+
+        //call init application after splash screen
+        this.apiInstance.Branding.displaySplashScreen(function(){
+            APP.initApplication();
+        });
     },
     recursiveCounter:function(obj){
         var j = 0;
@@ -49,9 +76,10 @@ var Application = AbstractApplication.extend({
         this._super();
         this.cookieManager = new CookieManager();
         this.gameModel = new AppModel();
-        this.initApplication();
+        // this.initApplication();
     },
     initApplication:function(){
+        console.log(this);
         this.initScreen = new InitScreen('Init');
         this.choiceScreen = new ChoiceScreen('Choice');
         this.gameScreen = new GameScreen('Game');
