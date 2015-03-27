@@ -51,7 +51,7 @@ var LoadScreen = AbstractScreen.extend({
     initApplication:function(){
         this.isLoaded = true;
         var self = this;
-        this.screenManager.change('Init');
+        this.screenManager.change('Game');
     },
     transitionIn:function()
     {

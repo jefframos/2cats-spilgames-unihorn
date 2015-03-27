@@ -43,7 +43,7 @@ var ChoiceScreen = AbstractScreen.extend({
         this.bg.getContent().position.x = windowWidth / 2 - this.bg.getContent().width / 2;
         this.bg.getContent().position.y = windowHeight / 2 - this.bg.getContent().height / 2;
 
-        this.textScreen = new PIXI.Text('CHOICE SCREEN', {font:'50px Vagron', fill:'#FFFFFF'});
+        this.textScreen = new PIXI.Text('Pre Game', {font:'50px Vagron', fill:'#FFFFFF'});
         scaleConverter(this.textScreen.width, windowWidth, 0.5, this.textScreen);
         this.textScreen.position.x = windowWidth / 2 - this.textScreen.width / 2;
         this.textScreen.position.y = windowHeight / 2 - this.textScreen.height / 2;

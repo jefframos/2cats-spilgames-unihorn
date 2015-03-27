@@ -98,7 +98,7 @@ var GameScreen = AbstractScreen.extend({
         this.backButton.build();
         this.backButton.addLabel(new PIXI.Text('BACK', {font:'50px Vagron', fill:'#FFFFFF'}), 40);
         scaleConverter(this.backButton.getContent().width, windowWidth, 0.4, this.backButton);
-        this.backButton.setPosition(windowWidth / 2 - this.backButton.getContent().width/2,
+        this.backButton.setPosition(20,
             windowHeight - this.backButton.getContent().height * 2.5);
         this.addChild(this.backButton);
       
@@ -107,6 +107,19 @@ var GameScreen = AbstractScreen.extend({
             self.toTween(function(){
                 self.screenManager.change('Init');
             });
+        };
+
+        this.endGameButton = new DefaultButton('UI_button_default_1.png', 'UI_button_default_1.png');
+        this.endGameButton.build();
+        this.endGameButton.addLabel(new PIXI.Text('END', {font:'50px Vagron', fill:'#FFFFFF'}), 45);
+        scaleConverter(this.endGameButton.getContent().width, windowWidth, 0.4, this.endGameButton);
+        this.endGameButton.setPosition(windowWidth - 20 - this.endGameButton.getContent().width,
+            windowHeight - this.endGameButton.getContent().height * 2.5);
+        this.addChild(this.endGameButton);
+      
+        this.endGameButton.clickCallback = function(){
+            self.updateable = false;
+            self.endModal.show();
         };
 
         this.setAudioButtons();
@@ -220,6 +233,7 @@ var GameScreen = AbstractScreen.extend({
         TweenLite.to(this.bg.getContent(), 0.5, {alpha:0});
 
         TweenLite.to(this.pauseButton.getContent(), 0.5, {delay:0.3,y:-this.pauseButton.getContent().height, ease:'easeOutBack'});
+        TweenLite.to(this.endGameButton.getContent(), 0.5, {delay:0.2,y:windowHeight, ease:'easeOutBack'});
         TweenLite.to(this.backButton.getContent(), 0.5, {delay:0.1,y:windowHeight, ease:'easeOutBack', onComplete:function(){
             if(callback){
                 callback();
@@ -238,6 +252,7 @@ var GameScreen = AbstractScreen.extend({
 
         TweenLite.from(this.pauseButton.getContent(), 0.5, {delay:0.1,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
 
+        TweenLite.from(this.endGameButton.getContent(), 0.5, {delay:0.5,y:windowHeight, ease:'easeOutBack'});
         TweenLite.from(this.backButton.getContent(), 0.5, {delay:0.4,y:windowHeight, ease:'easeOutBack', onComplete:function(){
             if(callback){
                 callback();

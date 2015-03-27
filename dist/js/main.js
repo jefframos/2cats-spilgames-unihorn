@@ -1073,7 +1073,7 @@ var Application = AbstractApplication.extend({
         this.bg = new SimpleSprite("bg1.jpg"), this.container.addChild(this.bg.getContent()), 
         scaleConverter(this.bg.getContent().width, windowWidth, 1.2, this.bg), this.bg.getContent().position.x = windowWidth / 2 - this.bg.getContent().width / 2, 
         this.bg.getContent().position.y = windowHeight / 2 - this.bg.getContent().height / 2, 
-        this.textScreen = new PIXI.Text("CHOICE SCREEN", {
+        this.textScreen = new PIXI.Text("Pre Game", {
             font: "50px Vagron",
             fill: "#FFFFFF"
         }), scaleConverter(this.textScreen.width, windowWidth, .5, this.textScreen), this.textScreen.position.x = windowWidth / 2 - this.textScreen.width / 2, 
@@ -1235,11 +1235,19 @@ var Application = AbstractApplication.extend({
             font: "50px Vagron",
             fill: "#FFFFFF"
         }), 40), scaleConverter(this.backButton.getContent().width, windowWidth, .4, this.backButton), 
-        this.backButton.setPosition(windowWidth / 2 - this.backButton.getContent().width / 2, windowHeight - 2.5 * this.backButton.getContent().height), 
+        this.backButton.setPosition(20, windowHeight - 2.5 * this.backButton.getContent().height), 
         this.addChild(this.backButton), this.backButton.clickCallback = function() {
             self.updateable = !1, self.toTween(function() {
                 self.screenManager.change("Init");
             });
+        }, this.endGameButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
+        this.endGameButton.build(), this.endGameButton.addLabel(new PIXI.Text("END", {
+            font: "50px Vagron",
+            fill: "#FFFFFF"
+        }), 45), scaleConverter(this.endGameButton.getContent().width, windowWidth, .4, this.endGameButton), 
+        this.endGameButton.setPosition(windowWidth - 20 - this.endGameButton.getContent().width, windowHeight - 2.5 * this.endGameButton.getContent().height), 
+        this.addChild(this.endGameButton), this.endGameButton.clickCallback = function() {
+            self.updateable = !1, self.endModal.show();
         }, this.setAudioButtons(), this.fromTween(), this.pauseModal = new PauseModal(this), 
         this.endModal = new EndModal(this), APP.withAPI && GameAPI.GameBreak.request(function() {
             self.pauseModal.show();
@@ -1288,6 +1296,10 @@ var Application = AbstractApplication.extend({
             delay: .3,
             y: -this.pauseButton.getContent().height,
             ease: "easeOutBack"
+        }), TweenLite.to(this.endGameButton.getContent(), .5, {
+            delay: .2,
+            y: windowHeight,
+            ease: "easeOutBack"
         }), TweenLite.to(this.backButton.getContent(), .5, {
             delay: .1,
             y: windowHeight,
@@ -1311,6 +1323,10 @@ var Application = AbstractApplication.extend({
         }), TweenLite.from(this.pauseButton.getContent(), .5, {
             delay: .1,
             y: -this.audioOn.getContent().height,
+            ease: "easeOutBack"
+        }), TweenLite.from(this.endGameButton.getContent(), .5, {
+            delay: .5,
+            y: windowHeight,
             ease: "easeOutBack"
         }), TweenLite.from(this.backButton.getContent(), .5, {
             delay: .4,
@@ -1521,7 +1537,7 @@ var Application = AbstractApplication.extend({
     },
     initApplication: function() {
         this.isLoaded = !0;
-        this.screenManager.change("Init");
+        this.screenManager.change("Game");
     },
     transitionIn: function() {
         return this.isLoaded ? void this.build() : void this.build();
@@ -1578,26 +1594,32 @@ var Application = AbstractApplication.extend({
         var self = this;
         this.back = new SimpleSprite("UI_modal_back_1.png"), this.boxContainer.addChild(this.back.getContent());
         var thirdPart = this.back.getContent().width / 3;
-        this.backButton = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
-        this.backButton.build(), this.backButton.setPosition(1 * thirdPart - thirdPart / 2 - this.backButton.getContent().width / 2, this.back.getContent().height / 2 - this.backButton.getContent().height / 2), 
-        this.backButton.clickCallback = function() {
-            self.hide(function() {
-                self.screen.screenManager.prevScreen();
-            });
-        }, this.back.getContent().addChild(this.backButton.getContent()), this.continueButton = new DefaultButton("UI_button_play_1_retina.png", "UI_button_play_1_over_retina.png"), 
-        this.continueButton.build(), scaleConverter(this.continueButton.getContent().width, this.back.getContent().width, .3, this.continueButton), 
-        this.continueButton.setPosition(2 * thirdPart - thirdPart / 2 - this.continueButton.getContent().width / 2, this.back.getContent().height / 2 - this.continueButton.getContent().height / 2), 
-        this.continueButton.clickCallback = function() {
-            self.hide(function() {
-                self.screen.updateable = !0;
-            });
-        }, this.back.getContent().addChild(this.continueButton.getContent()), this.restartButton = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
-        this.restartButton.build(), this.restartButton.setPosition(3 * thirdPart - thirdPart / 2 - this.restartButton.getContent().width / 2, this.back.getContent().height / 2 - this.restartButton.getContent().height / 2), 
-        this.restartButton.clickCallback = function() {
+        this.textScreen = new PIXI.Text("Something like\nUpgrades\nor Stats", {
+            align: "center",
+            font: "50px Vagron",
+            fill: "#000",
+            wordWrap: !0,
+            wordWrapWidth: 500
+        }), scaleConverter(this.textScreen.width, this.back.getContent().width, .5, this.textScreen), 
+        this.textScreen.position.x = this.back.getContent().width / 2 - this.textScreen.width / 2, 
+        this.textScreen.position.y = 20, this.back.getContent().addChild(this.textScreen), 
+        this.closeButton = new DefaultButton("UI_button_close_1.png", "UI_button_close_1.png"), 
+        this.closeButton.build(), this.closeButton.setPosition(this.back.getContent().width - this.closeButton.getContent().width, 0), 
+        this.closeButton.clickCallback = function() {
             self.hide(function() {
                 self.screen.updateable = !0, self.screen.reset();
             });
-        }, this.back.getContent().addChild(this.restartButton.getContent()), scaleConverter(this.boxContainer.width, windowWidth, .8, this.boxContainer);
+        }, this.back.getContent().addChild(this.closeButton.getContent()), this.backButton = new DefaultButton("UI_button_facebook_1.png", "UI_button_facebook_1.png"), 
+        this.backButton.build(), this.backButton.setPosition(1 * thirdPart - thirdPart / 2 - this.backButton.getContent().width / 2, this.back.getContent().height - this.backButton.getContent().height - 20), 
+        this.backButton.clickCallback = function() {}, this.back.getContent().addChild(this.backButton.getContent()), 
+        this.continueButton = new DefaultButton("UI_button_ranking_1.png", "UI_button_ranking_1.png"), 
+        this.continueButton.build(), scaleConverter(this.continueButton.getContent().width, this.back.getContent().width, .3, this.continueButton), 
+        this.continueButton.setPosition(2 * thirdPart - thirdPart / 2 - this.continueButton.getContent().width / 2, this.back.getContent().height - this.continueButton.getContent().height - 20), 
+        this.continueButton.clickCallback = function() {}, this.back.getContent().addChild(this.continueButton.getContent()), 
+        this.restartButton = new DefaultButton("UI_button_twitter_1.png", "UI_button_twitter_1.png"), 
+        this.restartButton.build(), this.restartButton.setPosition(3 * thirdPart - thirdPart / 2 - this.restartButton.getContent().width / 2, this.back.getContent().height - this.restartButton.getContent().height - 20), 
+        this.restartButton.clickCallback = function() {}, this.back.getContent().addChild(this.restartButton.getContent()), 
+        scaleConverter(this.boxContainer.width, windowWidth, .8, this.boxContainer);
     },
     show: function() {
         this.screen.addChild(this), this.screen.blockPause = !0, this.boxContainer.visible = !0, 
