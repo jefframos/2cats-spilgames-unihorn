@@ -51,7 +51,7 @@ var Bullet = Entity.extend({
 
         // this.particlesCounterMax = (Math.abs(this.velocity.x) + Math.abs(this.velocity.y)) / 3;
         this.particlesCounterMax = (Math.abs(this.velocity.x) + Math.abs(this.velocity.y)) / 20;
-        this.particlesCounter = 15;//this.particlesCounterMax *2;
+        this.particlesCounter = 20;//this.particlesCounterMax *2;
 
         this.collideArea = new PIXI.Rectangle(-50, -50, windowWidth + 100, windowHeight + 100);
     },

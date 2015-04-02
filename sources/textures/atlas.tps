@@ -194,7 +194,6 @@
             <filename>volumeButton_off_over.png</filename>
             <filename>volumeButton_on.png</filename>
             <filename>fullscreen.png</filename>
-            <filename>normal/bg1.jpg</filename>
             <filename>normal/logo.png</filename>
             <filename>normal/UI_button_close_1.png</filename>
             <filename>normal/UI_button_close_1_over.png</filename>
@@ -213,6 +212,13 @@
             <filename>retina/UI_button_play_1_retina.png</filename>
             <filename>retina/UI_button_play_1_over_retina.png</filename>
             <filename>bullet.png</filename>
+            <filename>fundo1.png</filename>
+            <filename>cloud1a.png</filename>
+            <filename>cloud2a.png</filename>
+            <filename>cloud3a.png</filename>
+            <filename>uni_corpo.png</filename>
+            <filename>uni_head.png</filename>
+            <filename>uni_horn1.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

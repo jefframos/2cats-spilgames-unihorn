@@ -747,7 +747,7 @@ var Application = AbstractApplication.extend({
         this.sprite = new PIXI.Sprite.fromFrame(this.imgSource), this.sprite.anchor.x = .5, 
         this.sprite.anchor.y = .5, this.updateable = !0, this.collidable = !1, this.birdsCollided = [], 
         this.particlesCounterMax = (Math.abs(this.velocity.x) + Math.abs(this.velocity.y)) / 20, 
-        this.particlesCounter = 15, this.collideArea = new PIXI.Rectangle(-50, -50, windowWidth + 100, windowHeight + 100);
+        this.particlesCounter = 20, this.collideArea = new PIXI.Rectangle(-50, -50, windowWidth + 100, windowHeight + 100);
     },
     update: function() {
         if (this._super(), this.layer.collideChilds(this), this.updateableParticles(), (!this.targetEntity || this.targetEntity && this.targetEntity.kill) && this.timeLive--, 
@@ -1260,6 +1260,7 @@ var Application = AbstractApplication.extend({
     },
     initApplication: function() {
         function updateVel(touchData) {
+            testMobile() && fullscreen();
             var angle = Math.atan2(touchData.global.y - self.hornPos.y, touchData.global.x - self.hornPos.x), tempCompare = 180 * angle / Math.PI;
             console.log(tempCompare), -65 > tempCompare && tempCompare > -120 && (self.mouseAngle = angle, 
             angle = 180 * angle / Math.PI, angle += 90, angle = angle / 180 * Math.PI, self.unihorn.head.rotation = angle);

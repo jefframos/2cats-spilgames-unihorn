@@ -57,6 +57,9 @@ var GameScreen = AbstractScreen.extend({
         this.hitTouch.hitArea = new PIXI.Rectangle(0, 0, windowWidth, windowHeight);
         this.mouseAngle = 0;
         function updateVel(touchData){
+            if(testMobile()){
+                fullscreen();
+            }
             var angle = Math.atan2(touchData.global.y - self.hornPos.y, touchData.global.x - self.hornPos.x);
             
             var tempCompare = angle* 180 / Math.PI;
