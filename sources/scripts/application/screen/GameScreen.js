@@ -30,7 +30,7 @@ var GameScreen = AbstractScreen.extend({
     },
     initApplication:function(){
         var self = this;
-        this.bg = new SimpleSprite('bg1.jpg');
+        this.bg = new SimpleSprite('fundo1.png');
         this.addChild(this.bg.getContent());
         scaleConverter(this.bg.getContent().width, windowWidth, 1.2, this.bg);
         this.bg.getContent().position.x = windowWidth / 2 - this.bg.getContent().width / 2;
@@ -55,32 +55,54 @@ var GameScreen = AbstractScreen.extend({
         this.addChild(this.hitTouch);
         this.hitTouch.alpha = 0;
         this.hitTouch.hitArea = new PIXI.Rectangle(0, 0, windowWidth, windowHeight);
-        this.hornPos = {x:windowWidth / 2, y:windowHeight/1.2};
+        this.mouseAngle = 0;
         function updateVel(touchData){
             var angle = Math.atan2(touchData.global.y - self.hornPos.y, touchData.global.x - self.hornPos.x);
             
-            // angle = angle * 180 / Math.PI;
-            // angle += 90;
-            // angle = angle / 180 * Math.PI;
+            var tempCompare = angle* 180 / Math.PI;
+            console.log(tempCompare);
+            if((tempCompare) < -65 && (tempCompare) > -120)
+            {
+                self.mouseAngle = angle;
 
-            self.shoot(angle);
+                angle = angle * 180 / Math.PI;
+                angle += 90;
+                angle = angle / 180 * Math.PI;
+
+                self.unihorn.head.rotation = angle;
+            }
+            //self.shoot(angle);
         }
-        // this.hitTouch.touchmove = function(touchData){
-        //     updateVel(touchData);
-        // };
+        
+        if(!testMobile()){
+            this.hitTouch.mousemove = function(touchData){
+                updateVel(touchData);
+            };
+            this.hitTouch.mousedown = function(mouseData){
+                self.touchDown = true;
+                updateVel(mouseData);
+            };
 
-        this.hitTouch.mouseup = function(mouseData){
-            updateVel(mouseData);
-        };
-
-        this.hitTouch.touchstart = function(touchData){
+            this.hitTouch.mouseup = function(mouseData){
+                self.touchDown = false;
+                updateVel(mouseData);
+            };
+        }
+        this.hitTouch.touchmove = function(touchData){
             updateVel(touchData);
         };
-        // this.hitTouch.touchend = function(touchData){
-        //     updateVel(touchData);
-        // };
+        this.hitTouch.touchstart = function(touchData){
+            self.touchDown = true;
+            updateVel(touchData);
+        };
+        this.hitTouch.touchend = function(touchData){
+            self.touchDown = false;
+            updateVel(touchData);
+        };
 
         this.updateable = true;
+        this.fireAcumMax = 20;
+        this.fireAcum = this.fireAcumMax;
 
 
 
@@ -100,7 +122,7 @@ var GameScreen = AbstractScreen.extend({
         scaleConverter(this.backButton.getContent().width, windowWidth, 0.4, this.backButton);
         this.backButton.setPosition(20,
             windowHeight - this.backButton.getContent().height * 2.5);
-        this.addChild(this.backButton);
+        // this.addChild(this.backButton);
       
         this.backButton.clickCallback = function(){
             self.updateable = false;
@@ -115,14 +137,14 @@ var GameScreen = AbstractScreen.extend({
         scaleConverter(this.endGameButton.getContent().width, windowWidth, 0.4, this.endGameButton);
         this.endGameButton.setPosition(windowWidth - 20 - this.endGameButton.getContent().width,
             windowHeight - this.endGameButton.getContent().height * 2.5);
-        this.addChild(this.endGameButton);
+        // this.addChild(this.endGameButton);
       
         this.endGameButton.clickCallback = function(){
             self.updateable = false;
             self.endModal.show();
         };
 
-        this.setAudioButtons();
+        // this.setAudioButtons();
         
         this.fromTween();
 
@@ -147,6 +169,34 @@ var GameScreen = AbstractScreen.extend({
         this.layer = new Layer();
         this.layer.build('EntityLayer');
         this.layerManager.addLayer(this.layer);
+
+        this.spawner = new Spawner(this);
+
+        this.unihorn = new Unihorn();
+        this.unihorn.build();
+        this.addChild(this.unihorn);
+        console.log(this.unihorn.sprite.height);
+        var scl = scaleConverter(this.unihorn.neck.height, windowHeight, 0.25, this.unihorn);
+        this.unihorn.getContent().position.y = windowHeight - this.unihorn.neck.height * scl;//this.unihorn.getContent().height;
+        this.unihorn.getContent().position.x = windowWidth / 2 - this.unihorn.head.position.x * scl;//this.unihorn.getContent().height;
+        console.log(this.unihorn.head.position.x * scl);
+
+        this.hornPos = {x:this.unihorn.head.position.x * scl, y:windowHeight - (this.unihorn.head.position.y * this.unihorn.head.anchor.y) * scl};// - this.unihorn.head.position.y * scl};
+    },
+    update:function(){
+        if(!this.updateable){
+            return;
+        }
+        this.spawner.update();
+        this._super();
+        if(this.fireAcum > 0){
+            this.fireAcum--;
+        }else{
+            if(this.touchDown){
+                this.shoot(this.mouseAngle);
+                this.fireAcum = this.fireAcumMax;
+            }
+        }
     },
     shoot:function(angle) {
         if(this.blockPause){
@@ -169,12 +219,6 @@ var GameScreen = AbstractScreen.extend({
     reset:function(){
         this.destroy();
         this.build();
-    },
-    update:function(){
-        if(!this.updateable){
-            return;
-        }
-        this._super();
     },
     renderLevel:function(whereInit){
 
@@ -250,7 +294,7 @@ var GameScreen = AbstractScreen.extend({
     fromTween:function(callback){
         TweenLite.from(this.bg.getContent(), 0.5, {alpha:0});
 
-        TweenLite.from(this.pauseButton.getContent(), 0.5, {delay:0.1,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
+        TweenLite.from(this.pauseButton.getContent(), 0.5, {delay:0.1,y:-this.pauseButton.getContent().height, ease:'easeOutBack'});
 
         TweenLite.from(this.endGameButton.getContent(), 0.5, {delay:0.5,y:windowHeight, ease:'easeOutBack'});
         TweenLite.from(this.backButton.getContent(), 0.5, {delay:0.4,y:windowHeight, ease:'easeOutBack', onComplete:function(){

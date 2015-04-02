@@ -1,4 +1,4 @@
-/*! jefframos 24-03-2015 */
+/*! jefframos 02-04-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -537,6 +537,56 @@ var Application = AbstractApplication.extend({
     playAmbientSound: function() {
         this.ambientPlaying || (this.ambientPlaying = !0, this.ambientSound1.play());
     }
+}), Enemy = Entity.extend({
+    init: function() {
+        this._super(!0), this.updateable = !1, this.range = .05 * windowWidth, this.width = 1, 
+        this.height = 1, this.type = "enemy";
+    },
+    build: function() {
+        var cl = [ "cloud1a.png", "cloud2a.png", "cloud3a.png" ];
+        this.sprite = new PIXI.Sprite(new PIXI.Texture.fromImage(cl[Math.floor(cl.length * Math.random())])), 
+        this.sprite.anchor.x = .5, this.sprite.anchor.y = .5, this.updateable = !0, this.collidable = !0;
+    },
+    update: function() {
+        this._super(), this.getContent().position.y > windowHeight && (this.kill = !0);
+    },
+    hurt: function() {
+        this.preKill();
+    },
+    preKill: function() {
+        if (this.collidable) {
+            for (var i = 4; i >= 0; i--) ;
+            var self = this;
+            TweenLite.to(this.getContent(), .3, {
+                alpha: 0,
+                onCOmplete: function() {
+                    self.kill = !0;
+                }
+            }), TweenLite.to(this.getContent().scale, .3, {
+                x: 0,
+                y: 0
+            }), this.collidable = !1;
+        }
+    }
+}), Unihorn = Entity.extend({
+    init: function() {
+        this._super(!0), this.updateable = !1, this.range = .05 * windowWidth, this.width = 1, 
+        this.height = 1, this.neck = new PIXI.Sprite(new PIXI.Texture.fromImage("uni_corpo.png")), 
+        this.head = new PIXI.Sprite(new PIXI.Texture.fromImage("uni_head.png")), this.horn = new PIXI.Sprite(new PIXI.Texture.fromImage("uni_horn1.png"));
+    },
+    getContent: function() {
+        return this.sprite;
+    },
+    build: function() {
+        this.sprite = new PIXI.Sprite(), this.sprite.anchor.x = .5, this.sprite.anchor.y = .5, 
+        this.sprite.addChild(this.neck), this.neck.addChild(this.head), this.head.anchor.x = .5, 
+        this.head.anchor.y = .8, this.head.position.x = 215, this.head.position.y = 120, 
+        this.head.addChild(this.horn), this.horn.anchor.x = .5, this.horn.anchor.y = 1, 
+        this.horn.position.y = -75;
+    },
+    update: function() {
+        this._super(), this.getContent().position.y > windowHeight && (this.kill = !0);
+    }
 }), Bird = Entity.extend({
     init: function(birdModel, screen) {
         this._super(!0), this.updateable = !1, this.deading = !1, this.range = 80, this.width = 1, 
@@ -679,19 +729,25 @@ var Application = AbstractApplication.extend({
         this.sin = 0;
     },
     startScaleTween: function() {
-        TweenLite.from(this.getContent().scale, .3, {
+        TweenLite.from(this.getContent().scale, .8, {
             x: 0,
             y: 0,
             ease: "easeOutBack"
+        }), this.getContent().alpha = 0;
+        var self = this;
+        TweenLite.to(this.getContent(), .1, {
+            delay: .2,
+            alpha: 1,
+            onComplete: function() {
+                self.collidable = !0;
+            }
         });
     },
     build: function() {
         this.sprite = new PIXI.Sprite.fromFrame(this.imgSource), this.sprite.anchor.x = .5, 
-        this.sprite.anchor.y = .5, this.updateable = !0, this.collidable = !0, this.getContent().alpha = .5, 
-        TweenLite.to(this.getContent(), .3, {
-            alpha: 1
-        }), this.birdsCollided = [], this.particlesCounterMax = (Math.abs(this.velocity.x) + Math.abs(this.velocity.y)) / 3, 
-        this.particlesCounter = 2 * this.particlesCounterMax, this.collideArea = new PIXI.Rectangle(-50, -50, windowWidth + 100, windowHeight + 100);
+        this.sprite.anchor.y = .5, this.updateable = !0, this.collidable = !1, this.birdsCollided = [], 
+        this.particlesCounterMax = (Math.abs(this.velocity.x) + Math.abs(this.velocity.y)) / 20, 
+        this.particlesCounter = 15, this.collideArea = new PIXI.Rectangle(-50, -50, windowWidth + 100, windowHeight + 100);
     },
     update: function() {
         if (this._super(), this.layer.collideChilds(this), this.updateableParticles(), (!this.targetEntity || this.targetEntity && this.targetEntity.kill) && this.timeLive--, 
@@ -711,11 +767,11 @@ var Application = AbstractApplication.extend({
         if (this.particlesCounter--, this.particlesCounter <= 0) {
             this.particlesCounter = this.particlesCounterMax;
             var particle = new Particles({
-                x: 4 * Math.random() - 2,
-                y: Math.random()
+                x: 0,
+                y: 0
             }, 120, this.particleSource, .05 * Math.random());
-            particle.maxScale = this.getContent().scale.x, particle.maxInitScale = .4, particle.build(), 
-            particle.gravity = .1 * Math.random() + .2, particle.alphadecress = .05, particle.scaledecress = .03, 
+            particle.maxScale = this.getContent().scale.x, particle.maxInitScale = particle.maxScale, 
+            particle.build(), particle.gravity = 0, particle.alphadecress = .08, particle.scaledecress = -.04, 
             particle.setPosition(this.getPosition().x - (Math.random() + .1 * this.getContent().width) / 2, this.getPosition().y), 
             this.layer.addChild(particle);
         }
@@ -724,27 +780,22 @@ var Application = AbstractApplication.extend({
         this.homingStart = timetostart, this.targetEntity = entity, this.getContent().rotation = angle;
     },
     collide: function(arrayCollide) {
-        if (this.collidable) for (var i = arrayCollide.length - 1; i >= 0; i--) if ("bird" === arrayCollide[i].type) {
-            for (var j = this.birdsCollided.length - 1; j >= 0; j--) if (arrayCollide[i] === this.birdsCollided[j]) return;
-            console.log("collide"), this.preKill(), arrayCollide[i].hurt(this.power), this.birdsCollided.push(arrayCollide[i]);
-        }
+        if (this.collidable) for (var i = arrayCollide.length - 1; i >= 0; i--) "enemy" === arrayCollide[i].type && (this.preKill(), 
+        arrayCollide[i].hurt(this.power));
     },
     preKill: function() {
         if (!this.invencible) {
             for (var i = 1; i >= 0; i--) {
                 var particle = new Particles({
-                    x: 4 * Math.random(),
+                    x: 4 * Math.random() - 2,
                     y: -(2 * Math.random() + 1)
                 }, 120, this.particleSource, .05 * Math.random());
-                particle.build(), particle.gravity = .1 * Math.random() + .2, particle.alphadecres = .1, 
-                particle.scaledecress = .02, particle.setPosition(this.getPosition().x - (Math.random() + .1 * this.getContent().width) / 2, this.getPosition().y), 
+                particle.build(), particle.maxScale = .5, particle.gravity = .1 * Math.random() + .2, 
+                particle.alphadecres = .1, particle.scaledecress = .02, particle.setPosition(this.getPosition().x - (Math.random() + .1 * this.getContent().width) / 2, this.getPosition().y), 
                 this.layer.addChild(particle);
             }
             this.collidable = !1, this.kill = !0;
         }
-    },
-    pointDistance: function(x, y, x0, y0) {
-        return Math.sqrt((x -= x0) * x + (y -= y0) * y);
     },
     touch: function(collection) {
         collection.object && "environment" === collection.object.type && collection.object.fireCollide(), 
@@ -1209,24 +1260,31 @@ var Application = AbstractApplication.extend({
     },
     initApplication: function() {
         function updateVel(touchData) {
-            var angle = Math.atan2(touchData.global.y - self.hornPos.y, touchData.global.x - self.hornPos.x);
-            self.shoot(angle);
+            var angle = Math.atan2(touchData.global.y - self.hornPos.y, touchData.global.x - self.hornPos.x), tempCompare = 180 * angle / Math.PI;
+            console.log(tempCompare), -65 > tempCompare && tempCompare > -120 && (self.mouseAngle = angle, 
+            angle = 180 * angle / Math.PI, angle += 90, angle = angle / 180 * Math.PI, self.unihorn.head.rotation = angle);
         }
         var self = this;
-        this.bg = new SimpleSprite("bg1.jpg"), this.addChild(this.bg.getContent()), scaleConverter(this.bg.getContent().width, windowWidth, 1.2, this.bg), 
+        this.bg = new SimpleSprite("fundo1.png"), this.addChild(this.bg.getContent()), scaleConverter(this.bg.getContent().width, windowWidth, 1.2, this.bg), 
         this.bg.getContent().position.x = windowWidth / 2 - this.bg.getContent().width / 2, 
         this.bg.getContent().position.y = windowHeight / 2 - this.bg.getContent().height / 2, 
         this.renderLevel(), this.hitTouch = new PIXI.Graphics(), this.hitTouch.interactive = !0, 
         this.hitTouch.beginFill(0), this.hitTouch.drawRect(0, 0, windowWidth, windowHeight), 
         this.addChild(this.hitTouch), this.hitTouch.alpha = 0, this.hitTouch.hitArea = new PIXI.Rectangle(0, 0, windowWidth, windowHeight), 
-        this.hornPos = {
-            x: windowWidth / 2,
-            y: windowHeight / 1.2
-        }, this.hitTouch.mouseup = function(mouseData) {
-            updateVel(mouseData);
-        }, this.hitTouch.touchstart = function(touchData) {
+        this.mouseAngle = 0, testMobile() || (this.hitTouch.mousemove = function(touchData) {
             updateVel(touchData);
-        }, this.updateable = !0, this.pauseButton = new DefaultButton("UI_button_pause_1.png", "UI_button_pause_1_over.png", "UI_button_pause_1_over.png"), 
+        }, this.hitTouch.mousedown = function(mouseData) {
+            self.touchDown = !0, updateVel(mouseData);
+        }, this.hitTouch.mouseup = function(mouseData) {
+            self.touchDown = !1, updateVel(mouseData);
+        }), this.hitTouch.touchmove = function(touchData) {
+            updateVel(touchData);
+        }, this.hitTouch.touchstart = function(touchData) {
+            self.touchDown = !0, updateVel(touchData);
+        }, this.hitTouch.touchend = function(touchData) {
+            self.touchDown = !1, updateVel(touchData);
+        }, this.updateable = !0, this.fireAcumMax = 20, this.fireAcum = this.fireAcumMax, 
+        this.pauseButton = new DefaultButton("UI_button_pause_1.png", "UI_button_pause_1_over.png", "UI_button_pause_1_over.png"), 
         this.pauseButton.build(), scaleConverter(this.pauseButton.getContent().width, windowWidth, .1, this.pauseButton), 
         this.pauseButton.setPosition(20, 20), this.addChild(this.pauseButton), this.pauseButton.clickCallback = function() {
             self.pauseModal.show();
@@ -1236,7 +1294,7 @@ var Application = AbstractApplication.extend({
             fill: "#FFFFFF"
         }), 40), scaleConverter(this.backButton.getContent().width, windowWidth, .4, this.backButton), 
         this.backButton.setPosition(20, windowHeight - 2.5 * this.backButton.getContent().height), 
-        this.addChild(this.backButton), this.backButton.clickCallback = function() {
+        this.backButton.clickCallback = function() {
             self.updateable = !1, self.toTween(function() {
                 self.screenManager.change("Init");
             });
@@ -1246,15 +1304,28 @@ var Application = AbstractApplication.extend({
             fill: "#FFFFFF"
         }), 45), scaleConverter(this.endGameButton.getContent().width, windowWidth, .4, this.endGameButton), 
         this.endGameButton.setPosition(windowWidth - 20 - this.endGameButton.getContent().width, windowHeight - 2.5 * this.endGameButton.getContent().height), 
-        this.addChild(this.endGameButton), this.endGameButton.clickCallback = function() {
+        this.endGameButton.clickCallback = function() {
             self.updateable = !1, self.endModal.show();
-        }, this.setAudioButtons(), this.fromTween(), this.pauseModal = new PauseModal(this), 
-        this.endModal = new EndModal(this), APP.withAPI && GameAPI.GameBreak.request(function() {
+        }, this.fromTween(), this.pauseModal = new PauseModal(this), this.endModal = new EndModal(this), 
+        APP.withAPI && GameAPI.GameBreak.request(function() {
             self.pauseModal.show();
         }, function() {
             self.pauseModal.hide();
         }), this.layerManager = new LayerManager(), this.layerManager.build("Main"), this.addChild(this.layerManager), 
-        this.layer = new Layer(), this.layer.build("EntityLayer"), this.layerManager.addLayer(this.layer);
+        this.layer = new Layer(), this.layer.build("EntityLayer"), this.layerManager.addLayer(this.layer), 
+        this.spawner = new Spawner(this), this.unihorn = new Unihorn(), this.unihorn.build(), 
+        this.addChild(this.unihorn), console.log(this.unihorn.sprite.height);
+        var scl = scaleConverter(this.unihorn.neck.height, windowHeight, .25, this.unihorn);
+        this.unihorn.getContent().position.y = windowHeight - this.unihorn.neck.height * scl, 
+        this.unihorn.getContent().position.x = windowWidth / 2 - this.unihorn.head.position.x * scl, 
+        console.log(this.unihorn.head.position.x * scl), this.hornPos = {
+            x: this.unihorn.head.position.x * scl,
+            y: windowHeight - this.unihorn.head.position.y * this.unihorn.head.anchor.y * scl
+        };
+    },
+    update: function() {
+        this.updateable && (this.spawner.update(), this._super(), this.fireAcum > 0 ? this.fireAcum-- : this.touchDown && (this.shoot(this.mouseAngle), 
+        this.fireAcum = this.fireAcumMax));
     },
     shoot: function(angle) {
         if (!this.blockPause) {
@@ -1268,9 +1339,6 @@ var Application = AbstractApplication.extend({
     },
     reset: function() {
         this.destroy(), this.build();
-    },
-    update: function() {
-        this.updateable && this._super();
     },
     renderLevel: function() {},
     setAudioButtons: function() {
@@ -1322,7 +1390,7 @@ var Application = AbstractApplication.extend({
             alpha: 0
         }), TweenLite.from(this.pauseButton.getContent(), .5, {
             delay: .1,
-            y: -this.audioOn.getContent().height,
+            y: -this.pauseButton.getContent().height,
             ease: "easeOutBack"
         }), TweenLite.from(this.endGameButton.getContent(), .5, {
             delay: .5,
@@ -1823,6 +1891,21 @@ var Application = AbstractApplication.extend({
     },
     getContent: function() {
         return this.container;
+    }
+}), Spawner = Class.extend({
+    init: function(screen) {
+        this.maxAccum = 150, this.accum = this.maxAccum, this.screen = screen;
+    },
+    build: function() {},
+    update: function() {
+        if (this.accum < 0) {
+            this.accum = this.maxAccum + 50 * Math.random();
+            var enemy = new Enemy(this.screen);
+            enemy.build(), scaleConverter(enemy.getContent().height, windowHeight, .08, enemy);
+            var part10 = .1 * windowWidth;
+            enemy.setPosition(part10 + (windowWidth - 2 * part10) * Math.random(), 0), enemy.velocity.y = 1, 
+            this.screen.layer.addChild(enemy);
+        } else this.accum--;
     }
 }), InputManager = Class.extend({
     init: function(parent) {
