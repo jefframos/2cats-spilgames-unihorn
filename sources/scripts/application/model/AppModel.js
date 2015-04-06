@@ -14,8 +14,8 @@ var AppModel = Class.extend({
 		// APP.cookieManager.setCookie('totalPoints', 0, 500);
 		console.log(APP);
 
-		var points = parseInt(APP.cookieManager.getCookie('totalPoints'));
-		var high = parseInt(APP.cookieManager.getCookie('highScore'));
+		var points = 0;//parseInt(APP.cookieManager.getCookie('totalPoints'));
+		var high = 0;//parseInt(APP.cookieManager.getCookie('highScore'));
 
 		this.highScore = high?high:0;
 		this.totalPoints = points?points:0;
@@ -24,7 +24,57 @@ var AppModel = Class.extend({
 		
 		this.playerModels = [];
 
-		this.enemiesModels = [];
+
+		this.enemyModels = [
+			new EnemyModel(
+				{
+					cover:'cloud1a.png',
+					source:['cloud1a.png'],
+					particles:['bullet.png'],
+					sizePercent: 0.2,
+					label:'Nuvem'
+				},
+				{
+					vel: 1,
+					toNext: 80,
+					behaviour: null,
+					money:5,
+					hp:5
+				}
+			),
+				new EnemyModel(
+				{
+					cover:'cloud2a.png',
+					source:['cloud2a.png'],
+					particles:['bullet.png'],
+					sizePercent: 0.2,
+					label:'Nuvem'
+				},
+				{
+					vel: 0.8,
+					toNext: 180,
+					behaviour: null,
+					money:5,
+					hp:5
+				}
+			),
+				new EnemyModel(
+				{
+					cover:'cloud3a.png',
+					source:['cloud3a.png'],
+					particles:['bullet.png'],
+					sizePercent: 0.2,
+					label:'Nuvem'
+				},
+				{
+					vel: 1.5,
+					toNext: 50,
+					behaviour: null,
+					money:5,
+					hp:5
+				}
+			)
+			];
 
 		this.setModel(0);
 
@@ -35,9 +85,11 @@ var AppModel = Class.extend({
 				this.totalPlayers ++;
 			}
 		}
-		this.birdProbs = [0,1,0,0,0,2,0,0,0,1,2,3,0,0,2,0,3,4,4,4,4,4,0,5,5,5,5,5,0,6,6,6,6,0,7,7,7,7,4,5,6,7];
+		this.enemyProbs = [0,1,2];//,1,0,0,0,2,0,0,0,1,2,3,0,0,2,0,3,4,4,4,4,4,0,5,5,5,5,5,0,6,6,6,6,0,7,7,7,7,4,5,6,7];
 
 		this.currentHorde = 0;
+
+		this.totalEnemy = 3;
 	},
 	
 	setModel:function(id){
@@ -47,10 +99,10 @@ var AppModel = Class.extend({
 	zerarTudo:function(){
 		this.currentHorde = 0;
 		this.totalPoints = 0;
-		this.totalBirds = 1;
+		this.totalEnemy = 1;
 		this.totalPlayers = 1;
 		APP.cookieManager.setCookie('totalPoints', 0, 500);
-		APP.cookieManager.setCookie('totalBirds', 1, 500);
+		APP.cookieManager.setCookie('totalEnemy', 1, 500);
 
 		for (var i = this.playerModels.length - 1; i >= 0; i--) {
 			if(this.playerModels[i].toAble <= this.totalPoints){
@@ -63,9 +115,9 @@ var AppModel = Class.extend({
 	maxPoints:function(){
 		this.currentHorde = 0;
 		this.totalPoints = 999999;
-		this.totalBirds = 8;
+		this.totalEnemy = 8;
 		APP.cookieManager.setCookie('totalPoints', this.totalPoints, 500);
-		APP.cookieManager.setCookie('totalBirds', this.totalBirds, 500);
+		APP.cookieManager.setCookie('totalEnemy', this.totalEnemy, 500);
 
 
 		for (var i = this.playerModels.length - 1; i >= 0; i--) {
@@ -83,38 +135,39 @@ var AppModel = Class.extend({
 	},
 	getNewEnemy:function(player, screen){
 		this.currentHorde ++;
-		var max = this.birdProbs.length;
+		var max = this.enemyProbs.length;
 
 		if(this.currentHorde < max){
 			max = this.currentHorde;
 		}
 
 		var id = 99999;
-		while(id > (this.totalBirds - 1)){
-			id = this.birdProbs[Math.floor(max * Math.random())];
+		while(id > (this.totalEnemy - 1)){
+			id = this.enemyProbs[Math.floor(max * Math.random())];
 		}
-		this.birdModels[id].target = player;
-		var bird = new Bird(this.birdModels[id], screen);
-		bird.id = id;
-		console.log(bird.id);
+		// this.enemyModels[id].target = player;
+		console.log(this.enemyModels);
+		var enemy = new Enemy(this.enemyModels[id], screen);
+		enemy.id = id;
+		console.log(enemy.id);
 		this.lastID = id;
-		return bird;
+		return enemy;
 	},
 	ableNewBird:function(birdModel){
 
-		if(!birdModel || this.totalBirds >= this.birdModels.length){
+		if(!birdModel || this.totalEnemy >= this.enemyModels.length){
 			return;
 		}
-		this.totalBirds = 0;
-		for (var i = 0; i < this.birdModels.length; i++) {
-			this.totalBirds ++;
-			if(this.birdModels[i].label === birdModel.label){
-				console.log(this.birdModels[i].label, birdModel.label);
+		this.totalEnemy = 0;
+		for (var i = 0; i < this.enemyModels.length; i++) {
+			this.totalEnemy ++;
+			if(this.enemyModels[i].label === birdModel.label){
+				console.log(this.enemyModels[i].label, birdModel.label);
 				break;
 			}
 		}
-		console.log(this.totalBirds);
-		APP.cookieManager.setCookie('totalBirds', this.totalBirds, 500);
+		console.log(this.totalEnemy);
+		APP.cookieManager.setCookie('totalEnemy', this.totalEnemy, 500);
 	},
 	add100Points:function(){
 		this.totalPoints += 100;

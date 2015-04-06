@@ -1,6 +1,6 @@
 /*jshint undef:false */
 var Enemy = Entity.extend({
-    init:function(screen){
+    init:function(model, screen){
         this._super( true );
         this.updateable = false;
        
@@ -8,44 +8,70 @@ var Enemy = Entity.extend({
         this.width = 1;
         this.height = 1;
         this.type = 'enemy';
-        // this.enemyModel
+        this.model = model;
+        this.velocity.y = this.model.vel;
+        this.hp = this.model.hp;
+
     },
     build: function(){
-        var cl = ['cloud1a.png','cloud2a.png','cloud3a.png'];
-        this.sprite = new PIXI.Sprite(new PIXI.Texture.fromImage(cl[Math.floor(cl.length * Math.random())]));
+
+        this.thumb = new PIXI.Sprite(new PIXI.Texture.fromImage(this.model.imgSource[0]));
+        this.thumb.anchor.x = 0.5;
+        this.thumb.anchor.y = 0.5;
+        this.thumb.scale.x = this.thumb.scale.y = 0.5;
+        this.sprite = new PIXI.Sprite();
 
         this.sprite.anchor.x = 0.5;
         this.sprite.anchor.y = 0.5;
 
         this.updateable = true;
         this.collidable = true;
+
+        var self = this;
+        var motionIdle = new SpritesheetAnimation();
+        motionIdle.build('idle', this.model.imgSource, 5, true, null);
+        this.spritesheet = new Spritesheet();
+        this.spritesheet.addAnimation(motionIdle);
+        this.spritesheet.play('idle');
+        this.getContent().addChild(this.spritesheet.container);
+        this.spritesheet.setPosition(0,0);
+
     },
     update: function(){
         this._super();
+        this.spritesheet.update();
         if(this.getContent().position.y > windowHeight){
             this.kill = true;
         }
     },
     hurt:function(){
-        this.preKill();
+        this.hp --;
+        if(this.hp <= 0){
+            this.preKill();
+        }
+    },
+    removeSprite:function(){
+        this.updateable = false;
+        this.collidable = false;
+        if(this.getContent().parent){
+            this.getContent().parent.removeChild(this.getContent());
+        }
     },
     preKill:function(){
         if(!this.collidable){
             return;
         }
-        for (var i = 5 - 1; i >= 0; i--) {
-            
-
-            // var particle = new Particles({x: Math.random() * 4 - 2, y:-(Math.random() * 4)}, 120, 'star.png', Math.random() * 0.1);
-            // particle.build();
-            // if(this.type === 'raio'){
-            //     particle.getContent().tint = 0xFF0000;
-            // }
-            // particle.gravity = 0.1 + Math.random() * 0.2;
-            // particle.alphadecres = 0.08;
-            // particle.setPosition(this.getPosition().x - (Math.random() + this.getContent().width * 0.1) / 2,
-            //     this.getPosition().y);
-            // this.layer.addChild(particle);
+        if(this.thumb.parent){
+            this.thumb.parent.removeChild(this.thumb);
+        }
+        for (var i = this.model.particles.length - 1; i >= 0; i--) {
+            var particle = new Particles({x: Math.random() * 4 - 2, y:-(Math.random() * 2 + 1)}, 120, this.model.particles[i], Math.random() * 0.1);
+            particle.build();
+            particle.gravity = 0.1 * Math.random();
+            particle.alphadecres = 0.08;
+            particle.setPosition(this.getPosition().x - (Math.random() + this.getContent().width * 0.1) / 2,
+                this.getPosition().y);
+            this.layer.addChild(particle);
 
         }
         var self = this;

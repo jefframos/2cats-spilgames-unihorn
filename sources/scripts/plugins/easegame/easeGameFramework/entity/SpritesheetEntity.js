@@ -6,7 +6,7 @@ var SpritesheetEntity =  Entity.extend({
 
 	build: function(spSheet){
 	    this.spritesheet = spSheet;
-	    this.spritesheet.setPosition(100,100);    
+	    this.spritesheet.setPosition(0,0);    
 	    this.setVelocity(1,1);  
 	},
 

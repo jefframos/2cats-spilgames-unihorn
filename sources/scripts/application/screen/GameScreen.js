@@ -63,8 +63,8 @@ var GameScreen = AbstractScreen.extend({
             var angle = Math.atan2(touchData.global.y - self.hornPos.y, touchData.global.x - self.hornPos.x);
             
             var tempCompare = angle* 180 / Math.PI;
-            console.log(tempCompare);
-            if((tempCompare) < -65 && (tempCompare) > -120)
+            // console.log(tempCompare);
+            if((tempCompare) < -45 && (tempCompare) > -125)
             {
                 self.mouseAngle = angle;
 
@@ -178,19 +178,48 @@ var GameScreen = AbstractScreen.extend({
         this.unihorn = new Unihorn();
         this.unihorn.build();
         this.addChild(this.unihorn);
-        console.log(this.unihorn.sprite.height);
+        // console.log(this.unihorn.sprite.height);
         var scl = scaleConverter(this.unihorn.neck.height, windowHeight, 0.25, this.unihorn);
         this.unihorn.getContent().position.y = windowHeight - this.unihorn.neck.height * scl;//this.unihorn.getContent().height;
         this.unihorn.getContent().position.x = windowWidth / 2 - this.unihorn.head.position.x * scl;//this.unihorn.getContent().height;
-        console.log(this.unihorn.head.position.x * scl);
+        // console.log(this.unihorn.head.position.x * scl);
 
         this.hornPos = {x:this.unihorn.head.position.x * scl, y:windowHeight - (this.unihorn.head.position.y * this.unihorn.head.anchor.y) * scl};// - this.unihorn.head.position.y * scl};
+        this.thumbContainer = new PIXI.DisplayObjectContainer();
+        this.addChild(this.thumbContainer);
+        this.back = new PIXI.Graphics();
+        this.back.beginFill(0);
+        this.back.drawRect(0,0,windowWidth, 50);
+        this.thumbContainer.addChild(this.back);
+        this.badClouds = [];
+        this.maxClouds = 10;
+    },
+    addEnemyThumb:function(enemy){
+        this.thumbContainer.addChild(enemy.thumb);
+    },
+    updateCloudList:function(){
+        for (var i = 0; i < this.spawner.enemyList.length; i++) {
+            if(this.spawner.enemyList[i].kill){
+                this.thumbContainer.removeChild(this.spawner.enemyList[i].thumb);
+                this.spawner.enemyList.splice(i,1);
+            }else{
+                var tempEnemy = this.spawner.enemyList[i];
+                var thumbEnemy = this.spawner.enemyList[i].thumb;
+                thumbEnemy.position.x = windowWidth - (windowWidth * (tempEnemy.getContent().position.y / windowHeight));
+                thumbEnemy.position.y = 30;
+                if(thumbEnemy.position.x < windowWidth / 2){
+                    tempEnemy.removeSprite();
+                    this.badClouds.push(thumbEnemy);
+                }
+            }
+        }
     },
     update:function(){
         if(!this.updateable){
             return;
         }
         this.spawner.update();
+        this.updateCloudList();
         this._super();
         if(this.fireAcum > 0){
             this.fireAcum--;

@@ -1,4 +1,4 @@
-/*! jefframos 02-04-2015 */
+/*! jefframos 06-04-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -324,7 +324,7 @@ var Application = AbstractApplication.extend({
             font: "15px Arial"
         }), this.stage.addChild(this.labelDebug), this.labelDebug.position.y = windowHeight - 20, 
         this.labelDebug.position.x = 20, this.mute = !1, this.audioController = new AudioController(), 
-        this.withAPI = !0, "#withoutAPI" === window.location.hash && (this.withAPI = !1);
+        this.appModel = new AppModel(), this.withAPI = !0, "#withoutAPI" === window.location.hash && (this.withAPI = !1);
     },
     update: function() {
         this._super(), this.withAPI && this.apiLogo && this.apiLogo.getContent().height > 1 && 0 === this.apiLogo.getContent().position.x && (scaleConverter(this.apiLogo.getContent().width, windowWidth, .5, this.apiLogo), 
@@ -538,24 +538,42 @@ var Application = AbstractApplication.extend({
         this.ambientPlaying || (this.ambientPlaying = !0, this.ambientSound1.play());
     }
 }), Enemy = Entity.extend({
-    init: function() {
+    init: function(model) {
         this._super(!0), this.updateable = !1, this.range = .05 * windowWidth, this.width = 1, 
-        this.height = 1, this.type = "enemy";
+        this.height = 1, this.type = "enemy", this.model = model, this.velocity.y = this.model.vel, 
+        this.hp = this.model.hp;
     },
     build: function() {
-        var cl = [ "cloud1a.png", "cloud2a.png", "cloud3a.png" ];
-        this.sprite = new PIXI.Sprite(new PIXI.Texture.fromImage(cl[Math.floor(cl.length * Math.random())])), 
-        this.sprite.anchor.x = .5, this.sprite.anchor.y = .5, this.updateable = !0, this.collidable = !0;
+        this.thumb = new PIXI.Sprite(new PIXI.Texture.fromImage(this.model.imgSource[0])), 
+        this.thumb.anchor.x = .5, this.thumb.anchor.y = .5, this.thumb.scale.x = this.thumb.scale.y = .5, 
+        this.sprite = new PIXI.Sprite(), this.sprite.anchor.x = .5, this.sprite.anchor.y = .5, 
+        this.updateable = !0, this.collidable = !0;
+        var motionIdle = new SpritesheetAnimation();
+        motionIdle.build("idle", this.model.imgSource, 5, !0, null), this.spritesheet = new Spritesheet(), 
+        this.spritesheet.addAnimation(motionIdle), this.spritesheet.play("idle"), this.getContent().addChild(this.spritesheet.container), 
+        this.spritesheet.setPosition(0, 0);
     },
     update: function() {
-        this._super(), this.getContent().position.y > windowHeight && (this.kill = !0);
+        this._super(), this.spritesheet.update(), this.getContent().position.y > windowHeight && (this.kill = !0);
     },
     hurt: function() {
-        this.preKill();
+        this.hp--, this.hp <= 0 && this.preKill();
+    },
+    removeSprite: function() {
+        this.updateable = !1, this.collidable = !1, this.getContent().parent && this.getContent().parent.removeChild(this.getContent());
     },
     preKill: function() {
         if (this.collidable) {
-            for (var i = 4; i >= 0; i--) ;
+            this.thumb.parent && this.thumb.parent.removeChild(this.thumb);
+            for (var i = this.model.particles.length - 1; i >= 0; i--) {
+                var particle = new Particles({
+                    x: 4 * Math.random() - 2,
+                    y: -(2 * Math.random() + 1)
+                }, 120, this.model.particles[i], .1 * Math.random());
+                particle.build(), particle.gravity = .1 * Math.random(), particle.alphadecres = .08, 
+                particle.setPosition(this.getPosition().x - (Math.random() + .1 * this.getContent().width) / 2, this.getPosition().y), 
+                this.layer.addChild(particle);
+            }
             var self = this;
             TweenLite.to(this.getContent(), .3, {
                 alpha: 0,
@@ -979,25 +997,60 @@ var Application = AbstractApplication.extend({
 }), AppModel = Class.extend({
     init: function() {
         this.currentPlayerModel = {}, console.log(APP);
-        var points = parseInt(APP.cookieManager.getCookie("totalPoints")), high = parseInt(APP.cookieManager.getCookie("highScore"));
+        var points = 0, high = 0;
         this.highScore = high ? high : 0, this.totalPoints = points ? points : 0, this.currentPoints = 0, 
-        this.playerModels = [], this.enemiesModels = [], this.setModel(0), this.totalPlayers = 0;
+        this.playerModels = [], this.enemyModels = [ new EnemyModel({
+            cover: "cloud1a.png",
+            source: [ "cloud1a.png" ],
+            particles: [ "bullet.png" ],
+            sizePercent: .2,
+            label: "Nuvem"
+        }, {
+            vel: 1,
+            toNext: 80,
+            behaviour: null,
+            money: 5,
+            hp: 5
+        }), new EnemyModel({
+            cover: "cloud2a.png",
+            source: [ "cloud2a.png" ],
+            particles: [ "bullet.png" ],
+            sizePercent: .2,
+            label: "Nuvem"
+        }, {
+            vel: .8,
+            toNext: 180,
+            behaviour: null,
+            money: 5,
+            hp: 5
+        }), new EnemyModel({
+            cover: "cloud3a.png",
+            source: [ "cloud3a.png" ],
+            particles: [ "bullet.png" ],
+            sizePercent: .2,
+            label: "Nuvem"
+        }, {
+            vel: 1.5,
+            toNext: 50,
+            behaviour: null,
+            money: 5,
+            hp: 5
+        }) ], this.setModel(0), this.totalPlayers = 0;
         for (var i = this.playerModels.length - 1; i >= 0; i--) this.playerModels[i].toAble <= this.totalPoints && (this.playerModels[i].able = !0, 
         this.totalPlayers++);
-        this.birdProbs = [ 0, 1, 0, 0, 0, 2, 0, 0, 0, 1, 2, 3, 0, 0, 2, 0, 3, 4, 4, 4, 4, 4, 0, 5, 5, 5, 5, 5, 0, 6, 6, 6, 6, 0, 7, 7, 7, 7, 4, 5, 6, 7 ], 
-        this.currentHorde = 0;
+        this.enemyProbs = [ 0, 1, 2 ], this.currentHorde = 0, this.totalEnemy = 3;
     },
     setModel: function(id) {
         this.currentID = id, this.currentPlayerModel = this.playerModels[id];
     },
     zerarTudo: function() {
-        this.currentHorde = 0, this.totalPoints = 0, this.totalBirds = 1, this.totalPlayers = 1, 
-        APP.cookieManager.setCookie("totalPoints", 0, 500), APP.cookieManager.setCookie("totalBirds", 1, 500);
+        this.currentHorde = 0, this.totalPoints = 0, this.totalEnemy = 1, this.totalPlayers = 1, 
+        APP.cookieManager.setCookie("totalPoints", 0, 500), APP.cookieManager.setCookie("totalEnemy", 1, 500);
         for (var i = this.playerModels.length - 1; i >= 0; i--) this.playerModels[i].able = this.playerModels[i].toAble <= this.totalPoints ? !0 : !1;
     },
     maxPoints: function() {
-        this.currentHorde = 0, this.totalPoints = 999999, this.totalBirds = 8, APP.cookieManager.setCookie("totalPoints", this.totalPoints, 500), 
-        APP.cookieManager.setCookie("totalBirds", this.totalBirds, 500);
+        this.currentHorde = 0, this.totalPoints = 999999, this.totalEnemy = 8, APP.cookieManager.setCookie("totalPoints", this.totalPoints, 500), 
+        APP.cookieManager.setCookie("totalEnemy", this.totalEnemy, 500);
         for (var i = this.playerModels.length - 1; i >= 0; i--) this.playerModels[i].able = this.playerModels[i].toAble <= this.totalPoints ? !0 : !1;
     },
     getNewObstacle: function(screen) {
@@ -1006,21 +1059,21 @@ var Application = AbstractApplication.extend({
     },
     getNewEnemy: function(player, screen) {
         this.currentHorde++;
-        var max = this.birdProbs.length;
+        var max = this.enemyProbs.length;
         this.currentHorde < max && (max = this.currentHorde);
-        for (var id = 99999; id > this.totalBirds - 1; ) id = this.birdProbs[Math.floor(max * Math.random())];
-        this.birdModels[id].target = player;
-        var bird = new Bird(this.birdModels[id], screen);
-        return bird.id = id, console.log(bird.id), this.lastID = id, bird;
+        for (var id = 99999; id > this.totalEnemy - 1; ) id = this.enemyProbs[Math.floor(max * Math.random())];
+        console.log(this.enemyModels);
+        var enemy = new Enemy(this.enemyModels[id], screen);
+        return enemy.id = id, console.log(enemy.id), this.lastID = id, enemy;
     },
     ableNewBird: function(birdModel) {
-        if (birdModel && !(this.totalBirds >= this.birdModels.length)) {
-            this.totalBirds = 0;
-            for (var i = 0; i < this.birdModels.length; i++) if (this.totalBirds++, this.birdModels[i].label === birdModel.label) {
-                console.log(this.birdModels[i].label, birdModel.label);
+        if (birdModel && !(this.totalEnemy >= this.enemyModels.length)) {
+            this.totalEnemy = 0;
+            for (var i = 0; i < this.enemyModels.length; i++) if (this.totalEnemy++, this.enemyModels[i].label === birdModel.label) {
+                console.log(this.enemyModels[i].label, birdModel.label);
                 break;
             }
-            console.log(this.totalBirds), APP.cookieManager.setCookie("totalBirds", this.totalBirds, 500);
+            console.log(this.totalEnemy), APP.cookieManager.setCookie("totalEnemy", this.totalEnemy, 500);
         }
     },
     add100Points: function() {
@@ -1068,6 +1121,17 @@ var Application = AbstractApplication.extend({
         });
         this.highscore = JSON.parse(sendObject), APP.cookieManager.setCookie("highScore", this.highscore, 500);
     }
+}), EnemyModel = Class.extend({
+    init: function(graphicsObject, statsObjec) {
+        this.cover = graphicsObject.cover ? graphicsObject.cover : "belga.png", this.imgSource = graphicsObject.source ? graphicsObject.source : [ "belga.png" ], 
+        this.particles = graphicsObject.particles ? graphicsObject.particles : [ "smoke.png" ], 
+        this.egg = graphicsObject.egg ? graphicsObject.egg : [ "smoke.png" ], this.sizePercent = graphicsObject.sizePercent ? graphicsObject.sizePercent : .2, 
+        this.label = graphicsObject.label ? graphicsObject.label : "", this.demage = statsObjec.demage, 
+        this.vel = statsObjec.vel, this.hp = statsObjec.hp, this.target = statsObjec.target, 
+        this.timeLive = 999, this.toNext = statsObjec.toNext ? statsObjec.toNext : 150, 
+        this.behaviour = statsObjec.behaviour, this.money = statsObjec.money;
+    },
+    serialize: function() {}
 }), PlayerModel = Class.extend({
     init: function(graphicsObject, statsObject) {
         this.range = 40, this.maxEnergy = 7e3, this.currentEnergy = 8e3, this.maxBulletEnergy = 100, 
@@ -1262,8 +1326,8 @@ var Application = AbstractApplication.extend({
         function updateVel(touchData) {
             testMobile() && fullscreen();
             var angle = Math.atan2(touchData.global.y - self.hornPos.y, touchData.global.x - self.hornPos.x), tempCompare = 180 * angle / Math.PI;
-            console.log(tempCompare), -65 > tempCompare && tempCompare > -120 && (self.mouseAngle = angle, 
-            angle = 180 * angle / Math.PI, angle += 90, angle = angle / 180 * Math.PI, self.unihorn.head.rotation = angle);
+            -45 > tempCompare && tempCompare > -125 && (self.mouseAngle = angle, angle = 180 * angle / Math.PI, 
+            angle += 90, angle = angle / 180 * Math.PI, self.unihorn.head.rotation = angle);
         }
         var self = this;
         this.bg = new SimpleSprite("fundo1.png"), this.addChild(this.bg.getContent()), scaleConverter(this.bg.getContent().width, windowWidth, 1.2, this.bg), 
@@ -1315,17 +1379,32 @@ var Application = AbstractApplication.extend({
         }), this.layerManager = new LayerManager(), this.layerManager.build("Main"), this.addChild(this.layerManager), 
         this.layer = new Layer(), this.layer.build("EntityLayer"), this.layerManager.addLayer(this.layer), 
         this.spawner = new Spawner(this), this.unihorn = new Unihorn(), this.unihorn.build(), 
-        this.addChild(this.unihorn), console.log(this.unihorn.sprite.height);
+        this.addChild(this.unihorn);
         var scl = scaleConverter(this.unihorn.neck.height, windowHeight, .25, this.unihorn);
         this.unihorn.getContent().position.y = windowHeight - this.unihorn.neck.height * scl, 
         this.unihorn.getContent().position.x = windowWidth / 2 - this.unihorn.head.position.x * scl, 
-        console.log(this.unihorn.head.position.x * scl), this.hornPos = {
+        this.hornPos = {
             x: this.unihorn.head.position.x * scl,
             y: windowHeight - this.unihorn.head.position.y * this.unihorn.head.anchor.y * scl
-        };
+        }, this.thumbContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.thumbContainer), 
+        this.back = new PIXI.Graphics(), this.back.beginFill(0), this.back.drawRect(0, 0, windowWidth, 50), 
+        this.thumbContainer.addChild(this.back), this.badClouds = [], this.maxClouds = 10;
+    },
+    addEnemyThumb: function(enemy) {
+        this.thumbContainer.addChild(enemy.thumb);
+    },
+    updateCloudList: function() {
+        for (var i = 0; i < this.spawner.enemyList.length; i++) if (this.spawner.enemyList[i].kill) this.thumbContainer.removeChild(this.spawner.enemyList[i].thumb), 
+        this.spawner.enemyList.splice(i, 1); else {
+            var tempEnemy = this.spawner.enemyList[i], thumbEnemy = this.spawner.enemyList[i].thumb;
+            thumbEnemy.position.x = windowWidth - windowWidth * (tempEnemy.getContent().position.y / windowHeight), 
+            thumbEnemy.position.y = 30, thumbEnemy.position.x < windowWidth / 2 && (tempEnemy.removeSprite(), 
+            this.badClouds.push(thumbEnemy));
+        }
     },
     update: function() {
-        this.updateable && (this.spawner.update(), this._super(), this.fireAcum > 0 ? this.fireAcum-- : this.touchDown && (this.shoot(this.mouseAngle), 
+        this.updateable && (this.spawner.update(), this.updateCloudList(), this._super(), 
+        this.fireAcum > 0 ? this.fireAcum-- : this.touchDown && (this.shoot(this.mouseAngle), 
         this.fireAcum = this.fireAcumMax));
     },
     shoot: function(angle) {
@@ -1895,17 +1974,16 @@ var Application = AbstractApplication.extend({
     }
 }), Spawner = Class.extend({
     init: function(screen) {
-        this.maxAccum = 150, this.accum = this.maxAccum, this.screen = screen;
+        this.maxAccum = 150, this.accum = this.maxAccum, this.screen = screen, this.enemyList = [];
     },
     build: function() {},
     update: function() {
         if (this.accum < 0) {
-            this.accum = this.maxAccum + 50 * Math.random();
-            var enemy = new Enemy(this.screen);
-            enemy.build(), scaleConverter(enemy.getContent().height, windowHeight, .08, enemy);
+            var enemy = APP.appModel.getNewEnemy(null, this.screen);
+            enemy.build(), this.accum = enemy.model.toNext;
             var part10 = .1 * windowWidth;
-            enemy.setPosition(part10 + (windowWidth - 2 * part10) * Math.random(), 0), enemy.velocity.y = 1, 
-            this.screen.layer.addChild(enemy);
+            enemy.setPosition(part10 + (windowWidth - 2 * part10) * Math.random(), 0), this.enemyList.push(enemy), 
+            this.screen.addEnemyThumb(enemy), this.screen.layer.addChild(enemy);
         } else this.accum--;
     }
 }), InputManager = Class.extend({

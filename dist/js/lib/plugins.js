@@ -1,4 +1,4 @@
-/*! jefframos 24-03-2015 */
+/*! jefframos 06-04-2015 */
 !function() {
     var cache = {}, ctx = null, usingWebAudio = !0, noAudio = !1;
     try {
@@ -7782,7 +7782,7 @@ var DefaultButton = Class.extend({
         this._super(!0), this.spritesheet;
     },
     build: function(spSheet) {
-        this.spritesheet = spSheet, this.spritesheet.setPosition(100, 100), this.setVelocity(1, 1);
+        this.spritesheet = spSheet, this.spritesheet.setPosition(0, 0), this.setVelocity(1, 1);
     },
     setPosition: function(x, y) {
         this.spritesheet && (this.spritesheet.position.x = x, this.spritesheet.position.y = y, 
