@@ -36,7 +36,6 @@ var GameScreen = AbstractScreen.extend({
         this.bg.getContent().position.x = windowWidth / 2 - this.bg.getContent().width / 2;
         this.bg.getContent().position.y = windowHeight / 2 - this.bg.getContent().height / 2;
 
-        
 
         this.darkShape = new PIXI.DisplayObjectContainer();
         this.addChild(this.darkShape);
@@ -191,17 +190,34 @@ var GameScreen = AbstractScreen.extend({
         this.unihorn.getContent().position.x = windowWidth / 2 - this.unihorn.head.position.x * scl;//this.unihorn.getContent().height;
         // console.log(this.unihorn.head.position.x * scl);
 
+
+        this.topD = new SimpleSprite('top_degrade.png');
+        this.addChild(this.topD.getContent());
+        this.topD.getContent().width = windowWidth * 1.5;
+        this.topD.getContent().position.x = -windowWidth * 0.25;
+        this.topD.getContent().blendModes = PIXI.blendModes.MULTIPLY;
+
         this.hornPos = {x:this.unihorn.head.position.x * scl, y:windowHeight - (this.unihorn.head.position.y * this.unihorn.head.anchor.y) * scl};// - this.unihorn.head.position.y * scl};
         this.thumbContainer = new PIXI.DisplayObjectContainer();
         this.addChild(this.thumbContainer);
         this.back = new PIXI.Graphics();
         this.back.beginFill(0);
-        this.back.drawRect(0,0,windowWidth, 50);
-        this.thumbContainer.addChild(this.back);
-        this.thumbContainer.position.y = 50;
+        this.back.drawRect(0,0,windowWidth, 40);
+        // this.thumbContainer.addChild(this.back);
+        this.thumbContainer.position.y = windowHeight * 0.05;
         this.badClouds = [];
         this.maxClouds = 10;
 
+        this.arcoiris = new SimpleSprite('arcoiris_redondo.png');
+        this.thumbContainer.addChild(this.arcoiris.getContent());
+        scaleConverter(this.arcoiris.getContent().width, windowWidth, 1.4, this.arcoiris);
+        this.arcoiris.getContent().position.x = -windowWidth * 0.2;
+        // this.arcoiris.getContent().position.y = windowHeight / 2 - this.arcoiris.getContent().height / 2;
+
+        
+
+        // this.thumbContainer.scale.x = 0.5;
+        // this.thumbContainer.scale.y = 0.5;
         
     },
     addEnemyThumb:function(enemy){
@@ -210,7 +226,7 @@ var GameScreen = AbstractScreen.extend({
     updateBadClouds:function(){
         for (var i = 0; i < this.badClouds.length; i++) {
             // this.badClouds[i].position.x = i * windowWidth / this.maxClouds;
-            TweenLite.to(this.badClouds[i].position, 0.3, {x : i * windowWidth / this.maxClouds});
+            TweenLite.to(this.badClouds[i].position, 0.3, {x :this.badClouds[i].width / 4 +  i * windowWidth / this.maxClouds});
         }
     },
     updateCloudList:function(){
@@ -226,11 +242,11 @@ var GameScreen = AbstractScreen.extend({
                 var maxL = windowWidth - windowWidth * (this.badClouds.length / this.maxClouds);
                 var acc = windowWidth / this.maxClouds * this.badClouds.length;
                 console.log(maxL, acc);
-                var targetX = acc + (maxL) - ((maxL) * (tempEnemy.getContent().position.y / windowHeight));
+                var targetX = thumbEnemy.width / 4 + acc + (maxL) - ((maxL) * (tempEnemy.getContent().position.y / windowHeight));
                 TweenLite.to(thumbEnemy.position, 0.3, {x : targetX});
                 //fazer aqui a curvatura
-                // TweenLite.to(thumbEnemy.position, 0.3, {y : targetX});
-                thumbEnemy.position.y = 30;
+                var center = Math.atan2(this.thumbContainer.position.y - windowHeight / 2, thumbEnemy.position.x - windowWidth / 2);
+                TweenLite.to(thumbEnemy.position, 0.3, {y : Math.sin(center) * windowHeight / 2 + windowHeight / 2 + thumbEnemy.height / 2});
                 if(this.badClouds.length >= this.maxClouds){
                     this.endModal.show();
                 }
@@ -238,7 +254,7 @@ var GameScreen = AbstractScreen.extend({
                     tempEnemy.removeSprite();
                     this.badClouds.push(thumbEnemy);
                     hasbad = true;
-                    TweenLite.to(this.darkShape, 0.5, {alpha:0.5 * this.badClouds.length / this.maxClouds});
+                    TweenLite.to(this.darkShape, 0.5, {alpha:0.8 * this.badClouds.length / this.maxClouds});
                 }
             }
         }

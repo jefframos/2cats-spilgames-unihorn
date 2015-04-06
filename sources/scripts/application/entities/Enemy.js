@@ -18,7 +18,8 @@ var Enemy = Entity.extend({
         this.thumb = new PIXI.Sprite(new PIXI.Texture.fromImage(this.model.imgSource[0]));
         this.thumb.anchor.x = 0.5;
         this.thumb.anchor.y = 0.5;
-        this.thumb.scale.x = this.thumb.scale.y = 0.5;
+        scaleConverter(this.thumb.height, 50, 1, this.thumb);
+        // this.thumb.scale.x = this.thumb.scale.y = 0.5;
         this.thumb.position.x = windowWidth + this.thumb.width;
         this.sprite = new PIXI.Sprite();
 

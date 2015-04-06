@@ -545,7 +545,7 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this.thumb = new PIXI.Sprite(new PIXI.Texture.fromImage(this.model.imgSource[0])), 
-        this.thumb.anchor.x = .5, this.thumb.anchor.y = .5, this.thumb.scale.x = this.thumb.scale.y = .5, 
+        this.thumb.anchor.x = .5, this.thumb.anchor.y = .5, scaleConverter(this.thumb.height, 50, 1, this.thumb), 
         this.thumb.position.x = windowWidth + this.thumb.width, this.sprite = new PIXI.Sprite(), 
         this.sprite.anchor.x = .5, this.sprite.anchor.y = .5, this.updateable = !0, this.collidable = !0;
         var motionIdle = new SpritesheetAnimation();
@@ -1389,20 +1389,24 @@ var Application = AbstractApplication.extend({
         var scl = scaleConverter(this.unihorn.neck.height, windowHeight, .25, this.unihorn);
         this.unihorn.getContent().position.y = windowHeight - this.unihorn.neck.height * scl, 
         this.unihorn.getContent().position.x = windowWidth / 2 - this.unihorn.head.position.x * scl, 
-        this.hornPos = {
+        this.topD = new SimpleSprite("top_degrade.png"), this.addChild(this.topD.getContent()), 
+        this.topD.getContent().width = 1.5 * windowWidth, this.topD.getContent().position.x = .25 * -windowWidth, 
+        this.topD.getContent().blendModes = PIXI.blendModes.MULTIPLY, this.hornPos = {
             x: this.unihorn.head.position.x * scl,
             y: windowHeight - this.unihorn.head.position.y * this.unihorn.head.anchor.y * scl
         }, this.thumbContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.thumbContainer), 
-        this.back = new PIXI.Graphics(), this.back.beginFill(0), this.back.drawRect(0, 0, windowWidth, 50), 
-        this.thumbContainer.addChild(this.back), this.thumbContainer.position.y = 50, this.badClouds = [], 
-        this.maxClouds = 10;
+        this.back = new PIXI.Graphics(), this.back.beginFill(0), this.back.drawRect(0, 0, windowWidth, 40), 
+        this.thumbContainer.position.y = .05 * windowHeight, this.badClouds = [], this.maxClouds = 10, 
+        this.arcoiris = new SimpleSprite("arcoiris_redondo.png"), this.thumbContainer.addChild(this.arcoiris.getContent()), 
+        scaleConverter(this.arcoiris.getContent().width, windowWidth, 1.4, this.arcoiris), 
+        this.arcoiris.getContent().position.x = .2 * -windowWidth;
     },
     addEnemyThumb: function(enemy) {
         this.thumbContainer.addChild(enemy.thumb);
     },
     updateBadClouds: function() {
         for (var i = 0; i < this.badClouds.length; i++) TweenLite.to(this.badClouds[i].position, .3, {
-            x: i * windowWidth / this.maxClouds
+            x: this.badClouds[i].width / 4 + i * windowWidth / this.maxClouds
         });
     },
     updateCloudList: function() {
@@ -1410,13 +1414,16 @@ var Application = AbstractApplication.extend({
         this.spawner.enemyList.splice(i, 1); else if (!this.spawner.enemyList[i].onList && !this.spawner.enemyList[i].kill) {
             var tempEnemy = this.spawner.enemyList[i], thumbEnemy = this.spawner.enemyList[i].thumb, maxL = windowWidth - windowWidth * (this.badClouds.length / this.maxClouds), acc = windowWidth / this.maxClouds * this.badClouds.length;
             console.log(maxL, acc);
-            var targetX = acc + maxL - maxL * (tempEnemy.getContent().position.y / windowHeight);
+            var targetX = thumbEnemy.width / 4 + acc + maxL - maxL * (tempEnemy.getContent().position.y / windowHeight);
             TweenLite.to(thumbEnemy.position, .3, {
                 x: targetX
-            }), thumbEnemy.position.y = 30, this.badClouds.length >= this.maxClouds && this.endModal.show(), 
-            tempEnemy.getContent().position.y > windowHeight && (tempEnemy.removeSprite(), this.badClouds.push(thumbEnemy), 
-            hasbad = !0, TweenLite.to(this.darkShape, .5, {
-                alpha: .5 * this.badClouds.length / this.maxClouds
+            });
+            var center = Math.atan2(this.thumbContainer.position.y - windowHeight / 2, thumbEnemy.position.x - windowWidth / 2);
+            TweenLite.to(thumbEnemy.position, .3, {
+                y: Math.sin(center) * windowHeight / 2 + windowHeight / 2 + thumbEnemy.height / 2
+            }), this.badClouds.length >= this.maxClouds && this.endModal.show(), tempEnemy.getContent().position.y > windowHeight && (tempEnemy.removeSprite(), 
+            this.badClouds.push(thumbEnemy), hasbad = !0, TweenLite.to(this.darkShape, .5, {
+                alpha: .8 * this.badClouds.length / this.maxClouds
             }));
         }
         hasbad && this.updateBadClouds();
