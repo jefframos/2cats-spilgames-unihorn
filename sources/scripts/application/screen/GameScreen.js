@@ -38,7 +38,14 @@ var GameScreen = AbstractScreen.extend({
 
         
 
-
+        this.darkShape = new PIXI.DisplayObjectContainer();
+        this.addChild(this.darkShape);
+        var dark = new PIXI.Graphics();
+        dark.beginFill(0);
+        dark.drawRect(0,0,windowWidth, windowHeight);
+        this.darkShape.addChild(dark);
+        this.darkShape.alpha = 0;
+        this.darkShape.blendModes = PIXI.blendModes.OVERLAY;
 
 
 
@@ -191,27 +198,52 @@ var GameScreen = AbstractScreen.extend({
         this.back.beginFill(0);
         this.back.drawRect(0,0,windowWidth, 50);
         this.thumbContainer.addChild(this.back);
+        this.thumbContainer.position.y = 50;
         this.badClouds = [];
         this.maxClouds = 10;
+
+        
     },
     addEnemyThumb:function(enemy){
         this.thumbContainer.addChild(enemy.thumb);
     },
+    updateBadClouds:function(){
+        for (var i = 0; i < this.badClouds.length; i++) {
+            // this.badClouds[i].position.x = i * windowWidth / this.maxClouds;
+            TweenLite.to(this.badClouds[i].position, 0.3, {x : i * windowWidth / this.maxClouds});
+        }
+    },
     updateCloudList:function(){
+        var hasbad = false;
         for (var i = 0; i < this.spawner.enemyList.length; i++) {
             if(this.spawner.enemyList[i].kill){
                 this.thumbContainer.removeChild(this.spawner.enemyList[i].thumb);
                 this.spawner.enemyList.splice(i,1);
-            }else{
+            }else if(!this.spawner.enemyList[i].onList && !this.spawner.enemyList[i].kill){
                 var tempEnemy = this.spawner.enemyList[i];
                 var thumbEnemy = this.spawner.enemyList[i].thumb;
-                thumbEnemy.position.x = windowWidth - (windowWidth * (tempEnemy.getContent().position.y / windowHeight));
+
+                var maxL = windowWidth - windowWidth * (this.badClouds.length / this.maxClouds);
+                var acc = windowWidth / this.maxClouds * this.badClouds.length;
+                console.log(maxL, acc);
+                var targetX = acc + (maxL) - ((maxL) * (tempEnemy.getContent().position.y / windowHeight));
+                TweenLite.to(thumbEnemy.position, 0.3, {x : targetX});
+                //fazer aqui a curvatura
+                // TweenLite.to(thumbEnemy.position, 0.3, {y : targetX});
                 thumbEnemy.position.y = 30;
-                if(thumbEnemy.position.x < windowWidth / 2){
+                if(this.badClouds.length >= this.maxClouds){
+                    this.endModal.show();
+                }
+                if(tempEnemy.getContent().position.y > windowHeight){
                     tempEnemy.removeSprite();
                     this.badClouds.push(thumbEnemy);
+                    hasbad = true;
+                    TweenLite.to(this.darkShape, 0.5, {alpha:0.5 * this.badClouds.length / this.maxClouds});
                 }
             }
+        }
+        if(hasbad){
+            this.updateBadClouds();
         }
     },
     update:function(){

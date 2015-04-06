@@ -546,25 +546,27 @@ var Application = AbstractApplication.extend({
     build: function() {
         this.thumb = new PIXI.Sprite(new PIXI.Texture.fromImage(this.model.imgSource[0])), 
         this.thumb.anchor.x = .5, this.thumb.anchor.y = .5, this.thumb.scale.x = this.thumb.scale.y = .5, 
-        this.sprite = new PIXI.Sprite(), this.sprite.anchor.x = .5, this.sprite.anchor.y = .5, 
-        this.updateable = !0, this.collidable = !0;
+        this.thumb.position.x = windowWidth + this.thumb.width, this.sprite = new PIXI.Sprite(), 
+        this.sprite.anchor.x = .5, this.sprite.anchor.y = .5, this.updateable = !0, this.collidable = !0;
         var motionIdle = new SpritesheetAnimation();
         motionIdle.build("idle", this.model.imgSource, 5, !0, null), this.spritesheet = new Spritesheet(), 
         this.spritesheet.addAnimation(motionIdle), this.spritesheet.play("idle"), this.getContent().addChild(this.spritesheet.container), 
         this.spritesheet.setPosition(0, 0);
     },
     update: function() {
-        this._super(), this.spritesheet.update(), this.getContent().position.y > windowHeight && (this.kill = !0);
+        this._super(), this.spritesheet.update(), this.getContent().position.y > windowHeight + 100 && (this.onList = !0, 
+        this.kill = !0);
     },
     hurt: function() {
         this.hp--, this.hp <= 0 && this.preKill();
     },
     removeSprite: function() {
-        this.updateable = !1, this.collidable = !1, this.getContent().parent && this.getContent().parent.removeChild(this.getContent());
+        this.updateable = !1, this.collidable = !1, this.removed = !0, this.onList = !0, 
+        this.getContent().parent && this.getContent().parent.removeChild(this.getContent());
     },
     preKill: function() {
         if (this.collidable) {
-            this.thumb.parent && this.thumb.parent.removeChild(this.thumb);
+            this.onList = !0, this.thumb.parent && this.thumb.parent.removeChild(this.thumb);
             for (var i = this.model.particles.length - 1; i >= 0; i--) {
                 var particle = new Particles({
                     x: 4 * Math.random() - 2,
@@ -1010,7 +1012,7 @@ var Application = AbstractApplication.extend({
             toNext: 80,
             behaviour: null,
             money: 5,
-            hp: 5
+            hp: 4
         }), new EnemyModel({
             cover: "cloud2a.png",
             source: [ "cloud2a.png" ],
@@ -1018,11 +1020,11 @@ var Application = AbstractApplication.extend({
             sizePercent: .2,
             label: "Nuvem"
         }, {
-            vel: .8,
-            toNext: 180,
+            vel: .7,
+            toNext: 190,
             behaviour: null,
             money: 5,
-            hp: 5
+            hp: 6
         }), new EnemyModel({
             cover: "cloud3a.png",
             source: [ "cloud3a.png" ],
@@ -1034,7 +1036,7 @@ var Application = AbstractApplication.extend({
             toNext: 50,
             behaviour: null,
             money: 5,
-            hp: 5
+            hp: 3
         }) ], this.setModel(0), this.totalPlayers = 0;
         for (var i = this.playerModels.length - 1; i >= 0; i--) this.playerModels[i].toAble <= this.totalPoints && (this.playerModels[i].able = !0, 
         this.totalPlayers++);
@@ -1333,9 +1335,13 @@ var Application = AbstractApplication.extend({
         this.bg = new SimpleSprite("fundo1.png"), this.addChild(this.bg.getContent()), scaleConverter(this.bg.getContent().width, windowWidth, 1.2, this.bg), 
         this.bg.getContent().position.x = windowWidth / 2 - this.bg.getContent().width / 2, 
         this.bg.getContent().position.y = windowHeight / 2 - this.bg.getContent().height / 2, 
-        this.renderLevel(), this.hitTouch = new PIXI.Graphics(), this.hitTouch.interactive = !0, 
-        this.hitTouch.beginFill(0), this.hitTouch.drawRect(0, 0, windowWidth, windowHeight), 
-        this.addChild(this.hitTouch), this.hitTouch.alpha = 0, this.hitTouch.hitArea = new PIXI.Rectangle(0, 0, windowWidth, windowHeight), 
+        this.darkShape = new PIXI.DisplayObjectContainer(), this.addChild(this.darkShape);
+        var dark = new PIXI.Graphics();
+        dark.beginFill(0), dark.drawRect(0, 0, windowWidth, windowHeight), this.darkShape.addChild(dark), 
+        this.darkShape.alpha = 0, this.darkShape.blendModes = PIXI.blendModes.OVERLAY, this.renderLevel(), 
+        this.hitTouch = new PIXI.Graphics(), this.hitTouch.interactive = !0, this.hitTouch.beginFill(0), 
+        this.hitTouch.drawRect(0, 0, windowWidth, windowHeight), this.addChild(this.hitTouch), 
+        this.hitTouch.alpha = 0, this.hitTouch.hitArea = new PIXI.Rectangle(0, 0, windowWidth, windowHeight), 
         this.mouseAngle = 0, testMobile() || (this.hitTouch.mousemove = function(touchData) {
             updateVel(touchData);
         }, this.hitTouch.mousedown = function(mouseData) {
@@ -1388,19 +1394,32 @@ var Application = AbstractApplication.extend({
             y: windowHeight - this.unihorn.head.position.y * this.unihorn.head.anchor.y * scl
         }, this.thumbContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.thumbContainer), 
         this.back = new PIXI.Graphics(), this.back.beginFill(0), this.back.drawRect(0, 0, windowWidth, 50), 
-        this.thumbContainer.addChild(this.back), this.badClouds = [], this.maxClouds = 10;
+        this.thumbContainer.addChild(this.back), this.thumbContainer.position.y = 50, this.badClouds = [], 
+        this.maxClouds = 10;
     },
     addEnemyThumb: function(enemy) {
         this.thumbContainer.addChild(enemy.thumb);
     },
+    updateBadClouds: function() {
+        for (var i = 0; i < this.badClouds.length; i++) TweenLite.to(this.badClouds[i].position, .3, {
+            x: i * windowWidth / this.maxClouds
+        });
+    },
     updateCloudList: function() {
-        for (var i = 0; i < this.spawner.enemyList.length; i++) if (this.spawner.enemyList[i].kill) this.thumbContainer.removeChild(this.spawner.enemyList[i].thumb), 
-        this.spawner.enemyList.splice(i, 1); else {
-            var tempEnemy = this.spawner.enemyList[i], thumbEnemy = this.spawner.enemyList[i].thumb;
-            thumbEnemy.position.x = windowWidth - windowWidth * (tempEnemy.getContent().position.y / windowHeight), 
-            thumbEnemy.position.y = 30, thumbEnemy.position.x < windowWidth / 2 && (tempEnemy.removeSprite(), 
-            this.badClouds.push(thumbEnemy));
+        for (var hasbad = !1, i = 0; i < this.spawner.enemyList.length; i++) if (this.spawner.enemyList[i].kill) this.thumbContainer.removeChild(this.spawner.enemyList[i].thumb), 
+        this.spawner.enemyList.splice(i, 1); else if (!this.spawner.enemyList[i].onList && !this.spawner.enemyList[i].kill) {
+            var tempEnemy = this.spawner.enemyList[i], thumbEnemy = this.spawner.enemyList[i].thumb, maxL = windowWidth - windowWidth * (this.badClouds.length / this.maxClouds), acc = windowWidth / this.maxClouds * this.badClouds.length;
+            console.log(maxL, acc);
+            var targetX = acc + maxL - maxL * (tempEnemy.getContent().position.y / windowHeight);
+            TweenLite.to(thumbEnemy.position, .3, {
+                x: targetX
+            }), thumbEnemy.position.y = 30, this.badClouds.length >= this.maxClouds && this.endModal.show(), 
+            tempEnemy.getContent().position.y > windowHeight && (tempEnemy.removeSprite(), this.badClouds.push(thumbEnemy), 
+            hasbad = !0, TweenLite.to(this.darkShape, .5, {
+                alpha: .5 * this.badClouds.length / this.maxClouds
+            }));
         }
+        hasbad && this.updateBadClouds();
     },
     update: function() {
         this.updateable && (this.spawner.update(), this.updateCloudList(), this._super(), 
@@ -1974,7 +1993,7 @@ var Application = AbstractApplication.extend({
     }
 }), Spawner = Class.extend({
     init: function(screen) {
-        this.maxAccum = 150, this.accum = this.maxAccum, this.screen = screen, this.enemyList = [];
+        this.maxAccum = 20, this.accum = this.maxAccum, this.screen = screen, this.enemyList = [];
     },
     build: function() {},
     update: function() {

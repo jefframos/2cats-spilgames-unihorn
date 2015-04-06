@@ -39,7 +39,7 @@ var AppModel = Class.extend({
 					toNext: 80,
 					behaviour: null,
 					money:5,
-					hp:5
+					hp:4
 				}
 			),
 				new EnemyModel(
@@ -51,11 +51,11 @@ var AppModel = Class.extend({
 					label:'Nuvem'
 				},
 				{
-					vel: 0.8,
-					toNext: 180,
+					vel: 0.7,
+					toNext: 190,
 					behaviour: null,
 					money:5,
-					hp:5
+					hp:6
 				}
 			),
 				new EnemyModel(
@@ -71,7 +71,7 @@ var AppModel = Class.extend({
 					toNext: 50,
 					behaviour: null,
 					money:5,
-					hp:5
+					hp:3
 				}
 			)
 			];

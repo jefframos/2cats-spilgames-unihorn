@@ -19,6 +19,7 @@ var Enemy = Entity.extend({
         this.thumb.anchor.x = 0.5;
         this.thumb.anchor.y = 0.5;
         this.thumb.scale.x = this.thumb.scale.y = 0.5;
+        this.thumb.position.x = windowWidth + this.thumb.width;
         this.sprite = new PIXI.Sprite();
 
         this.sprite.anchor.x = 0.5;
@@ -40,7 +41,8 @@ var Enemy = Entity.extend({
     update: function(){
         this._super();
         this.spritesheet.update();
-        if(this.getContent().position.y > windowHeight){
+        if(this.getContent().position.y > windowHeight + 100){
+            this.onList = true;
             this.kill = true;
         }
     },
@@ -53,6 +55,8 @@ var Enemy = Entity.extend({
     removeSprite:function(){
         this.updateable = false;
         this.collidable = false;
+        this.removed = true;
+        this.onList = true;
         if(this.getContent().parent){
             this.getContent().parent.removeChild(this.getContent());
         }
@@ -61,6 +65,7 @@ var Enemy = Entity.extend({
         if(!this.collidable){
             return;
         }
+        this.onList = true;
         if(this.thumb.parent){
             this.thumb.parent.removeChild(this.thumb);
         }

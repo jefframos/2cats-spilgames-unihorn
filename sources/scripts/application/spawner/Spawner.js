@@ -1,7 +1,7 @@
 /*jshint undef:false */
 var Spawner = Class.extend({
     init:function(screen){
-        this.maxAccum = 150;
+        this.maxAccum = 20;
         this.accum = this.maxAccum;
         this.screen = screen;
         this.enemyList = [];
