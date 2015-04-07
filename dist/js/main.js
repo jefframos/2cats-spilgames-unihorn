@@ -1,4 +1,4 @@
-/*! jefframos 06-04-2015 */
+/*! jefframos 07-04-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -541,7 +541,8 @@ var Application = AbstractApplication.extend({
     init: function(model) {
         this._super(!0), this.updateable = !1, this.range = .05 * windowWidth, this.width = 1, 
         this.height = 1, this.type = "enemy", this.model = model, this.velocity.y = this.model.vel, 
-        this.hp = this.model.hp;
+        this.vel = this.model.vel, this.hp = this.model.hp, this.behaviour = this.model.behaviour ? this.model.behaviour.clone() : null, 
+        this.resistance = this.model.resistance;
     },
     build: function() {
         this.thumb = new PIXI.Sprite(new PIXI.Texture.fromImage(this.model.imgSource[0])), 
@@ -554,11 +555,12 @@ var Application = AbstractApplication.extend({
         this.spritesheet.setPosition(0, 0);
     },
     update: function() {
-        this._super(), this.spritesheet.update(), this.getContent().position.y > windowHeight + 100 && (this.onList = !0, 
+        this._super(), this.velocity.y < this.vel ? this.velocity.y += .1 : this.velocity.y = this.vel, 
+        this.behaviour && this.behaviour.update(this), this.spritesheet.update(), this.getContent().position.y > windowHeight + 100 && (this.onList = !0, 
         this.kill = !0);
     },
     hurt: function() {
-        this.hp--, this.hp <= 0 && this.preKill();
+        this.hp--, this.velocity.y -= this.resistance, this.hp <= 0 && this.preKill();
     },
     removeSprite: function() {
         this.updateable = !1, this.collidable = !1, this.removed = !0, this.onList = !0, 
@@ -716,7 +718,7 @@ var Application = AbstractApplication.extend({
         return new BirdBehaviourSinoid(this.props);
     },
     update: function(entity) {
-        entity.velocity.y = this.props.velY ? Math.sin(this.sin) * this.props.velY : Math.sin(this.sin) * entity.vel, 
+        entity.velocity.x = this.props.velY ? Math.sin(this.sin) * this.props.velY : Math.sin(this.sin) * entity.vel, 
         this.sin += this.props.sinAcc;
     },
     build: function() {},
@@ -740,13 +742,14 @@ var Application = AbstractApplication.extend({
     destroy: function() {},
     serialize: function() {}
 }), Bullet = Entity.extend({
-    init: function(vel, timeLive, power, particle, rotation) {
+    init: function(vel, timeLive, demage, particle, rotation) {
         this._super(!0), this.updateable = !1, this.deading = !1, this.range = 80, this.width = 1, 
         this.height = 1, this.type = "bullet", this.target = "enemy", this.fireType = "physical", 
-        this.node = null, this.velocity.x = vel.x, this.velocity.y = vel.y, this.timeLive = timeLive, 
-        this.power = power, this.defaultVelocity = 1, this.imgSource = "bullet.png", this.particleSource = particle ? particle : this.imgSource, 
-        this.isRotation = rotation, this.isRotation && (this.accumRot = .1 * Math.random() - .05), 
-        this.sin = 0;
+        this.node = null, this.velocity.x = vel.x, this.velocity.y = vel.y, this.startVel = vel, 
+        this.timeLive = timeLive, this.demage = demage, this.vel = vel.x, this.defaultVelocity = 1, 
+        this.hasBounce = !1, this.piercing = !1, this.sinoid = 0, this.sin = 0, this.imgSource = "bullet.png", 
+        this.particleSource = particle ? particle : this.imgSource, this.isRotation = rotation, 
+        this.isRotation && (this.accumRot = .1 * Math.random() - .05), this.sin = 0, this.hasCollideEntity = [];
     },
     startScaleTween: function() {
         TweenLite.from(this.getContent().scale, .8, {
@@ -765,23 +768,16 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this.sprite = new PIXI.Sprite.fromFrame(this.imgSource), this.sprite.anchor.x = .5, 
-        this.sprite.anchor.y = .5, this.updateable = !0, this.collidable = !1, this.birdsCollided = [], 
+        this.sprite.anchor.y = .5, this.updateable = !0, this.collidable = !0, this.birdsCollided = [], 
         this.particlesCounterMax = (Math.abs(this.velocity.x) + Math.abs(this.velocity.y)) / 20, 
         this.particlesCounter = 20, this.collideArea = new PIXI.Rectangle(-50, -50, windowWidth + 100, windowHeight + 100);
     },
     update: function() {
-        if (this._super(), this.layer.collideChilds(this), this.updateableParticles(), (!this.targetEntity || this.targetEntity && this.targetEntity.kill) && this.timeLive--, 
-        (this.timeLive <= 0 || this.getPosition() > windowWidth + 20) && (this.kill = !0), 
-        this.range = this.sprite.height / 2, this.isRotation && (this.sprite.rotation += this.accumRot), 
-        this.targetEntity && !this.targetEntity.kill) if (this.homingStart <= 0) {
-            this.range = this.sprite.height;
-            var angle = Math.atan2(this.targetEntity.getPosition().y - this.getPosition().y, this.targetEntity.getPosition().x - this.getPosition().x);
-            this.getContent().rotation = angle, angle = 180 * angle / Math.PI, angle += 90, 
-            angle = angle / 180 * Math.PI, this.velocity.x = Math.sin(angle) * this.defaultVelocity, 
-            this.velocity.y = -Math.cos(angle) * this.defaultVelocity;
-        } else this.homingStart--;
-        this.sinoid && (this.velocity.y = 5 * Math.sin(this.sin) * this.velocity.x, this.sin += .2, 
-        this.getContent().rotation = 0), this.collideArea.contains(this.getPosition().x, this.getPosition().y) || (this.kill = !0);
+        this._super(), this.layer.collideChilds(this), this.updateableParticles(), (!this.targetEntity || this.targetEntity && this.targetEntity.kill) && this.timeLive--, 
+        this.getPosition().y < -20 && (this.kill = !0), this.range = this.sprite.height / 2, 
+        this.isRotation && (this.sprite.rotation += this.accumRot), this.hasBounce && (this.getPosition().x + this.velocity.x < 0 || this.getPosition().x + this.velocity.x > windowWidth) && (this.velocity.x *= -1), 
+        0 !== this.sinoid && (this.velocity.x = Math.sin(this.sin) * (Math.abs(this.startVel.x) + Math.abs(this.startVel.y)) + this.startVel.x, 
+        this.sin += this.sinoid, console.log(this.velocity)), this.collideArea.contains(this.getPosition().x, this.getPosition().y) || (this.kill = !0);
     },
     updateableParticles: function() {
         if (this.particlesCounter--, this.particlesCounter <= 0) {
@@ -800,8 +796,11 @@ var Application = AbstractApplication.extend({
         this.homingStart = timetostart, this.targetEntity = entity, this.getContent().rotation = angle;
     },
     collide: function(arrayCollide) {
-        if (this.collidable) for (var i = arrayCollide.length - 1; i >= 0; i--) "enemy" === arrayCollide[i].type && (this.preKill(), 
-        arrayCollide[i].hurt(this.power));
+        if (this.collidable) for (var pass = !0, i = arrayCollide.length - 1; i >= 0; i--) if ("enemy" === arrayCollide[i].type) {
+            if (this.hasCollideEntity.length > 0) for (var j = this.hasCollideEntity.length - 1; j >= 0; j--) this.hasCollideEntity[j] === arrayCollide[i] && (pass = !1);
+            pass && (this.piercing || this.preKill(), this.hasCollideEntity.push(arrayCollide[i]), 
+            arrayCollide[i].hurt(this.demage));
+        }
     },
     preKill: function() {
         if (!this.invencible) {
@@ -1010,9 +1009,12 @@ var Application = AbstractApplication.extend({
         }, {
             vel: 1,
             toNext: 80,
-            behaviour: null,
+            behaviour: new BirdBehaviourSinoid({
+                sinAcc: .05
+            }),
             money: 5,
-            hp: 4
+            hp: 4,
+            resistance: 1
         }), new EnemyModel({
             cover: "cloud2a.png",
             source: [ "cloud2a.png" ],
@@ -1024,7 +1026,8 @@ var Application = AbstractApplication.extend({
             toNext: 190,
             behaviour: null,
             money: 5,
-            hp: 6
+            hp: 6,
+            resistance: .6
         }), new EnemyModel({
             cover: "cloud3a.png",
             source: [ "cloud3a.png" ],
@@ -1032,11 +1035,12 @@ var Application = AbstractApplication.extend({
             sizePercent: .2,
             label: "Nuvem"
         }, {
-            vel: 1.5,
+            vel: 1.8,
             toNext: 50,
             behaviour: null,
             money: 5,
-            hp: 3
+            hp: 3,
+            resistance: 4.5
         }) ], this.setModel(0), this.totalPlayers = 0;
         for (var i = this.playerModels.length - 1; i >= 0; i--) this.playerModels[i].toAble <= this.totalPoints && (this.playerModels[i].able = !0, 
         this.totalPlayers++);
@@ -1064,9 +1068,8 @@ var Application = AbstractApplication.extend({
         var max = this.enemyProbs.length;
         this.currentHorde < max && (max = this.currentHorde);
         for (var id = 99999; id > this.totalEnemy - 1; ) id = this.enemyProbs[Math.floor(max * Math.random())];
-        console.log(this.enemyModels);
         var enemy = new Enemy(this.enemyModels[id], screen);
-        return enemy.id = id, console.log(enemy.id), this.lastID = id, enemy;
+        return enemy.id = id, this.lastID = id, enemy;
     },
     ableNewBird: function(birdModel) {
         if (birdModel && !(this.totalEnemy >= this.enemyModels.length)) {
@@ -1131,7 +1134,18 @@ var Application = AbstractApplication.extend({
         this.label = graphicsObject.label ? graphicsObject.label : "", this.demage = statsObjec.demage, 
         this.vel = statsObjec.vel, this.hp = statsObjec.hp, this.target = statsObjec.target, 
         this.timeLive = 999, this.toNext = statsObjec.toNext ? statsObjec.toNext : 150, 
-        this.behaviour = statsObjec.behaviour, this.money = statsObjec.money;
+        this.behaviour = statsObjec.behaviour, this.money = statsObjec.money, this.resistance = statsObjec.resistance ? statsObjec.resistance : 0;
+    },
+    serialize: function() {}
+}), HornModel = Class.extend({
+    init: function(graphicsObject, statsObjec) {
+        this.cover = graphicsObject.cover ? graphicsObject.cover : "uni_horn1.png", this.imgSource = graphicsObject.source ? graphicsObject.source : "uni_horn1.png", 
+        this.bulletSource = graphicsObject.bulletSource ? graphicsObject.bulletSource : "bullet.png.png", 
+        this.label = graphicsObject.label ? graphicsObject.label : "", this.demage = statsObjec.demage ? statsObjec.demage : 1, 
+        this.fireSpeed = statsObjec.fireSpeed ? statsObjec.fireSpeed : 10, this.fireAcumMax = statsObjec.fireAcumMax ? statsObjec.fireAcumMax : 10, 
+        this.hasMultiple = statsObjec.hasMultiple ? statsObjec.hasMultiple : 1, this.hasBounce = statsObjec.hasBounce ? statsObjec.hasBounce : !0, 
+        this.piercing = statsObjec.piercing ? statsObjec.piercing : !0, this.sinoid = statsObjec.sinoid ? statsObjec.sinoid : .1, 
+        this.sinoid = statsObjec.sinoid ? statsObjec.sinoid : 0;
     },
     serialize: function() {}
 }), PlayerModel = Class.extend({
@@ -1304,7 +1318,7 @@ var Application = AbstractApplication.extend({
     }
 }), GameScreen = AbstractScreen.extend({
     init: function(label) {
-        this._super(label), this.isLoaded = !1, this.pinDefaultVelocity = 3;
+        this._super(label), this.isLoaded = !1, this.pinDefaultVelocity = 3, APP.currentHornModel = new HornModel({}, {});
     },
     destroy: function() {
         this._super();
@@ -1354,7 +1368,7 @@ var Application = AbstractApplication.extend({
             self.touchDown = !0, updateVel(touchData);
         }, this.hitTouch.touchend = function(touchData) {
             self.touchDown = !1, updateVel(touchData);
-        }, this.updateable = !0, this.fireAcumMax = 20, this.fireAcum = this.fireAcumMax, 
+        }, this.updateable = !0, this.fireAcumMax = APP.currentHornModel.fireAcumMax, this.fireAcum = this.fireAcumMax, 
         this.pauseButton = new DefaultButton("UI_button_pause_1.png", "UI_button_pause_1_over.png", "UI_button_pause_1_over.png"), 
         this.pauseButton.build(), scaleConverter(this.pauseButton.getContent().width, windowWidth, .1, this.pauseButton), 
         this.pauseButton.setPosition(20, 20), this.addChild(this.pauseButton), this.pauseButton.clickCallback = function() {
@@ -1412,9 +1426,7 @@ var Application = AbstractApplication.extend({
     updateCloudList: function() {
         for (var hasbad = !1, i = 0; i < this.spawner.enemyList.length; i++) if (this.spawner.enemyList[i].kill) this.thumbContainer.removeChild(this.spawner.enemyList[i].thumb), 
         this.spawner.enemyList.splice(i, 1); else if (!this.spawner.enemyList[i].onList && !this.spawner.enemyList[i].kill) {
-            var tempEnemy = this.spawner.enemyList[i], thumbEnemy = this.spawner.enemyList[i].thumb, maxL = windowWidth - windowWidth * (this.badClouds.length / this.maxClouds), acc = windowWidth / this.maxClouds * this.badClouds.length;
-            console.log(maxL, acc);
-            var targetX = thumbEnemy.width / 4 + acc + maxL - maxL * (tempEnemy.getContent().position.y / windowHeight);
+            var tempEnemy = this.spawner.enemyList[i], thumbEnemy = this.spawner.enemyList[i].thumb, maxL = windowWidth - windowWidth * (this.badClouds.length / this.maxClouds), acc = windowWidth / this.maxClouds * this.badClouds.length, targetX = thumbEnemy.width / 4 + acc + maxL - maxL * (tempEnemy.getContent().position.y / windowHeight);
             TweenLite.to(thumbEnemy.position, .3, {
                 x: targetX
             });
@@ -1435,12 +1447,18 @@ var Application = AbstractApplication.extend({
     },
     shoot: function(angle) {
         if (!this.blockPause) {
-            var timeLive = 100, vel = 10, bullet = new Bullet({
-                x: Math.cos(angle) * vel,
-                y: Math.sin(angle) * vel
-            }, timeLive, 5, null, !0);
-            bullet.build(), scaleConverter(bullet.getContent().height, windowHeight, .06, bullet), 
-            bullet.startScaleTween(), bullet.setPosition(this.hornPos.x, this.hornPos.y), this.layer.addChild(bullet);
+            var timeLive = 100, vel = APP.currentHornModel.fireSpeed, angleOpen = .1, totalFires = APP.currentHornModel.hasMultiple;
+            console.log(totalFires);
+            for (var i = 0; totalFires > i; i++) {
+                var tempAngle = angle + angleOpen * (i - totalFires / 2), bullet = new Bullet({
+                    x: Math.cos(tempAngle) * vel,
+                    y: Math.sin(tempAngle) * vel
+                }, timeLive, 5, null, !0);
+                bullet.build(), bullet.hasBounce = APP.currentHornModel.hasBounce, bullet.piercing = APP.currentHornModel.piercing, 
+                bullet.demage = APP.currentHornModel.demage, bullet.sinoid = APP.currentHornModel.sinoid, 
+                scaleConverter(bullet.getContent().height, windowHeight, .06, bullet), bullet.startScaleTween(), 
+                bullet.setPosition(this.hornPos.x, this.hornPos.y), this.layer.addChild(bullet);
+            }
         }
     },
     reset: function() {
@@ -1523,7 +1541,6 @@ var Application = AbstractApplication.extend({
         this.build();
     },
     transitionOut: function(nextScreen, container) {
-        console.log("out");
         var self = this;
         this.frontShape ? (this.frontShape.parent.setChildIndex(this.frontShape, this.frontShape.parent.children.length - 1), 
         TweenLite.to(this.frontShape, .3, {

@@ -10,8 +10,10 @@ var Enemy = Entity.extend({
         this.type = 'enemy';
         this.model = model;
         this.velocity.y = this.model.vel;
+        this.vel = this.model.vel;
         this.hp = this.model.hp;
-
+        this.behaviour = this.model.behaviour?this.model.behaviour.clone():null;
+        this.resistance = this.model.resistance;
     },
     build: function(){
 
@@ -41,6 +43,14 @@ var Enemy = Entity.extend({
     },
     update: function(){
         this._super();
+        if(this.velocity.y < this.vel){
+            this.velocity.y += 0.1;
+        }else{
+            this.velocity.y = this.vel;
+        }
+        if(this.behaviour){
+            this.behaviour.update(this);
+        }
         this.spritesheet.update();
         if(this.getContent().position.y > windowHeight + 100){
             this.onList = true;
@@ -49,6 +59,7 @@ var Enemy = Entity.extend({
     },
     hurt:function(){
         this.hp --;
+        this.velocity.y -= this.resistance;
         if(this.hp <= 0){
             this.preKill();
         }

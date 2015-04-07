@@ -37,9 +37,10 @@ var AppModel = Class.extend({
 				{
 					vel: 1,
 					toNext: 80,
-					behaviour: null,
+					behaviour:new BirdBehaviourSinoid({sinAcc:0.05}),
 					money:5,
-					hp:4
+					hp:4,
+					resistance: 1
 				}
 			),
 				new EnemyModel(
@@ -55,7 +56,8 @@ var AppModel = Class.extend({
 					toNext: 190,
 					behaviour: null,
 					money:5,
-					hp:6
+					hp:6,
+					resistance: 0.6
 				}
 			),
 				new EnemyModel(
@@ -67,11 +69,12 @@ var AppModel = Class.extend({
 					label:'Nuvem'
 				},
 				{
-					vel: 1.5,
+					vel: 1.8,
 					toNext: 50,
 					behaviour: null,
 					money:5,
-					hp:3
+					hp:3,
+					resistance: 4.5
 				}
 			)
 			];
@@ -146,10 +149,10 @@ var AppModel = Class.extend({
 			id = this.enemyProbs[Math.floor(max * Math.random())];
 		}
 		// this.enemyModels[id].target = player;
-		console.log(this.enemyModels);
+		// console.log(this.enemyModels);
 		var enemy = new Enemy(this.enemyModels[id], screen);
 		enemy.id = id;
-		console.log(enemy.id);
+		// console.log(enemy.id);
 		this.lastID = id;
 		return enemy;
 	},

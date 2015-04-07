@@ -17,6 +17,7 @@ var EnemyModel = Class.extend({
 		this.toNext = statsObjec.toNext?statsObjec.toNext:150;
 		this.behaviour = statsObjec.behaviour;
 		this.money = statsObjec.money;
+		this.resistance = statsObjec.resistance?statsObjec.resistance:0;
 	},
 	serialize:function(){
 		

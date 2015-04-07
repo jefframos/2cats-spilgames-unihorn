@@ -11,9 +11,9 @@ var BirdBehaviourSinoid = Class.extend({
 	},
 	update:function(entity){
 		if(this.props.velY){
-			entity.velocity.y = Math.sin(this.sin) * this.props.velY;
+			entity.velocity.x = Math.sin(this.sin) * this.props.velY;
 		}else{
-			entity.velocity.y = Math.sin(this.sin) * entity.vel;
+			entity.velocity.x = Math.sin(this.sin) * entity.vel;
 		}
         this.sin += this.props.sinAcc;
         // console.log(entity.getPosition());

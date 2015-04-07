@@ -4,6 +4,7 @@ var GameScreen = AbstractScreen.extend({
         this._super(label);
         this.isLoaded = false;
         this.pinDefaultVelocity = 3;
+        APP.currentHornModel = new HornModel({},{});
     },
     destroy: function () {
         this._super();
@@ -110,7 +111,7 @@ var GameScreen = AbstractScreen.extend({
         };
 
         this.updateable = true;
-        this.fireAcumMax = 20;
+        this.fireAcumMax = APP.currentHornModel.fireAcumMax;
         this.fireAcum = this.fireAcumMax;
 
 
@@ -241,7 +242,7 @@ var GameScreen = AbstractScreen.extend({
 
                 var maxL = windowWidth - windowWidth * (this.badClouds.length / this.maxClouds);
                 var acc = windowWidth / this.maxClouds * this.badClouds.length;
-                console.log(maxL, acc);
+                // console.log(maxL, acc);
                 var targetX = thumbEnemy.width / 4 + acc + (maxL) - ((maxL) * (tempEnemy.getContent().position.y / windowHeight));
                 TweenLite.to(thumbEnemy.position, 0.3, {x : targetX});
                 //fazer aqui a curvatura
@@ -284,17 +285,38 @@ var GameScreen = AbstractScreen.extend({
         }
         var timeLive = 100;
 
-        var vel = 10;
+        var vel = APP.currentHornModel.fireSpeed;
 
-        var bullet = new Bullet({x:Math.cos(angle) * vel,
-            y:Math.sin(angle) * vel},
+        // var bullet = new Bullet({x:Math.cos(angle) * vel,
+        //     y:Math.sin(angle) * vel},
+        //     timeLive, 5, null, true);
+        // bullet.build();
+        // bullet.hasBounce = APP.currentHornModel.hasBounce;
+        // bullet.demage = APP.currentHornModel.demage;
+        // scaleConverter(bullet.getContent().height,windowHeight, 0.06, bullet);
+        // bullet.startScaleTween();
+        // //UTILIZAR O ANGULO PARA CALCULAR A POSIÇÃO CORRETA DO TIRO
+        // bullet.setPosition(this.hornPos.x, this.hornPos.y);
+        // this.layer.addChild(bullet);
+        var angleOpen = 0.1;
+        var totalFires = APP.currentHornModel.hasMultiple;
+        console.log(totalFires);
+        for (var i = 0; i < totalFires; i++) {
+            var tempAngle = angle + angleOpen * (i - totalFires / 2);
+            var bullet = new Bullet({x:Math.cos(tempAngle) * vel,
+            y:Math.sin(tempAngle) * vel},
             timeLive, 5, null, true);
-        bullet.build();
-        scaleConverter(bullet.getContent().height,windowHeight, 0.06, bullet);
-        bullet.startScaleTween();
-        //UTILIZAR O ANGULO PARA CALCULAR A POSIÇÃO CORRETA DO TIRO
-        bullet.setPosition(this.hornPos.x, this.hornPos.y);
-        this.layer.addChild(bullet);
+            bullet.build();
+            bullet.hasBounce = APP.currentHornModel.hasBounce;
+            bullet.piercing = APP.currentHornModel.piercing;
+            bullet.demage = APP.currentHornModel.demage;
+            bullet.sinoid = APP.currentHornModel.sinoid;
+            scaleConverter(bullet.getContent().height,windowHeight, 0.06, bullet);
+            bullet.startScaleTween();
+            //UTILIZAR O ANGULO PARA CALCULAR A POSIÇÃO CORRETA DO TIRO
+            bullet.setPosition(this.hornPos.x, this.hornPos.y);
+            this.layer.addChild(bullet);
+        }
     },
     reset:function(){
         this.destroy();
@@ -405,7 +427,7 @@ var GameScreen = AbstractScreen.extend({
     transitionOut:function(nextScreen, container)
     {
         // this._super();
-        console.log('out');
+        // console.log('out');
         var self = this;
         if(this.frontShape){
             this.frontShape.parent.setChildIndex(this.frontShape, this.frontShape.parent.children.length - 1);

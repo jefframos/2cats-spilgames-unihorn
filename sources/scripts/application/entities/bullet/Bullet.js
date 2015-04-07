@@ -1,6 +1,6 @@
 /*jshint undef:false */
 var Bullet = Entity.extend({
-    init:function(vel, timeLive, power, particle, rotation){
+    init:function(vel, timeLive, demage, particle, rotation){
         this._super( true );
         this.updateable = false;
         this.deading = false;
@@ -13,9 +13,15 @@ var Bullet = Entity.extend({
         this.node = null;
         this.velocity.x = vel.x;
         this.velocity.y = vel.y;
+        this.startVel = vel;
         this.timeLive = timeLive;
-        this.power = power;
+        this.demage = demage;
+        this.vel = vel.x;
         this.defaultVelocity = 1;
+        this.hasBounce = false;
+        this.piercing = false;
+        this.sinoid = 0;
+        this.sin = 0;
         // this.defaultVelocity.y = vel.y;
         //console.log(bulletSource);
         this.imgSource = 'bullet.png';
@@ -25,6 +31,7 @@ var Bullet = Entity.extend({
             this.accumRot = Math.random() * 0.1 - 0.05;
         }
         this.sin = 0;
+        this.hasCollideEntity = [];
     },
     startScaleTween: function(){
         TweenLite.from(this.getContent().scale, 0.8, {x:0, y:0, ease:'easeOutBack'});
@@ -42,7 +49,7 @@ var Bullet = Entity.extend({
         this.sprite.anchor.y = 0.5;
 
         this.updateable = true;
-        this.collidable = false;
+        this.collidable = true;
 
         // this.getContent().alpha = 0.5;
         // TweenLite.to(this.getContent(), 0.3, {alpha:1});
@@ -59,39 +66,50 @@ var Bullet = Entity.extend({
         this._super();
         this.layer.collideChilds(this);
         this.updateableParticles();
+
+        
         if(!this.targetEntity || (this.targetEntity && this.targetEntity.kill)){
             this.timeLive --;
         }
-        if(this.timeLive <= 0 || this.getPosition() > windowWidth + 20){
+        if(this.getPosition().y < -20){
             this.kill = true;
         }
         this.range = this.sprite.height / 2;
         if(this.isRotation){
             this.sprite.rotation += this.accumRot;
         }
-        if(this.targetEntity && !this.targetEntity.kill){
-            if(this.homingStart <= 0){
-                this.range = this.sprite.height;
-                var angle = Math.atan2(this.targetEntity.getPosition().y - this.getPosition().y, this.targetEntity.getPosition().x - this.getPosition().x);
-                // var angle = Math.atan2(this.getPosition().y - this.targetEntity.getPosition().y,this.getPosition().x - this.targetEntity.getPosition().x);
-                this.getContent().rotation = angle;
-                angle = angle * 180 / Math.PI;
-                angle += 90;
-                angle = angle / 180 * Math.PI;
-                // console.log(angle);
-                this.velocity.x = Math.sin(angle) * this.defaultVelocity;
-                this.velocity.y = -Math.cos(angle) * this.defaultVelocity;
-            }
-            else{
-                this.homingStart --;
+        // if(this.targetEntity && !this.targetEntity.kill){
+        //     if(this.homingStart <= 0){
+        //         this.range = this.sprite.height;
+        //         var angle = Math.atan2(this.targetEntity.getPosition().y - this.getPosition().y, this.targetEntity.getPosition().x - this.getPosition().x);
+        //         // var angle = Math.atan2(this.getPosition().y - this.targetEntity.getPosition().y,this.getPosition().x - this.targetEntity.getPosition().x);
+        //         this.getContent().rotation = angle;
+        //         angle = angle * 180 / Math.PI;
+        //         angle += 90;
+        //         angle = angle / 180 * Math.PI;
+        //         // console.log(angle);
+        //         this.velocity.x = Math.sin(angle) * this.defaultVelocity;
+        //         this.velocity.y = -Math.cos(angle) * this.defaultVelocity;
+        //     }
+        //     else{
+        //         this.homingStart --;
 
-            }
+        //     }
+        // }
+
+        // if(this.sinoid){
+        //     this.velocity.y = Math.sin(this.sin) * (this.velocity.x * 5);
+        //     this.sin += 0.2;
+        //     this.getContent().rotation = 0;
+        // }
+        if(this.hasBounce && (this.getPosition().x + this.velocity.x < 0 || this.getPosition().x + this.velocity.x > windowWidth)){
+            this.velocity.x *= -1;
         }
 
-        if(this.sinoid){
-            this.velocity.y = Math.sin(this.sin) * (this.velocity.x * 5);
-            this.sin += 0.2;
-            this.getContent().rotation = 0;
+        if(this.sinoid !== 0){
+            this.velocity.x = Math.sin(this.sin) * (Math.abs(this.startVel.x) + Math.abs(this.startVel.y)) + this.startVel.x;//this.vel;
+            this.sin += this.sinoid;
+            console.log(this.velocity);
         }
 
         if(!this.collideArea.contains(this.getPosition().x, this.getPosition().y)){
@@ -159,10 +177,23 @@ var Bullet = Entity.extend({
     collide:function(arrayCollide){
         // console.log('fireCollide', arrayCollide[0]);
         if(this.collidable){
+            var pass = true;
             for (var i = arrayCollide.length - 1; i >= 0; i--) {
                 if(arrayCollide[i].type === 'enemy'){
-                    this.preKill();
-                    arrayCollide[i].hurt(this.power);
+                    if(this.hasCollideEntity.length > 0){
+                        for (var j = this.hasCollideEntity.length - 1; j >= 0; j--) {
+                            if(this.hasCollideEntity[j] === arrayCollide[i]){
+                                pass = false;
+                            }
+                        }
+                    }
+                    if(pass){
+                        if(!this.piercing){
+                            this.preKill();
+                        }
+                        this.hasCollideEntity.push(arrayCollide[i]);
+                        arrayCollide[i].hurt(this.demage);
+                    }
                 }
             }
         }
