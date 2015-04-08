@@ -1,4 +1,4 @@
-/*! jefframos 07-04-2015 */
+/*! jefframos 08-04-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -599,6 +599,12 @@ var Application = AbstractApplication.extend({
     getContent: function() {
         return this.sprite;
     },
+    shoot: function() {
+        TweenLite.from(this.horn.scale, .5, {
+            y: .3,
+            ease: "easeOutElastic"
+        });
+    },
     build: function() {
         this.sprite = new PIXI.Sprite(), this.sprite.anchor.x = .5, this.sprite.anchor.y = .5, 
         this.sprite.addChild(this.neck), this.neck.addChild(this.head), this.head.anchor.x = .5, 
@@ -776,7 +782,7 @@ var Application = AbstractApplication.extend({
         this._super(), this.layer.collideChilds(this), this.updateableParticles(), (!this.targetEntity || this.targetEntity && this.targetEntity.kill) && this.timeLive--, 
         this.getPosition().y < -20 && (this.kill = !0), this.range = this.sprite.height / 2, 
         this.isRotation && (this.sprite.rotation += this.accumRot), this.hasBounce && (this.getPosition().x + this.velocity.x < 0 || this.getPosition().x + this.velocity.x > windowWidth) && (this.velocity.x *= -1), 
-        0 !== this.sinoid && (this.velocity.x = Math.sin(this.sin) * (Math.abs(this.startVel.x) + Math.abs(this.startVel.y)) + this.startVel.x, 
+        0 !== this.sinoid && (this.velocity.x = 5 * Math.sin(this.sin) + this.startVel.x, 
         this.sin += this.sinoid, console.log(this.velocity)), this.collideArea.contains(this.getPosition().x, this.getPosition().y) || (this.kill = !0);
     },
     updateableParticles: function() {
@@ -1000,7 +1006,68 @@ var Application = AbstractApplication.extend({
         this.currentPlayerModel = {}, console.log(APP);
         var points = 0, high = 0;
         this.highScore = high ? high : 0, this.totalPoints = points ? points : 0, this.currentPoints = 0, 
-        this.playerModels = [], this.enemyModels = [ new EnemyModel({
+        this.playerModels = [], this.hornModels = [ new HornModel({
+            cover: "uni_horn1.png",
+            source: "uni_horn1.png",
+            bulletSource: "bullet.png",
+            label: "Sinoid"
+        }, {
+            size: 1,
+            demage: 1,
+            fireAcumMax: 15,
+            hasMultiple: 1,
+            hasBounce: !1,
+            sinoid: .5
+        }), new HornModel({
+            cover: "uni_horn1.png",
+            source: "uni_horn1.png",
+            bulletSource: "bullet.png",
+            label: "Piercing"
+        }, {
+            size: 1,
+            demage: 1,
+            fireAcumMax: 15,
+            hasMultiple: 1,
+            hasBounce: !1,
+            piercing: !0,
+            sinoid: 0
+        }), new HornModel({
+            cover: "uni_horn1.png",
+            source: "uni_horn1.png",
+            bulletSource: "bullet.png",
+            label: "Piercing"
+        }, {
+            size: 1,
+            demage: 1,
+            fireAcumMax: 15,
+            hasMultiple: 1,
+            hasBounce: !0,
+            sinoid: 0
+        }), new HornModel({
+            cover: "uni_horn1.png",
+            source: "uni_horn1.png",
+            bulletSource: "bullet.png",
+            label: "Piercing"
+        }, {
+            size: 1,
+            demage: 1,
+            fireAcumMax: 15,
+            hasMultiple: 3,
+            hasBounce: !1,
+            sinoid: 0
+        }), new HornModel({
+            cover: "uni_horn1.png",
+            source: "uni_horn1.png",
+            bulletSource: "bullet.png",
+            label: "Piercing"
+        }, {
+            size: 1,
+            demage: 1,
+            fireAcumMax: 15,
+            hasMultiple: 5,
+            hasBounce: !1,
+            sinoid: 0
+        }) ], this.enemyModels = [ new EnemyModel({
             cover: "cloud1a.png",
             source: [ "cloud1a.png" ],
             particles: [ "bullet.png" ],
@@ -1140,11 +1207,11 @@ var Application = AbstractApplication.extend({
 }), HornModel = Class.extend({
     init: function(graphicsObject, statsObjec) {
         this.cover = graphicsObject.cover ? graphicsObject.cover : "uni_horn1.png", this.imgSource = graphicsObject.source ? graphicsObject.source : "uni_horn1.png", 
-        this.bulletSource = graphicsObject.bulletSource ? graphicsObject.bulletSource : "bullet.png.png", 
-        this.label = graphicsObject.label ? graphicsObject.label : "", this.demage = statsObjec.demage ? statsObjec.demage : 1, 
-        this.fireSpeed = statsObjec.fireSpeed ? statsObjec.fireSpeed : 10, this.fireAcumMax = statsObjec.fireAcumMax ? statsObjec.fireAcumMax : 10, 
-        this.hasMultiple = statsObjec.hasMultiple ? statsObjec.hasMultiple : 1, this.hasBounce = statsObjec.hasBounce ? statsObjec.hasBounce : !0, 
-        this.piercing = statsObjec.piercing ? statsObjec.piercing : !0, this.sinoid = statsObjec.sinoid ? statsObjec.sinoid : .1, 
+        this.bulletSource = graphicsObject.bulletSource ? graphicsObject.bulletSource : "bullet.png", 
+        this.label = graphicsObject.label ? graphicsObject.label : "", this.sizePercent = statsObjec.sizePercent ? statsObjec.sizePercent : 1, 
+        this.demage = statsObjec.demage ? statsObjec.demage : 1, this.fireSpeed = statsObjec.fireSpeed ? statsObjec.fireSpeed : 10, 
+        this.fireAcumMax = statsObjec.fireAcumMax ? statsObjec.fireAcumMax : 10, this.hasMultiple = statsObjec.hasMultiple ? statsObjec.hasMultiple : 1, 
+        this.hasBounce = statsObjec.hasBounce ? statsObjec.hasBounce : !1, this.piercing = statsObjec.piercing ? statsObjec.piercing : !1, 
         this.sinoid = statsObjec.sinoid ? statsObjec.sinoid : 0;
     },
     serialize: function() {}
@@ -1318,7 +1385,7 @@ var Application = AbstractApplication.extend({
     }
 }), GameScreen = AbstractScreen.extend({
     init: function(label) {
-        this._super(label), this.isLoaded = !1, this.pinDefaultVelocity = 3, APP.currentHornModel = new HornModel({}, {});
+        this._super(label), this.isLoaded = !1, this.pinDefaultVelocity = 3;
     },
     destroy: function() {
         this._super();
@@ -1448,7 +1515,7 @@ var Application = AbstractApplication.extend({
     shoot: function(angle) {
         if (!this.blockPause) {
             var timeLive = 100, vel = APP.currentHornModel.fireSpeed, angleOpen = .1, totalFires = APP.currentHornModel.hasMultiple;
-            console.log(totalFires);
+            this.unihorn.shoot(), console.log(totalFires);
             for (var i = 0; totalFires > i; i++) {
                 var tempAngle = angle + angleOpen * (i - totalFires / 2), bullet = new Bullet({
                     x: Math.cos(tempAngle) * vel,
@@ -1728,7 +1795,7 @@ var Application = AbstractApplication.extend({
     },
     initApplication: function() {
         this.isLoaded = !0;
-        this.screenManager.change("Game");
+        APP.currentHornModel = APP.appModel.hornModels[0], this.screenManager.change("Game");
     },
     transitionIn: function() {
         return this.isLoaded ? void this.build() : void this.build();
@@ -1950,6 +2017,40 @@ var Application = AbstractApplication.extend({
                 self.screen.updateable = !0, self.screen.reset();
             });
         }, this.back.getContent().addChild(this.restartButton.getContent()), scaleConverter(this.boxContainer.width, windowWidth, .8, this.boxContainer);
+        var quarterPart = this.back.getContent().width / 5;
+        this.chifre1 = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
+        this.chifre1.build(), this.chifre1.setPosition(1 * quarterPart - quarterPart / 2 - this.chifre1.getContent().width / 2, this.back.getContent().height / 1.2 - this.chifre1.getContent().height / 2), 
+        this.chifre1.clickCallback = function() {
+            self.hide(function() {
+                APP.currentHornModel = APP.appModel.hornModels[0];
+            });
+        }, this.chifre2 = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
+        this.chifre2.build(), this.chifre2.setPosition(2 * quarterPart - quarterPart / 2 - this.chifre2.getContent().width / 2, this.back.getContent().height / 1.2 - this.chifre2.getContent().height / 2), 
+        this.chifre2.clickCallback = function() {
+            self.hide(function() {
+                APP.currentHornModel = APP.appModel.hornModels[1];
+            });
+        }, this.chifre3 = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
+        this.chifre3.build(), this.chifre3.setPosition(3 * quarterPart - quarterPart / 2 - this.chifre3.getContent().width / 2, this.back.getContent().height / 1.2 - this.chifre3.getContent().height / 2), 
+        this.chifre3.clickCallback = function() {
+            self.hide(function() {
+                APP.currentHornModel = APP.appModel.hornModels[2];
+            });
+        }, this.chifre4 = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
+        this.chifre4.build(), this.chifre4.setPosition(4 * quarterPart - quarterPart / 2 - this.chifre4.getContent().width / 2, this.back.getContent().height / 1.2 - this.chifre4.getContent().height / 2), 
+        this.chifre4.clickCallback = function() {
+            self.hide(function() {
+                APP.currentHornModel = APP.appModel.hornModels[3];
+            });
+        }, this.chifre5 = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
+        this.chifre5.build(), this.chifre5.setPosition(5 * quarterPart - quarterPart / 2 - this.chifre5.getContent().width / 2, this.back.getContent().height / 1.2 - this.chifre5.getContent().height / 2), 
+        this.chifre5.clickCallback = function() {
+            self.hide(function() {
+                APP.currentHornModel = APP.appModel.hornModels[4];
+            });
+        }, this.back.getContent().addChild(this.chifre1.getContent()), this.back.getContent().addChild(this.chifre2.getContent()), 
+        this.back.getContent().addChild(this.chifre3.getContent()), this.back.getContent().addChild(this.chifre4.getContent()), 
+        this.back.getContent().addChild(this.chifre5.getContent());
     },
     show: function() {
         this.screen.addChild(this), this.screen.blockPause = !0, this.boxContainer.visible = !0, 

@@ -107,7 +107,8 @@ var Bullet = Entity.extend({
         }
 
         if(this.sinoid !== 0){
-            this.velocity.x = Math.sin(this.sin) * (Math.abs(this.startVel.x) + Math.abs(this.startVel.y)) + this.startVel.x;//this.vel;
+            // this.velocity.x = Math.sin(this.sin) * (Math.abs(this.startVel.x) + Math.abs(this.startVel.y)) + this.startVel.x;//this.vel;
+            this.velocity.x = Math.sin(this.sin) *5 + this.startVel.x;//this.vel;
             this.sin += this.sinoid;
             console.log(this.velocity);
         }

@@ -4,7 +4,6 @@ var GameScreen = AbstractScreen.extend({
         this._super(label);
         this.isLoaded = false;
         this.pinDefaultVelocity = 3;
-        APP.currentHornModel = new HornModel({},{});
     },
     destroy: function () {
         this._super();
@@ -300,6 +299,7 @@ var GameScreen = AbstractScreen.extend({
         // this.layer.addChild(bullet);
         var angleOpen = 0.1;
         var totalFires = APP.currentHornModel.hasMultiple;
+        this.unihorn.shoot();
         console.log(totalFires);
         for (var i = 0; i < totalFires; i++) {
             var tempAngle = angle + angleOpen * (i - totalFires / 2);

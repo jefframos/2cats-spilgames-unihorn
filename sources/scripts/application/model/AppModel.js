@@ -25,6 +25,96 @@ var AppModel = Class.extend({
 		this.playerModels = [];
 
 
+
+		this.hornModels = [
+			new HornModel(
+				{
+					cover:'uni_horn1.png',
+					source:'uni_horn1.png',
+					bulletSource:'bullet.png',
+					label:'Sinoid'
+				},
+				{
+					size: 1,
+					demage: 1,
+					fireAcumMax:15,
+					hasMultiple:1,
+					hasBounce:false,
+					// piercing:false,
+					sinoid:0.5
+				}
+			),
+				new HornModel(
+				{
+					cover:'uni_horn1.png',
+					source:'uni_horn1.png',
+					bulletSource:'bullet.png',
+					label:'Piercing'
+				},
+				{
+					size: 1,
+					demage: 1,
+					fireAcumMax:15,
+					hasMultiple:1,
+					hasBounce:false,
+					piercing:true,
+					sinoid:0
+				}
+			),
+				new HornModel(
+				{
+					cover:'uni_horn1.png',
+					source:'uni_horn1.png',
+					bulletSource:'bullet.png',
+					label:'Piercing'
+				},
+				{
+					size: 1,
+					demage: 1,
+					fireAcumMax:15,
+					hasMultiple:1,
+					hasBounce:true,
+					// piercing:false,
+					sinoid:0
+				}
+			),
+				new HornModel(
+				{
+					cover:'uni_horn1.png',
+					source:'uni_horn1.png',
+					bulletSource:'bullet.png',
+					label:'Piercing'
+				},
+				{
+					size: 1,
+					demage: 1,
+					fireAcumMax:15,
+					hasMultiple:3,
+					hasBounce:false,
+					// piercing:false,
+					sinoid:0
+				}
+			),
+				new HornModel(
+				{
+					cover:'uni_horn1.png',
+					source:'uni_horn1.png',
+					bulletSource:'bullet.png',
+					label:'Piercing'
+				},
+				{
+					size: 1,
+					demage: 1,
+					fireAcumMax:15,
+					hasMultiple:5,
+					hasBounce:false,
+					// piercing:false,
+					sinoid:0
+				}
+			),
+			];
+
+
 		this.enemyModels = [
 			new EnemyModel(
 				{

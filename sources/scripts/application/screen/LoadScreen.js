@@ -51,6 +51,7 @@ var LoadScreen = AbstractScreen.extend({
     initApplication:function(){
         this.isLoaded = true;
         var self = this;
+        APP.currentHornModel = APP.appModel.hornModels[0];
         this.screenManager.change('Game');
     },
     transitionIn:function()

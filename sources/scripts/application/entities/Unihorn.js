@@ -16,6 +16,9 @@ var Unihorn = Entity.extend({
     getContent: function(){
         return this.sprite;
     },
+    shoot: function(){
+        TweenLite.from(this.horn.scale, 0.5, {y:0.3, ease:'easeOutElastic'});
+    },
     build: function(){
         this.sprite = new PIXI.Sprite();
 
