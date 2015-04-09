@@ -204,7 +204,7 @@ var Bullet = Entity.extend({
         if(this.invencible){
             return;
         }
-        for (var i = 1; i >= 0; i--) {
+        for (var i = 3; i >= 0; i--) {
             var particle = new Particles({x: Math.random() * 4 - 2, y:-(Math.random() * 2 + 1)}, 120, this.particleSource, Math.random() * 0.05);
             particle.build();
             particle.maxScale = 0.5;

@@ -243,6 +243,10 @@ var GameScreen = AbstractScreen.extend({
         this.HUDContainer.position.y = windowHeight - this.HUDContainer.height;
 
         this.fromTween();
+
+        this.end = false;
+        this.startCoinMonitore = false;
+        this.blockPause = false;
         
     },
     addEnemyThumb:function(enemy){
@@ -273,7 +277,7 @@ var GameScreen = AbstractScreen.extend({
                 var center = Math.atan2(this.thumbContainer.position.y - windowHeight / 2, thumbEnemy.position.x - windowWidth / 2);
                 TweenLite.to(thumbEnemy.position, 0.3, {y : Math.sin(center) * windowHeight / 2 + windowHeight / 2 + thumbEnemy.height / 2});
                 if(this.badClouds.length >= this.maxClouds){
-                    this.endModal.show();
+                    this.endGame();//this.endModal.show();
                 }
                 if(tempEnemy.getContent().position.y > windowHeight){
                     tempEnemy.removeSprite();
@@ -287,20 +291,63 @@ var GameScreen = AbstractScreen.extend({
             this.updateBadClouds();
         }
     },
+    endGame:function(){
+        this.end = true;
+        this.spawner.killAll();
+        var self = this;
+        self.arrayCoins = [];
+        function onComplete(target){
+            target.parent.removeChild(target);
+            var tempCoin = new Coin(self);
+            tempCoin.build();
+            scaleConverter(tempCoin.getContent().height, target.height, 0.8, tempCoin);
+            tempCoin.getContent().position.x = target.position.x;
+            tempCoin.getContent().position.y = target.position.y;
+            self.layer.addChild(tempCoin);
+            self.arrayCoins.push(tempCoin);
+            self.startCoinMonitore = true;
+        }
+        var times = [];
+        for (var j = this.badClouds.length - 1; j >= 0; j--) {
+            times.push(j);
+        }
+        times = shuffle(times);
+        for (var i = this.badClouds.length - 1; i >= 0; i--) {
+            TweenLite.to(this.badClouds[i], 0.3, {delay:0.5 + times[i] / 5, alpha:0});
+            TweenLite.to(this.badClouds[i].scale, 0.3, {delay:0.5 + times[i] / 5, x:this.badClouds[i].scale.x+0.2, y:this.badClouds[i].scale.y+0.2,
+                ease:'easeOutElastic', onCompleteParams:[this.badClouds[i]],
+                onComplete:onComplete});
+        }
+    },
     update:function(){
         if(!this.updateable){
             return;
         }
-        this.spawner.update();
-        this.updateCloudList();
         this._super();
-        if(this.fireAcum > 0){
-            this.fireAcum--;
-        }else{
-            if(this.touchDown){
-                this.shoot(this.mouseAngle);
-                this.fireAcum = this.fireAcumMax;
+        if(!this.end){
+            this.spawner.update();
+            console.log('updateCloud');
+            this.updateCloudList();
+            if(this.fireAcum > 0){
+                this.fireAcum--;
+            }else{
+                if(this.touchDown){
+                    this.shoot(this.mouseAngle);
+                    this.fireAcum = this.fireAcumMax;
+                }
             }
+        }else{
+            if(this.startCoinMonitore){
+                for (var i = this.arrayCoins.length - 1; i >= 0; i--) {
+                    if(this.arrayCoins[i].kill){
+                        this.arrayCoins.splice(i,1);
+                    }
+                }
+                if(this.arrayCoins.length <= 0){
+                    this.endModal.show();
+                }
+            }
+
         }
     },
     shoot:function(angle) {

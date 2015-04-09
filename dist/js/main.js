@@ -324,8 +324,8 @@ var Application = AbstractApplication.extend({
             font: "15px Arial",
             fill: "#FFF"
         }), this.labelDebug.position.y = 20, this.labelDebug.position.x = 20, this.mute = !1, 
-        this.audioController = new AudioController(), this.appModel = new AppModel(), this.withAPI = !0, 
-        "#withoutAPI" === window.location.hash && (this.withAPI = !1);
+        this.accelGame = 1, this.audioController = new AudioController(), this.appModel = new AppModel(), 
+        this.withAPI = !0, "#withoutAPI" === window.location.hash && (this.withAPI = !1);
     },
     update: function() {
         this._super(), this.withAPI && this.apiLogo && this.apiLogo.getContent().height > 1 && 0 === this.apiLogo.getContent().position.x && (scaleConverter(this.apiLogo.getContent().width, windowWidth, .5, this.apiLogo), 
@@ -601,10 +601,38 @@ var Application = AbstractApplication.extend({
     playAmbientSound: function() {
         this.ambientPlaying || (this.ambientPlaying = !0, this.ambientSound1.play());
     }
+}), Coin = Entity.extend({
+    init: function() {
+        this._super(!0), this.updateable = !1, this.range = .05 * windowWidth, this.width = 1, 
+        this.height = 1, this.type = "coin", this.velocity.y = 3;
+    },
+    build: function() {
+        this.sprite = new PIXI.Sprite(new PIXI.Texture.fromImage("moeda.png")), this.sprite.anchor.x = .5, 
+        this.sprite.anchor.y = .5, this.updateable = !0, this.collidable = !0;
+    },
+    update: function() {
+        this._super(), this.getContent().position.y > windowHeight + 100 && (this.onList = !0, 
+        this.kill = !0);
+    },
+    preKill: function() {
+        if (this.collidable) {
+            this.onList = !0, this.thumb.parent && this.thumb.parent.removeChild(this.thumb);
+            var self = this;
+            TweenLite.to(this.getContent(), .3, {
+                alpha: 0,
+                onCOmplete: function() {
+                    self.kill = !0;
+                }
+            }), TweenLite.to(this.getContent().scale, .3, {
+                x: 0,
+                y: 0
+            }), this.collidable = !1;
+        }
+    }
 }), Enemy = Entity.extend({
     init: function(model) {
         this._super(!0), this.updateable = !1, this.range = .05 * windowWidth, this.width = 1, 
-        this.height = 1, this.type = "enemy", this.model = model, this.velocity.y = this.model.vel, 
+        this.height = 1, this.type = "enemy", this.model = model, this.velocity.y = this.model.vel * APP.accelGame, 
         this.vel = this.model.vel, this.hp = this.model.hp, this.behaviour = this.model.behaviour ? this.model.behaviour.clone() : null, 
         this.resistance = this.model.resistance;
     },
@@ -633,15 +661,6 @@ var Application = AbstractApplication.extend({
     preKill: function() {
         if (this.collidable) {
             this.onList = !0, this.thumb.parent && this.thumb.parent.removeChild(this.thumb);
-            for (var i = this.model.particles.length - 1; i >= 0; i--) {
-                var particle = new Particles({
-                    x: 4 * Math.random() - 2,
-                    y: -(2 * Math.random() + 1)
-                }, 120, this.model.particles[i], .1 * Math.random());
-                particle.build(), particle.gravity = .1 * Math.random(), particle.alphadecres = .08, 
-                particle.setPosition(this.getPosition().x - (Math.random() + .1 * this.getContent().width) / 2, this.getPosition().y), 
-                this.layer.addChild(particle);
-            }
             var self = this;
             TweenLite.to(this.getContent(), .3, {
                 alpha: 0,
@@ -874,7 +893,7 @@ var Application = AbstractApplication.extend({
     },
     preKill: function() {
         if (!this.invencible) {
-            for (var i = 1; i >= 0; i--) {
+            for (var i = 3; i >= 0; i--) {
                 var particle = new Particles({
                     x: 4 * Math.random() - 2,
                     y: -(2 * Math.random() + 1)
@@ -1568,7 +1587,8 @@ var Application = AbstractApplication.extend({
         this.HUDback.alpha = .5, this.pauseButton.getContent().position.x = .1 * this.pauseButton.getContent().height, 
         this.pauseButton.getContent().position.y = .1 * this.pauseButton.getContent().height, 
         this.HUDContainer.addChild(this.HUDback), this.HUDContainer.addChild(this.pauseButton.getContent()), 
-        this.HUDContainer.position.y = windowHeight - this.HUDContainer.height, this.fromTween();
+        this.HUDContainer.position.y = windowHeight - this.HUDContainer.height, this.fromTween(), 
+        this.end = !1, this.startCoinMonitore = !1, this.blockPause = !1;
     },
     addEnemyThumb: function(enemy) {
         this.thumbContainer.addChild(enemy.thumb);
@@ -1588,17 +1608,47 @@ var Application = AbstractApplication.extend({
             var center = Math.atan2(this.thumbContainer.position.y - windowHeight / 2, thumbEnemy.position.x - windowWidth / 2);
             TweenLite.to(thumbEnemy.position, .3, {
                 y: Math.sin(center) * windowHeight / 2 + windowHeight / 2 + thumbEnemy.height / 2
-            }), this.badClouds.length >= this.maxClouds && this.endModal.show(), tempEnemy.getContent().position.y > windowHeight && (tempEnemy.removeSprite(), 
+            }), this.badClouds.length >= this.maxClouds && this.endGame(), tempEnemy.getContent().position.y > windowHeight && (tempEnemy.removeSprite(), 
             this.badClouds.push(thumbEnemy), hasbad = !0, TweenLite.to(this.darkShape, .5, {
                 alpha: .8 * this.badClouds.length / this.maxClouds
             }));
         }
         hasbad && this.updateBadClouds();
     },
+    endGame: function() {
+        function onComplete(target) {
+            target.parent.removeChild(target);
+            var tempCoin = new Coin(self);
+            tempCoin.build(), scaleConverter(tempCoin.getContent().height, target.height, .8, tempCoin), 
+            tempCoin.getContent().position.x = target.position.x, tempCoin.getContent().position.y = target.position.y, 
+            self.layer.addChild(tempCoin), self.arrayCoins.push(tempCoin), self.startCoinMonitore = !0;
+        }
+        this.end = !0, this.spawner.killAll();
+        var self = this;
+        self.arrayCoins = [];
+        for (var times = [], j = this.badClouds.length - 1; j >= 0; j--) times.push(j);
+        times = shuffle(times);
+        for (var i = this.badClouds.length - 1; i >= 0; i--) TweenLite.to(this.badClouds[i], .3, {
+            delay: .5 + times[i] / 5,
+            alpha: 0
+        }), TweenLite.to(this.badClouds[i].scale, .3, {
+            delay: .5 + times[i] / 5,
+            x: this.badClouds[i].scale.x + .2,
+            y: this.badClouds[i].scale.y + .2,
+            ease: "easeOutElastic",
+            onCompleteParams: [ this.badClouds[i] ],
+            onComplete: onComplete
+        });
+    },
     update: function() {
-        this.updateable && (this.spawner.update(), this.updateCloudList(), this._super(), 
+        if (this.updateable) if (this._super(), this.end) {
+            if (this.startCoinMonitore) {
+                for (var i = this.arrayCoins.length - 1; i >= 0; i--) this.arrayCoins[i].kill && this.arrayCoins.splice(i, 1);
+                this.arrayCoins.length <= 0 && this.endModal.show();
+            }
+        } else this.spawner.update(), console.log("updateCloud"), this.updateCloudList(), 
         this.fireAcum > 0 ? this.fireAcum-- : this.touchDown && (this.shoot(this.mouseAngle), 
-        this.fireAcum = this.fireAcumMax));
+        this.fireAcum = this.fireAcumMax);
     },
     shoot: function(angle) {
         if (!this.blockPause) {
@@ -2222,11 +2272,14 @@ var Application = AbstractApplication.extend({
     init: function(screen) {
         this.maxAccum = 20, this.accum = this.maxAccum, this.screen = screen, this.enemyList = [];
     },
+    killAll: function() {
+        for (var i = this.enemyList.length - 1; i >= 0; i--) this.enemyList[i].preKill();
+    },
     build: function() {},
     update: function() {
         if (this.accum < 0) {
             var enemy = APP.appModel.getNewEnemy(null, this.screen);
-            enemy.build(), this.accum = enemy.model.toNext;
+            enemy.build(), this.accum = enemy.model.toNext / APP.accelGame;
             var part10 = .1 * windowWidth;
             enemy.setPosition(part10 + (windowWidth - 2 * part10) * Math.random(), 0), this.enemyList.push(enemy), 
             this.screen.addEnemyThumb(enemy), this.screen.layer.addChild(enemy);

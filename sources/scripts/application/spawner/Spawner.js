@@ -6,6 +6,11 @@ var Spawner = Class.extend({
         this.screen = screen;
         this.enemyList = [];
     },
+    killAll: function(){
+        for (var i = this.enemyList.length - 1; i >= 0; i--) {
+            this.enemyList[i].preKill();
+        }
+    },
     build: function(){
         
     },
@@ -13,7 +18,7 @@ var Spawner = Class.extend({
         if(this.accum < 0){
             var enemy = APP.appModel.getNewEnemy(null, this.screen);
             enemy.build();
-            this.accum = enemy.model.toNext;
+            this.accum = enemy.model.toNext / APP.accelGame;
             // scaleConverter(enemy.getContent().height,windowHeight, 0.08, enemy);
             //UTILIZAR O ANGULO PARA CALCULAR A POSIÇÃO CORRETA DO TIRO
             var part10 = windowWidth * 0.1;

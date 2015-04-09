@@ -5,7 +5,6 @@ var Application = AbstractApplication.extend({
         this._super(windowWidth, windowHeight);
         this.stage.setBackgroundColor(0x2c2359);
         this.stage.removeChild(this.loadText);
-
         this.labelDebug = new PIXI.Text('', {font:'15px Arial', fill:'#FFF'});
         // this.stage.addChild(this.labelDebug);
         this.labelDebug.position.y = 20;
@@ -13,6 +12,7 @@ var Application = AbstractApplication.extend({
 
         this.mute = false;
 
+        this.accelGame = 1;
         this.audioController = new AudioController();
         this.appModel = new AppModel();
         this.withAPI = true;

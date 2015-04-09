@@ -9,7 +9,7 @@ var Enemy = Entity.extend({
         this.height = 1;
         this.type = 'enemy';
         this.model = model;
-        this.velocity.y = this.model.vel;
+        this.velocity.y = this.model.vel * APP.accelGame;
         this.vel = this.model.vel;
         this.hp = this.model.hp;
         this.behaviour = this.model.behaviour?this.model.behaviour.clone():null;
@@ -81,16 +81,15 @@ var Enemy = Entity.extend({
         if(this.thumb.parent){
             this.thumb.parent.removeChild(this.thumb);
         }
-        for (var i = this.model.particles.length - 1; i >= 0; i--) {
-            var particle = new Particles({x: Math.random() * 4 - 2, y:-(Math.random() * 2 + 1)}, 120, this.model.particles[i], Math.random() * 0.1);
-            particle.build();
-            particle.gravity = 0.1 * Math.random();
-            particle.alphadecres = 0.08;
-            particle.setPosition(this.getPosition().x - (Math.random() + this.getContent().width * 0.1) / 2,
-                this.getPosition().y);
-            this.layer.addChild(particle);
-
-        }
+        // for (var i = this.model.particles.length - 1; i >= 0; i--) {
+        //     var particle = new Particles({x: Math.random() * 4 - 2, y:-(Math.random() * 2 + 1)}, 120, this.model.particles[i], Math.random() * 0.1);
+        //     particle.build();
+        //     particle.gravity = 0.1 * Math.random();
+        //     particle.alphadecres = 0.08;
+        //     particle.setPosition(this.getPosition().x - (Math.random() + this.getContent().width * 0.1) / 2,
+        //         this.getPosition().y);
+        //     this.layer.addChild(particle);
+        // }
         var self = this;
         TweenLite.to(this.getContent(), 0.3, {alpha:0, onCOmplete:function(){
             self.kill = true;
