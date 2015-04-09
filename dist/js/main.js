@@ -1721,7 +1721,7 @@ var Application = AbstractApplication.extend({
     },
     initApplication: function() {
         var self = this;
-        this.bg = new SimpleSprite("bg1.jpg"), this.container.addChild(this.bg.getContent()), 
+        this.bg = new SimpleSprite("fundo1.png"), this.container.addChild(this.bg.getContent()), 
         scaleConverter(this.bg.getContent().width, windowWidth, 1.2, this.bg), this.bg.getContent().position.x = windowWidth / 2 - this.bg.getContent().width / 2, 
         this.bg.getContent().position.y = windowHeight / 2 - this.bg.getContent().height / 2, 
         this.logo = new SimpleSprite("logo.png"), scaleConverter(this.logo.getContent().width, windowWidth, .5, this.logo), 
@@ -1742,7 +1742,8 @@ var Application = AbstractApplication.extend({
         }), 45, 2), scaleConverter(this.playButton.getContent().width, windowWidth, .4, this.playButton), 
         this.playButton.setPosition(windowWidth / 2 - this.playButton.getContent().width / 2, windowHeight - 2.5 * this.playButton.getContent().height), 
         this.addChild(this.playButton), this.playButton.clickCallback = function() {
-            fullscreen(), self.updateable = !1, self.toTween(function() {
+            possibleFullscreen() && !isfull && testMobile() && fullscreen(), self.updateable = !1, 
+            self.toTween(function() {
                 self.screenManager.change("Game");
             });
         }, this.fromTween();

@@ -37,7 +37,7 @@ var InitScreen = AbstractScreen.extend({
     initApplication:function(){
         var self = this;
 
-        this.bg = new SimpleSprite('bg1.jpg');
+        this.bg = new SimpleSprite('fundo1.png');
         this.container.addChild(this.bg.getContent());
         scaleConverter(this.bg.getContent().width, windowWidth, 1.2, this.bg);
         this.bg.getContent().position.x = windowWidth / 2 - this.bg.getContent().width / 2;
@@ -80,7 +80,9 @@ var InitScreen = AbstractScreen.extend({
         this.addChild(this.playButton);
       
         this.playButton.clickCallback = function(){
-            fullscreen();
+            if(possibleFullscreen() && !isfull && testMobile()){
+                fullscreen();
+            }
             self.updateable = false;
             self.toTween(function(){
 
