@@ -106,7 +106,7 @@ var Bullet = Entity.extend({
             // this.velocity.x = Math.sin(this.sin) * (Math.abs(this.startVel.x) + Math.abs(this.startVel.y)) + this.startVel.x;//this.vel;
             this.velocity.x = Math.sin(this.sin) *5 + this.startVel.x;//this.vel;
             this.sin += this.sinoid;
-            console.log(this.velocity);
+            // console.log(this.velocity);
         }
         if(this.hasBounce && (this.getPosition().x + this.velocity.x < 0 || this.getPosition().x + this.velocity.x > windowWidth)){
             this.velocity.x *= -1;

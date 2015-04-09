@@ -83,22 +83,36 @@ var EndModal = Class.extend({
 
         // this.scrollContainer;
         var _s = 0;
-        var marginTopBottom = windowHeight * 0.2;
-        var totItens = APP.appModel.hornModels.length;
-        var marginItens = 20;
+        var marginTopBottom = windowHeight * 0.1;
+        var totItens = APP.appModel.hornModels.length + APP.appModel.clothModels.length;
+        var marginItens = 10;//20;
         var tempShopItem = null;
-        this.shopList = [];
-        for (var i = 0; i < APP.appModel.hornModels.length; i++) {
-            tempShopItem = new ShopItem(this);
+        this.hornList = [];
+        var i = 0;
+        for (i = 0; i < APP.appModel.hornModels.length; i++) {
+            tempShopItem = new ShopItem(this, 'horn');
             tempShopItem.build(APP.appModel.hornModels[i]);
-            this.shopList.push(tempShopItem);
+            this.hornList.push(tempShopItem);
             this.scrollContainer.addChild(tempShopItem.getContent());
             scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, 0.2, tempShopItem);
             _s = (tempShopItem.getContent().height + marginItens);
             tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2;
             tempShopItem.getContent().position.y = i * _s + marginTopBottom;
         }
-        this.backScroll.height = totItens * _s + marginTopBottom * 2 + 100;
+        var lastHorn = tempShopItem.getContent().position.y + tempShopItem.getContent().height;
+        this.clothList = [];
+        for (i = 0; i < APP.appModel.clothModels.length; i++) {
+            tempShopItem = new ShopItem(this, 'cloth');
+            tempShopItem.build(APP.appModel.clothModels[i]);
+            this.clothList.push(tempShopItem);
+            this.scrollContainer.addChild(tempShopItem.getContent());
+            scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, 0.2, tempShopItem);
+            _s = (tempShopItem.getContent().height + marginItens);
+            tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2;
+            tempShopItem.getContent().position.y = i * _s + marginTopBottom + lastHorn;
+        }
+
+        this.backScroll.height = totItens * _s + marginTopBottom * 4 + 100;
     },
     show:function(){
         this.screen.addChild(this);

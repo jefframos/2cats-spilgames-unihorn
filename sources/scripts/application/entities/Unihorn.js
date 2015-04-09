@@ -8,9 +8,9 @@ var Unihorn = Entity.extend({
         this.width = 1;
         this.height = 1;
 
-        this.neck = new PIXI.Sprite(new PIXI.Texture.fromImage('uni_corpo.png'));
+        this.neck = new PIXI.Sprite(new PIXI.Texture.fromImage(APP.currentClothModel.imgSource));
         this.head = new PIXI.Sprite(new PIXI.Texture.fromImage('uni_head.png'));
-        this.horn = new PIXI.Sprite(new PIXI.Texture.fromImage('uni_horn1.png'));
+        this.horn = new PIXI.Sprite(new PIXI.Texture.fromImage(APP.currentHornModel.imgSource));
         // this.enemyModel
     },
     getContent: function(){

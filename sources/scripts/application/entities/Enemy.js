@@ -40,8 +40,12 @@ var Enemy = Entity.extend({
         this.getContent().addChild(this.spritesheet.container);
         this.spritesheet.setPosition(0,0);
 
+        // console.log(this.model.sizePercent);
+        scaleConverter(this.spritesheet.container.width, windowWidth, this.model.sizePercent, this.getContent());
+
     },
     update: function(){
+        this.range = this.spritesheet.container.width / 2;
         this._super();
         if(this.velocity.y < this.vel){
             this.velocity.y += 0.1;
@@ -57,8 +61,8 @@ var Enemy = Entity.extend({
             this.kill = true;
         }
     },
-    hurt:function(){
-        this.hp --;
+    hurt:function(demage){
+        this.hp -= demage;
         this.velocity.y -= this.resistance;
         if(this.hp <= 0){
             this.preKill();
@@ -97,6 +101,7 @@ var Enemy = Entity.extend({
         TweenLite.to(this.getContent().scale, 0.3, {x:0,y:0});
         this.collidable = false;
         
+        APP.appModel.totalPoints += this.model.money + APP.currentClothModel.extraCoins;
         // console.log(APP.getGameModel().killedBirds);
     }
 });

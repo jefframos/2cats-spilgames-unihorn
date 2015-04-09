@@ -8,6 +8,7 @@ var EnemyModel = Class.extend({
 		this.egg = graphicsObject.egg?graphicsObject.egg:['smoke.png'];
 		this.sizePercent = graphicsObject.sizePercent?graphicsObject.sizePercent:0.2;
 		this.label = graphicsObject.label?graphicsObject.label:'';
+		this.sizePercent = graphicsObject.sizePercent?graphicsObject.sizePercent:0.1;
 		
 		this.demage = statsObjec.demage;
 		this.vel = statsObjec.vel;

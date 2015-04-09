@@ -24,8 +24,110 @@ var AppModel = Class.extend({
 		
 		this.playerModels = [];
 
-
-
+		this.clothModels = [
+			new ClothModel(
+				{
+					cover:'uni_corpo.png',
+					source:'uni_corpo.png',
+					label:'Speed'
+				},
+				{
+					id:1000,
+					sizePercent: 0,
+					demage: 0,
+					fireAcumMax:0,
+					extraCoins:0,
+					fireSpeed:3,
+					enabled: true,
+					coast: 5000
+				}
+			),
+				new ClothModel(
+				{
+					cover:'uni_corpo.png',
+					source:'uni_corpo.png',
+					label:'+Coins'
+				},
+				{
+					id:1001,
+					sizePercent: 0,
+					demage: 0,
+					fireAcumMax:0,
+					extraCoins:2,
+					fireSpeed:0,
+					enabled: true,
+					coast: 5000
+				}
+			),
+				new ClothModel(
+				{
+					cover:'uni_corpo.png',
+					source:'uni_corpo.png',
+					label:'Size'
+				},
+				{
+					id:1002,
+					sizePercent: 0.03,
+					demage: 0,
+					fireAcumMax:0,
+					extraCoins:0,
+					fireSpeed:0,
+					enabled: true,
+					coast: 5000
+				}
+			),
+				new ClothModel(
+				{
+					cover:'uni_corpo.png',
+					source:'uni_corpo.png',
+					label:'Demage'
+				},
+				{
+					id:1003,
+					sizePercent: 0,
+					demage: 3,
+					fireAcumMax:0,
+					extraCoins:0,
+					fireSpeed:0,
+					enabled: true,
+					coast: 5000
+				}
+			),
+				new ClothModel(
+				{
+					cover:'uni_corpo.png',
+					source:'uni_corpo.png',
+					label:'Freq.'
+				},
+				{
+					id:1004,
+					sizePercent: 0,
+					demage: 0,
+					fireAcumMax:10,
+					extraCoins:0,
+					fireSpeed:0,
+					enabled: true,
+					coast: 5000
+				}
+			),
+				new ClothModel(
+				{
+					cover:'uni_corpo.png',
+					source:'uni_corpo.png',
+					label:'All Stats'
+				},
+				{
+					id:1005,
+					sizePercent: 0.03,
+					demage: 3,
+					fireAcumMax:10,
+					extraCoins:5,
+					fireSpeed:3,
+					enabled: true,
+					coast: 5000
+				}
+			)
+			];
 		this.hornModels = [
 			new HornModel(
 				{
@@ -153,7 +255,7 @@ var AppModel = Class.extend({
 					cover:'cloud2a.png',
 					source:['cloud2a.png'],
 					particles:['bullet.png'],
-					sizePercent: 0.2,
+					sizePercent: 0.25,
 					label:'Nuvem'
 				},
 				{
@@ -170,7 +272,7 @@ var AppModel = Class.extend({
 					cover:'cloud3a.png',
 					source:['cloud3a.png'],
 					particles:['bullet.png'],
-					sizePercent: 0.2,
+					sizePercent: 0.18,
 					label:'Nuvem'
 				},
 				{

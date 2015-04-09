@@ -113,11 +113,11 @@ var GameScreen = AbstractScreen.extend({
         };
 
         this.updateable = true;
-        this.fireAcumMax = APP.currentHornModel.fireAcumMax;
+        this.fireAcumMax = APP.currentHornModel.fireAcumMax - APP.currentClothModel.fireAcumMax;
         this.fireAcum = this.fireAcumMax;
 
 
-
+        console.log((APP.currentClothModel));
         
 
         this.backButton = new DefaultButton('UI_button_default_1.png', 'UI_button_default_1.png');
@@ -227,6 +227,7 @@ var GameScreen = AbstractScreen.extend({
             self.pauseModal.show();
         };
 
+
         this.HUDContainer = new PIXI.DisplayObjectContainer();
         this.addChild(this.HUDContainer);
 
@@ -238,8 +239,15 @@ var GameScreen = AbstractScreen.extend({
         this.pauseButton.getContent().position.x = this.pauseButton.getContent().height * 0.1;
         this.pauseButton.getContent().position.y = this.pauseButton.getContent().height * 0.1;
 
+
+        this.coinsLabel = new PIXI.Text(APP.appModel.totalPoints, {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500});
+        scaleConverter(this.coinsLabel.height, this.pauseButton.getContent().height, 1, this.coinsLabel);
+        this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - this.pauseButton.getContent().height * 0.1;
+        this.coinsLabel.position.y = this.pauseButton.getContent().height * 0.1;
+
         this.HUDContainer.addChild(this.HUDback);
         this.HUDContainer.addChild(this.pauseButton.getContent());
+        this.HUDContainer.addChild(this.coinsLabel);
         this.HUDContainer.position.y = windowHeight - this.HUDContainer.height;
 
         this.fromTween();
@@ -247,6 +255,7 @@ var GameScreen = AbstractScreen.extend({
         this.end = false;
         this.startCoinMonitore = false;
         this.blockPause = false;
+
         
     },
     addEnemyThumb:function(enemy){
@@ -326,8 +335,8 @@ var GameScreen = AbstractScreen.extend({
         this._super();
         if(!this.end){
             this.spawner.update();
-            console.log('updateCloud');
             this.updateCloudList();
+
             if(this.fireAcum > 0){
                 this.fireAcum--;
             }else{
@@ -349,6 +358,8 @@ var GameScreen = AbstractScreen.extend({
             }
 
         }
+        this.coinsLabel.setText(APP.appModel.totalPoints);
+        this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - this.pauseButton.getContent().height * 0.1;
     },
     shoot:function(angle) {
         if(this.blockPause){
@@ -356,7 +367,7 @@ var GameScreen = AbstractScreen.extend({
         }
         var timeLive = 100;
 
-        var vel = APP.currentHornModel.fireSpeed;
+        var vel = APP.currentHornModel.fireSpeed + APP.currentClothModel.fireSpeed;
 
         // var bullet = new Bullet({x:Math.cos(angle) * vel,
         //     y:Math.sin(angle) * vel},
@@ -371,8 +382,8 @@ var GameScreen = AbstractScreen.extend({
         // this.layer.addChild(bullet);
         var angleOpen = 0.1;
         var totalFires = APP.currentHornModel.hasMultiple;
-        this.unihorn.shoot();
-        console.log(totalFires);
+        // this.unihorn.shoot();
+        // console.log(totalFires);
         for (var i = 0; i < totalFires; i++) {
             var tempAngle = angle + angleOpen * (i - totalFires / 2);
             var bullet = new Bullet({x:Math.cos(tempAngle) * vel,
@@ -381,9 +392,10 @@ var GameScreen = AbstractScreen.extend({
             bullet.build();
             bullet.hasBounce = APP.currentHornModel.hasBounce;
             bullet.piercing = APP.currentHornModel.piercing;
-            bullet.demage = APP.currentHornModel.demage;
             bullet.sinoid = APP.currentHornModel.sinoid;
-            scaleConverter(bullet.getContent().height,windowHeight, 0.06, bullet);
+            bullet.demage = APP.currentHornModel.demage + APP.currentClothModel.demage;
+            console.log((bullet.demage));
+            scaleConverter(bullet.getContent().height,windowHeight, 0.06 + APP.currentClothModel.sizePercent, bullet);
             bullet.startScaleTween();
             //UTILIZAR O ANGULO PARA CALCULAR A POSIÇÃO CORRETA DO TIRO
             bullet.setPosition(this.hornPos.x, this.hornPos.y);
