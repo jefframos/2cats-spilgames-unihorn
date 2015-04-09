@@ -37,11 +37,14 @@ var AppModel = Class.extend({
 				{
 					size: 1,
 					demage: 1,
-					fireAcumMax:15,
+					fireAcumMax:20,
 					hasMultiple:1,
 					hasBounce:false,
 					// piercing:false,
-					sinoid:0.5
+					sinoid:0.5,
+					enabled: true,
+					coast: 5000,
+					id:0
 				}
 			),
 				new HornModel(
@@ -54,11 +57,14 @@ var AppModel = Class.extend({
 				{
 					size: 1,
 					demage: 1,
-					fireAcumMax:15,
+					fireAcumMax:20,
 					hasMultiple:1,
 					hasBounce:false,
 					piercing:true,
-					sinoid:0
+					sinoid:0,
+					enabled: false,
+					coast: 5000,
+					id:1
 				}
 			),
 				new HornModel(
@@ -66,16 +72,19 @@ var AppModel = Class.extend({
 					cover:'uni_horn1.png',
 					source:'uni_horn1.png',
 					bulletSource:'bullet.png',
-					label:'Piercing'
+					label:'Bounce'
 				},
 				{
 					size: 1,
 					demage: 1,
-					fireAcumMax:15,
+					fireAcumMax:20,
 					hasMultiple:1,
 					hasBounce:true,
 					// piercing:false,
-					sinoid:0
+					sinoid:0,
+					enabled: false,
+					coast: 5000,
+					id:2
 				}
 			),
 				new HornModel(
@@ -83,16 +92,19 @@ var AppModel = Class.extend({
 					cover:'uni_horn1.png',
 					source:'uni_horn1.png',
 					bulletSource:'bullet.png',
-					label:'Piercing'
+					label:'x3'
 				},
 				{
 					size: 1,
 					demage: 1,
-					fireAcumMax:15,
+					fireAcumMax:20,
 					hasMultiple:3,
 					hasBounce:false,
 					// piercing:false,
-					sinoid:0
+					sinoid:0,
+					enabled: false,
+					coast: 5000,
+					id:3
 				}
 			),
 				new HornModel(
@@ -100,16 +112,19 @@ var AppModel = Class.extend({
 					cover:'uni_horn1.png',
 					source:'uni_horn1.png',
 					bulletSource:'bullet.png',
-					label:'Piercing'
+					label:'ALL STATS'
 				},
 				{
 					size: 1,
 					demage: 1,
-					fireAcumMax:15,
-					hasMultiple:5,
-					hasBounce:false,
-					// piercing:false,
-					sinoid:0
+					fireAcumMax:20,
+					hasMultiple:3,
+					hasBounce:true,
+					piercing:true,
+					sinoid:0.5,
+					enabled: false,
+					coast: 5000,
+					id:4
 				}
 			),
 			];

@@ -1,108 +1,181 @@
 /*jshint undef:false */
 var EndModal = Class.extend({
-	init:function(screen){
-		this.screen = screen;
-		
-		this.container = new PIXI.DisplayObjectContainer();
-		this.boxContainer = new PIXI.DisplayObjectContainer();
-		this.bg = new PIXI.Graphics();
-		this.bg.beginFill(0x151c47);
-		this.bg.drawRect(0,0,windowWidth, windowHeight);
-		this.bg.alpha = 0.8;
-		this.container.addChild(this.bg);
-		this.container.addChild(this.boxContainer);
+    init:function(screen){
+        this.screen = screen;
+        
+        this.container = new PIXI.DisplayObjectContainer();
+        this.scrollContainer = new PIXI.DisplayObjectContainer();
+        this.bg = new PIXI.Graphics();
+        this.bg.beginFill(0x151c47);
+        this.bg.drawRect(0,0,windowWidth, windowHeight);
+        this.bg.alpha = 0.8;
+        this.container.addChild(this.bg);
+        this.container.addChild(this.scrollContainer);
 
-		var self = this;
+        
+        this.applyScroll(this.scrollContainer);
+        var self = this;
 
-		this.back = new SimpleSprite('UI_modal_back_1.png');
-        this.boxContainer.addChild(this.back.getContent());
+        // this.back = new SimpleSprite('UI_modal_back_1.png');
+        this.backScroll = new PIXI.Graphics();
+        this.backScroll.beginFill(0x151c47);
+        this.backScroll.drawRect(0,0,windowWidth, windowHeight * 2);
+        this.backScroll.alpha = 0.8;
+        this.scrollContainer.addChild(this.backScroll);
 
-		var thirdPart = this.back.getContent().width / 3;
-		this.textScreen = new PIXI.Text('Something like\nUpgrades\nor Stats', {align:'center',font:'50px Vagron', fill:'#000', wordWrap:true, wordWrapWidth:500});
-        scaleConverter(this.textScreen.width, this.back.getContent().width, 0.5, this.textScreen);
-        this.textScreen.position.x = this.back.getContent().width / 2 - this.textScreen.width / 2;
+        this.closeButton = new DefaultButton('UI_button_play_1.png', 'UI_button_play_1.png');
+        this.closeButton.build();
+        this.closeButton.setPosition(20,20);//this.backBars.getContent().height - 20 - this.rankingButton.height / 2 - 10);
+        this.closeButton.clickCallback = function(){
+            self.hide(function(){
+                self.screen.updateable = true;
+                self.screen.reset();
+            });
+        };
+        this.container.addChild(this.closeButton.getContent());
+        scaleConverter(this.closeButton.getContent().height, windowHeight, 0.08, this.closeButton);
+
+
+        var thirdPart = this.backScroll.width / 3;
+        this.textScreen = new PIXI.Text('$ 5000', {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500});
+        scaleConverter(this.textScreen.height, this.closeButton.getContent().height, 1, this.textScreen);
+        this.textScreen.position.x = windowWidth - this.textScreen.width - 20;
         this.textScreen.position.y = 20;
-        this.back.getContent().addChild(this.textScreen);
+        this.container.addChild(this.textScreen);
 
-		this.closeButton = new DefaultButton('UI_button_close_1.png', 'UI_button_close_1.png');
-		this.closeButton.build();
-		this.closeButton.setPosition(this.back.getContent().width - this.closeButton.getContent().width,0);//this.backBars.getContent().height - 20 - this.continueButton.height / 2 - 10);
-		this.closeButton.clickCallback = function(){
-			self.hide(function(){
-				self.screen.updateable = true;
-				self.screen.reset();
-			});
-		};
-		this.back.getContent().addChild(this.closeButton.getContent());
+        this.addShopList();
 
+        this.fbButton = new DefaultButton('UI_button_facebook_1.png', 'UI_button_facebook_1.png');
+        this.fbButton.build();
+        this.fbButton.setPosition(thirdPart * 1 - thirdPart /2 - this.fbButton.getContent().width/2,this.backScroll.height - this.fbButton.getContent().height - 20);//this.backBars.getContent().height - 20 - this.rankingButton.height / 2 - 10);
+        this.fbButton.clickCallback = function(){
+            // self.hide(function(){
+            //  // self.screen.hideBars();
+            //  self.screen.screenManager.prevScreen();
+            // });
+        };
+        this.scrollContainer.addChild(this.fbButton.getContent());
 
-		this.backButton = new DefaultButton('UI_button_facebook_1.png', 'UI_button_facebook_1.png');
-		this.backButton.build();
-		this.backButton.setPosition(thirdPart * 1 - thirdPart /2 - this.backButton.getContent().width/2,this.back.getContent().height - this.backButton.getContent().height - 20);//this.backBars.getContent().height - 20 - this.continueButton.height / 2 - 10);
-		this.backButton.clickCallback = function(){
-			// self.hide(function(){
-			// 	// self.screen.hideBars();
-			// 	self.screen.screenManager.prevScreen();
-			// });
-		};
-		this.back.getContent().addChild(this.backButton.getContent());
+        this.rankingButton = new DefaultButton('UI_button_ranking_1.png', 'UI_button_ranking_1.png');
+        this.rankingButton.build();
+        scaleConverter(this.rankingButton.getContent().width, this.backScroll.width, 0.3, this.rankingButton);
+        this.rankingButton.setPosition(thirdPart * 2 - thirdPart /2 -  this.rankingButton.getContent().width/2,this.backScroll.height - this.rankingButton.getContent().height - 20);
+        this.rankingButton.clickCallback = function(){
+            // self.hide(function(){self.screen.updateable = true;});
+        };
+        // this.scrollContainer.addChild(this.rankingButton.getContent());
 
-		this.continueButton = new DefaultButton('UI_button_ranking_1.png', 'UI_button_ranking_1.png');
-		this.continueButton.build();
-		scaleConverter(this.continueButton.getContent().width, this.back.getContent().width, 0.3, this.continueButton);
-		this.continueButton.setPosition(thirdPart * 2 - thirdPart /2 -  this.continueButton.getContent().width/2,this.back.getContent().height - this.continueButton.getContent().height - 20);
-		this.continueButton.clickCallback = function(){
-			// self.hide(function(){self.screen.updateable = true;});
-		};
-		this.back.getContent().addChild(this.continueButton.getContent());
+        this.twitterButton = new DefaultButton('UI_button_twitter_1.png', 'UI_button_twitter_1.png');
+        this.twitterButton.build();
+        this.twitterButton.setPosition(thirdPart * 3 - thirdPart /2 -  this.twitterButton.getContent().width/2,this.backScroll.height - this.twitterButton.getContent().height - 20);//this.backBars.getContent().height / 2 - this.rankingButton.height / 2 - 10);
 
-		this.restartButton = new DefaultButton('UI_button_twitter_1.png', 'UI_button_twitter_1.png');
-		this.restartButton.build();
-		this.restartButton.setPosition(thirdPart * 3 - thirdPart /2 -  this.restartButton.getContent().width/2,this.back.getContent().height - this.restartButton.getContent().height - 20);//this.backBars.getContent().height / 2 - this.continueButton.height / 2 - 10);
+        this.twitterButton.clickCallback = function(){
+            // self.hide(function(){
+            //  self.screen.updateable = true;
+            //  self.screen.reset();
+            // });
+        };
+        this.scrollContainer.addChild(this.twitterButton.getContent());
 
-		this.restartButton.clickCallback = function(){
-			// self.hide(function(){
-			// 	self.screen.updateable = true;
-			// 	self.screen.reset();
-			// });
-		};
-		this.back.getContent().addChild(this.restartButton.getContent());
+        // scaleConverter(this.scrollContainer.width, windowWidth, 0.8, this.scrollContainer);
+    },
+    addShopList:function(){
 
-		scaleConverter(this.boxContainer.width, windowWidth, 0.8, this.boxContainer);
-	},
-	show:function(){
-		this.screen.addChild(this);
-		this.screen.blockPause = true;
-		this.boxContainer.visible = true;
-		this.container.parent.setChildIndex(this.container,this.container.parent.children.length -1);
-		this.screen.updateable = false;
+        // this.scrollContainer;
+        var _s = 0;
+        var marginTopBottom = windowHeight * 0.2;
+        var totItens = APP.appModel.hornModels.length;
+        var marginItens = 20;
+        var tempShopItem = null;
+        this.shopList = [];
+        for (var i = 0; i < APP.appModel.hornModels.length; i++) {
+            tempShopItem = new ShopItem(this);
+            tempShopItem.build(APP.appModel.hornModels[i]);
+            this.shopList.push(tempShopItem);
+            this.scrollContainer.addChild(tempShopItem.getContent());
+            scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, 0.2, tempShopItem);
+            _s = (tempShopItem.getContent().height + marginItens);
+            tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2;
+            tempShopItem.getContent().position.y = i * _s + marginTopBottom;
+        }
+        this.backScroll.height = totItens * _s + marginTopBottom * 2 + 100;
+    },
+    show:function(){
+        this.screen.addChild(this);
+        this.screen.blockPause = true;
+        this.scrollContainer.visible = true;
+        this.container.parent.setChildIndex(this.container,this.container.parent.children.length -1);
+        this.screen.updateable = false;
 
-		this.boxContainer.position.x = windowWidth / 2 - this.boxContainer.width / 2;
-		this.boxContainer.position.y = windowHeight / 2 - this.boxContainer.height / 2;
-		this.bg.alpha = 0.8;
-		this.boxContainer.alpha = 1;
+        this.scrollContainer.position.x = windowWidth / 2 - this.scrollContainer.width / 2;
+        this.bg.alpha = 0.8;
+        this.scrollContainer.alpha = 1;
 
-		TweenLite.from(this.bg, 0.5, {alpha:0});
-		TweenLite.from(this.boxContainer, 0.5, {y:-this.boxContainer.height});
-	},
-	hide:function(callback){
-		var self = this;
-		this.screen.blockPause = false;
-		this.screen.updateable = true;
-		TweenLite.to(this.bg, 0.5, {delay:0.1, alpha:0, onComplete:function(){
-			if(self.container.parent){
-				self.container.parent.removeChild(self.container);
-			}
-			if(callback){
-				callback();
-			}
-			self.kill = true;
-		}});
-		TweenLite.to(this.boxContainer.position, 0.5, {y:-this.boxContainer.height, ease:'easeInBack'});
-		TweenLite.to(this.boxContainer, 0.5, {alpha:0});
-		// TweenLite.to(this.bg, 0.5, {alpha:0});
-	},
-	getContent:function(){
-		return this.container;
-	}
+        TweenLite.from(this.bg, 0.5, {alpha:0});
+        TweenLite.from(this.scrollContainer, 0.5, {alpha:0});
+        // TweenLite.from(this.scrollContainer, 0.5, {y:-this.scrollContainer.height});
+    },
+    hide:function(callback){
+        var self = this;
+        this.screen.blockPause = false;
+        this.screen.updateable = true;
+        TweenLite.to(this.bg, 0.5, {delay:0.1, alpha:0, onComplete:function(){
+            if(self.container.parent){
+                self.container.parent.removeChild(self.container);
+            }
+            if(callback){
+                callback();
+            }
+            self.kill = true;
+        }});
+        TweenLite.to(this.scrollContainer.position, 0.5, {y:-this.scrollContainer.height, ease:'easeInBack'});
+        TweenLite.to(this.scrollContainer, 0.5, {alpha:0});
+        // TweenLite.to(this.bg, 0.5, {alpha:0});
+    },
+    getContent:function(){
+        return this.container;
+    },
+    applyScroll:function(container){
+        container.interactive = true;
+        // container.mouseout = container.touchend = function(mouseData){
+        //     container.mouseDown = false;
+        // };
+         
+        container.mousedown  = container.touchstart = function(mouseData){
+            container.mouseDown = true;
+            container.initGlobalY = mouseData.global.y - container.position.y;
+        };
+
+        container.mousemove = container.touchmove  = function(mouseData){
+            if(container.mouseDown){
+                container.lastVelY = (mouseData.global.y - container.initGlobalY) - container.position.y;
+
+                var posDest = verifyPos(mouseData.global.y - container.initGlobalY);
+                container.position.y = posDest;
+
+                TweenLite.killTweensOf(container.position);
+            }
+        };
+         
+        container.mouseup  = container.touchend = function(mouseData){
+            container.mouseDown = false;
+            var posDest = verifyPos(container.position.y + container.lastVelY * 5);
+            TweenLite.to(container.position, Math.abs(container.lastVelY) / 120, {y:posDest});
+        };
+        function verifyPos(posReturn){
+            if(posReturn > 0){
+                posReturn = 0;
+            }
+            if(container.height > windowHeight){
+                if(Math.abs(posReturn) + windowHeight > container.height){
+                    posReturn = -container.height + windowHeight;
+                }
+            }else{
+                if(posReturn + container.height > windowHeight){
+                    posReturn = windowHeight - container.height;
+                }
+            }
+            return posReturn;
+        }
+    },
 });

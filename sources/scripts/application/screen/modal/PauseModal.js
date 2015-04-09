@@ -28,7 +28,7 @@ var PauseModal = Class.extend({
 		this.backButton.clickCallback = function(){
 			self.hide(function(){
 				// self.screen.hideBars();
-				self.screen.screenManager.prevScreen();
+				self.screen.endModal.show();//screenManager.prevScreen();
 			});
 		};
 		this.back.getContent().addChild(this.backButton.getContent());
@@ -114,11 +114,11 @@ var PauseModal = Class.extend({
 			});
 		};
 
-		this.back.getContent().addChild(this.chifre1.getContent());
-		this.back.getContent().addChild(this.chifre2.getContent());
-		this.back.getContent().addChild(this.chifre3.getContent());
-		this.back.getContent().addChild(this.chifre4.getContent());
-		this.back.getContent().addChild(this.chifre5.getContent());
+		// this.back.getContent().addChild(this.chifre1.getContent());
+		// this.back.getContent().addChild(this.chifre2.getContent());
+		// this.back.getContent().addChild(this.chifre3.getContent());
+		// this.back.getContent().addChild(this.chifre4.getContent());
+		// this.back.getContent().addChild(this.chifre5.getContent());
 
 
 

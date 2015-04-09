@@ -63,6 +63,9 @@ var GameScreen = AbstractScreen.extend({
         this.hitTouch.hitArea = new PIXI.Rectangle(0, 0, windowWidth, windowHeight);
         this.mouseAngle = 0;
         function updateVel(touchData){
+            if(!self.updateable){
+                return;
+            }
             if(testMobile()){
                 fullscreen();
             }
@@ -115,15 +118,7 @@ var GameScreen = AbstractScreen.extend({
 
 
 
-        this.pauseButton = new DefaultButton('UI_button_pause_1.png', 'UI_button_pause_1_over.png', 'UI_button_pause_1_over.png');
-        this.pauseButton.build();
-        scaleConverter(this.pauseButton.getContent().width, windowWidth, 0.1, this.pauseButton);
-        this.pauseButton.setPosition(20,20);
-        this.addChild(this.pauseButton);
-      
-        this.pauseButton.clickCallback = function(){
-            self.pauseModal.show();
-        };
+        
 
         this.backButton = new DefaultButton('UI_button_default_1.png', 'UI_button_default_1.png');
         this.backButton.build();
@@ -155,11 +150,8 @@ var GameScreen = AbstractScreen.extend({
 
         // this.setAudioButtons();
         
-        this.fromTween();
+        
 
-        //MODAIS
-        this.pauseModal = new PauseModal(this);
-        this.endModal = new EndModal(this);
 
         if(APP.withAPI){
             GameAPI.GameBreak.request(function(){
@@ -215,9 +207,42 @@ var GameScreen = AbstractScreen.extend({
         // this.arcoiris.getContent().position.y = windowHeight / 2 - this.arcoiris.getContent().height / 2;
 
         
-
+        //MODAIS
+        this.pauseModal = new PauseModal(this);
+        this.endModal = new EndModal(this);
+        // this.endModal.show();
         // this.thumbContainer.scale.x = 0.5;
         // this.thumbContainer.scale.y = 0.5;
+
+
+        this.pauseButton = new DefaultButton('UI_button_pause_1.png', 'UI_button_pause_1_over.png', 'UI_button_pause_1_over.png');
+        this.pauseButton.build();
+        scaleConverter(this.pauseButton.getContent().width, windowWidth, 0.1, this.pauseButton);
+        // this.pauseButton.setPosition(20,windowHeight - this.pauseButton.getContent().height - 20);
+      
+        this.pauseButton.clickCallback = function(){
+            if(!self.updateable){
+                return;
+            }
+            self.pauseModal.show();
+        };
+
+        this.HUDContainer = new PIXI.DisplayObjectContainer();
+        this.addChild(this.HUDContainer);
+
+        this.HUDback = new PIXI.Graphics();
+        this.HUDback.beginFill(0x000000);
+        this.HUDback.drawRect(0,0,windowWidth, this.pauseButton.getContent().height * 1.2);
+        this.HUDback.alpha = 0.5;
+
+        this.pauseButton.getContent().position.x = this.pauseButton.getContent().height * 0.1;
+        this.pauseButton.getContent().position.y = this.pauseButton.getContent().height * 0.1;
+
+        this.HUDContainer.addChild(this.HUDback);
+        this.HUDContainer.addChild(this.pauseButton.getContent());
+        this.HUDContainer.position.y = windowHeight - this.HUDContainer.height;
+
+        this.fromTween();
         
     },
     addEnemyThumb:function(enemy){
@@ -378,7 +403,7 @@ var GameScreen = AbstractScreen.extend({
     toTween:function(callback){
         TweenLite.to(this.bg.getContent(), 0.5, {alpha:0});
 
-        TweenLite.to(this.pauseButton.getContent(), 0.5, {delay:0.3,y:-this.pauseButton.getContent().height, ease:'easeOutBack'});
+        // TweenLite.to(this.pauseButton.getContent(), 0.5, {delay:0.3,y:-this.pauseButton.getContent().height, ease:'easeOutBack'});
         TweenLite.to(this.endGameButton.getContent(), 0.5, {delay:0.2,y:windowHeight, ease:'easeOutBack'});
         TweenLite.to(this.backButton.getContent(), 0.5, {delay:0.1,y:windowHeight, ease:'easeOutBack', onComplete:function(){
             if(callback){
@@ -396,7 +421,7 @@ var GameScreen = AbstractScreen.extend({
     fromTween:function(callback){
         TweenLite.from(this.bg.getContent(), 0.5, {alpha:0});
 
-        TweenLite.from(this.pauseButton.getContent(), 0.5, {delay:0.1,y:-this.pauseButton.getContent().height, ease:'easeOutBack'});
+        // TweenLite.from(this.pauseButton.getContent(), 0.5, {delay:0.1,y:-this.pauseButton.getContent().height, ease:'easeOutBack'});
 
         TweenLite.from(this.endGameButton.getContent(), 0.5, {delay:0.5,y:windowHeight, ease:'easeOutBack'});
         TweenLite.from(this.backButton.getContent(), 0.5, {delay:0.4,y:windowHeight, ease:'easeOutBack', onComplete:function(){

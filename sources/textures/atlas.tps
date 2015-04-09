@@ -38,7 +38,7 @@
         <key>dataFormat</key>
         <string>json</string>
         <key>textureFileName</key>
-        <filename>../../dist/img/atlas.png</filename>
+        <filename>../../dist/img/atlas2.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -145,7 +145,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../dist/img/atlas.json</filename>
+                <filename>../../dist/img/atlas2.json</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -188,7 +188,6 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>UI_play_button_1.png</filename>
             <filename>volumeButton_on_over.png</filename>
             <filename>volumeButton_off.png</filename>
             <filename>volumeButton_off_over.png</filename>
@@ -219,6 +218,9 @@
             <filename>uni_corpo.png</filename>
             <filename>uni_head.png</filename>
             <filename>uni_horn1.png</filename>
+            <filename>arcoiris_redondo.png</filename>
+            <filename>top_degrade.png</filename>
+            <filename>back_shop_button.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

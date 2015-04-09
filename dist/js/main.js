@@ -1,4 +1,4 @@
-/*! jefframos 08-04-2015 */
+/*! jefframos 09-04-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -321,15 +321,16 @@ var Application = AbstractApplication.extend({
     init: function() {
         this._super(windowWidth, windowHeight), this.stage.setBackgroundColor(2892633), 
         this.stage.removeChild(this.loadText), this.labelDebug = new PIXI.Text("", {
-            font: "15px Arial"
-        }), this.stage.addChild(this.labelDebug), this.labelDebug.position.y = windowHeight - 20, 
-        this.labelDebug.position.x = 20, this.mute = !1, this.audioController = new AudioController(), 
-        this.appModel = new AppModel(), this.withAPI = !0, "#withoutAPI" === window.location.hash && (this.withAPI = !1);
+            font: "15px Arial",
+            fill: "#FFF"
+        }), this.labelDebug.position.y = 20, this.labelDebug.position.x = 20, this.mute = !1, 
+        this.audioController = new AudioController(), this.appModel = new AppModel(), this.withAPI = !0, 
+        "#withoutAPI" === window.location.hash && (this.withAPI = !1);
     },
     update: function() {
         this._super(), this.withAPI && this.apiLogo && this.apiLogo.getContent().height > 1 && 0 === this.apiLogo.getContent().position.x && (scaleConverter(this.apiLogo.getContent().width, windowWidth, .5, this.apiLogo), 
         this.apiLogo.getContent().position.x = windowWidth / 2 - this.apiLogo.getContent().width / 2), 
-        this.screenManager && this.screenManager.currentScreen && (this.childsCounter = 1, 
+        this.screenManager && this.screenManager.currentScreen && this.labelDebug && this.labelDebug.parent && (this.childsCounter = 1, 
         this.recursiveCounter(this.screenManager.currentScreen), this.labelDebug.setText(this.childsCounter));
     },
     apiLoaded: function(apiInstance) {
@@ -519,6 +520,69 @@ var Application = AbstractApplication.extend({
     },
     setPosition: function(x, y) {
         this.container.position.x = x, this.container.position.y = y;
+    }
+}), ShopItem = Class.extend({
+    init: function(screen) {
+        this.screen = screen, this.container = new PIXI.DisplayObjectContainer();
+    },
+    build: function(model) {
+        this.model = model, this.backShopItem = new SimpleSprite("back_shop_button.png"), 
+        this.backScroll = new PIXI.Graphics(), this.backScroll.beginFill(0), this.backScroll.drawRect(0, 0, windowWidth, 1.2 * this.backShopItem.getContent().height), 
+        this.backScroll.alpha = .2, this.container.addChild(this.backScroll), this.container.addChild(this.backShopItem.getContent()), 
+        this.backShopItem.getContent().position.x = .1 * this.backShopItem.getContent().height, 
+        this.backShopItem.getContent().position.y = .1 * this.backShopItem.getContent().height, 
+        this.hornImage = new SimpleSprite(this.model.cover), this.backShopItem.getContent().addChild(this.hornImage.getContent()), 
+        scaleConverter(this.hornImage.getContent().height, this.backShopItem.getContent().height, .7, this.hornImage), 
+        this.hornImage.getContent().position.x = this.backShopItem.getContent().width / 2 - this.hornImage.getContent().width / 2, 
+        this.hornImage.getContent().position.y = this.backShopItem.getContent().height / 2 - this.hornImage.getContent().height / 2, 
+        this.labelName = new PIXI.Text(this.model.label, {
+            align: "center",
+            font: "50px Vagron",
+            fill: "#FFF",
+            wordWrap: !0,
+            wordWrapWidth: 500
+        }), scaleConverter(this.labelName.height, this.backShopItem.getContent().height, .3, this.labelName), 
+        this.labelName.position.x = this.backShopItem.getContent().x + this.backShopItem.getContent().width, 
+        this.labelName.position.y = this.backShopItem.getContent().position.y, this.container.addChild(this.labelName), 
+        console.log(this.model.id);
+        var self = this;
+        this.equipped = new PIXI.Text("EQUIPPED", {
+            align: "center",
+            font: "50px Vagron",
+            fill: "#FFF",
+            wordWrap: !0,
+            wordWrapWidth: 500
+        }), scaleConverter(this.equipped.height, this.backShopItem.getContent().height, .3, this.equipped), 
+        this.equipped.position.x = this.backShopItem.getContent().x + this.backShopItem.getContent().width, 
+        this.equipped.position.y = this.backShopItem.getContent().height - this.equipped.height + this.backShopItem.getContent().position.y, 
+        this.equipButton = new DefaultButton("UI_button_default_2.png", "UI_button_default_2.png"), 
+        this.equipButton.build(), this.equipButton.addLabel(new PIXI.Text("EQUIP", {
+            font: "30px Vagron",
+            fill: "#FFFFFF"
+        }), 33, 5), this.equipButton.setPosition(this.backShopItem.getContent().x + this.backShopItem.getContent().width, this.backShopItem.getContent().height - this.equipButton.getContent().height + this.backShopItem.getContent().position.y), 
+        this.equipButton.clickCallback = this.equipButton.mouseDownCallback = this.equipButton.mouseUpCallback = function() {
+            console.log("equip"), APP.currentHornModel = self.model;
+            for (var i = self.screen.shopList.length - 1; i >= 0; i--) self.screen.shopList[i].updateStats();
+            self.updateStats();
+        }, this.buyButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
+        this.buyButton.build(), this.buyButton.addLabel(new PIXI.Text(this.model.coast + " BUY", {
+            font: "30px Vagron",
+            fill: "#FFFFFF"
+        }), 33, 10), this.buyButton.setPosition(this.backShopItem.getContent().x + this.backShopItem.getContent().width, this.backShopItem.getContent().height - this.buyButton.getContent().height + this.backShopItem.getContent().position.y), 
+        this.buyButton.clickCallback = this.buyButton.mouseDownCallback = this.buyButton.mouseUpCallback = function() {
+            console.log("buy"), APP.currentHornModel = self.model, APP.currentHornModel.enabled = !0;
+            for (var i = self.screen.shopList.length - 1; i >= 0; i--) self.screen.shopList[i].updateStats();
+            self.updateStats();
+        }, this.updateStats();
+    },
+    updateStats: function() {
+        this.equipped && this.equipped.parent && this.equipped.parent.removeChild(this.equipped), 
+        this.equipButton.getContent() && this.equipButton.getContent().parent && this.equipButton.getContent().parent.removeChild(this.equipButton.getContent()), 
+        this.buyButton.getContent() && this.buyButton.getContent().parent && this.buyButton.getContent().parent.removeChild(this.buyButton.getContent()), 
+        this.container.addChild(APP.currentHornModel.id === this.model.id ? this.equipped : this.model.enabled ? this.equipButton.getContent() : this.buyButton.getContent());
+    },
+    getContent: function() {
+        return this.container;
     }
 }), AudioController = Class.extend({
     init: function() {
@@ -775,15 +839,15 @@ var Application = AbstractApplication.extend({
     build: function() {
         this.sprite = new PIXI.Sprite.fromFrame(this.imgSource), this.sprite.anchor.x = .5, 
         this.sprite.anchor.y = .5, this.updateable = !0, this.collidable = !0, this.birdsCollided = [], 
-        this.particlesCounterMax = (Math.abs(this.velocity.x) + Math.abs(this.velocity.y)) / 20, 
+        this.particlesCounterMax = (Math.abs(this.velocity.x) + Math.abs(this.velocity.y)) / 10, 
         this.particlesCounter = 20, this.collideArea = new PIXI.Rectangle(-50, -50, windowWidth + 100, windowHeight + 100);
     },
     update: function() {
         this._super(), this.layer.collideChilds(this), this.updateableParticles(), (!this.targetEntity || this.targetEntity && this.targetEntity.kill) && this.timeLive--, 
         this.getPosition().y < -20 && (this.kill = !0), this.range = this.sprite.height / 2, 
-        this.isRotation && (this.sprite.rotation += this.accumRot), this.hasBounce && (this.getPosition().x + this.velocity.x < 0 || this.getPosition().x + this.velocity.x > windowWidth) && (this.velocity.x *= -1), 
-        0 !== this.sinoid && (this.velocity.x = 5 * Math.sin(this.sin) + this.startVel.x, 
-        this.sin += this.sinoid, console.log(this.velocity)), this.collideArea.contains(this.getPosition().x, this.getPosition().y) || (this.kill = !0);
+        this.isRotation && (this.sprite.rotation += this.accumRot), 0 !== this.sinoid && (this.velocity.x = 5 * Math.sin(this.sin) + this.startVel.x, 
+        this.sin += this.sinoid, console.log(this.velocity)), this.hasBounce && (this.getPosition().x + this.velocity.x < 0 || this.getPosition().x + this.velocity.x > windowWidth) && (this.velocity.x *= -1, 
+        this.startVel.x *= -1), this.collideArea.contains(this.getPosition().x, this.getPosition().y) || (this.kill = !0);
     },
     updateableParticles: function() {
         if (this.particlesCounter--, this.particlesCounter <= 0) {
@@ -1014,10 +1078,13 @@ var Application = AbstractApplication.extend({
         }, {
             size: 1,
             demage: 1,
-            fireAcumMax: 15,
+            fireAcumMax: 20,
             hasMultiple: 1,
             hasBounce: !1,
-            sinoid: .5
+            sinoid: .5,
+            enabled: !0,
+            coast: 5e3,
+            id: 0
         }), new HornModel({
             cover: "uni_horn1.png",
             source: "uni_horn1.png",
@@ -1026,47 +1093,60 @@ var Application = AbstractApplication.extend({
         }, {
             size: 1,
             demage: 1,
-            fireAcumMax: 15,
+            fireAcumMax: 20,
             hasMultiple: 1,
             hasBounce: !1,
             piercing: !0,
-            sinoid: 0
+            sinoid: 0,
+            enabled: !1,
+            coast: 5e3,
+            id: 1
         }), new HornModel({
             cover: "uni_horn1.png",
             source: "uni_horn1.png",
             bulletSource: "bullet.png",
-            label: "Piercing"
+            label: "Bounce"
         }, {
             size: 1,
             demage: 1,
-            fireAcumMax: 15,
+            fireAcumMax: 20,
             hasMultiple: 1,
             hasBounce: !0,
-            sinoid: 0
+            sinoid: 0,
+            enabled: !1,
+            coast: 5e3,
+            id: 2
         }), new HornModel({
             cover: "uni_horn1.png",
             source: "uni_horn1.png",
             bulletSource: "bullet.png",
-            label: "Piercing"
+            label: "x3"
         }, {
             size: 1,
             demage: 1,
-            fireAcumMax: 15,
+            fireAcumMax: 20,
             hasMultiple: 3,
             hasBounce: !1,
-            sinoid: 0
+            sinoid: 0,
+            enabled: !1,
+            coast: 5e3,
+            id: 3
         }), new HornModel({
             cover: "uni_horn1.png",
             source: "uni_horn1.png",
             bulletSource: "bullet.png",
-            label: "Piercing"
+            label: "ALL STATS"
         }, {
             size: 1,
             demage: 1,
-            fireAcumMax: 15,
-            hasMultiple: 5,
-            hasBounce: !1,
-            sinoid: 0
+            fireAcumMax: 20,
+            hasMultiple: 3,
+            hasBounce: !0,
+            piercing: !0,
+            sinoid: .5,
+            enabled: !1,
+            coast: 5e3,
+            id: 4
         }) ], this.enemyModels = [ new EnemyModel({
             cover: "cloud1a.png",
             source: [ "cloud1a.png" ],
@@ -1208,11 +1288,12 @@ var Application = AbstractApplication.extend({
     init: function(graphicsObject, statsObjec) {
         this.cover = graphicsObject.cover ? graphicsObject.cover : "uni_horn1.png", this.imgSource = graphicsObject.source ? graphicsObject.source : "uni_horn1.png", 
         this.bulletSource = graphicsObject.bulletSource ? graphicsObject.bulletSource : "bullet.png", 
-        this.label = graphicsObject.label ? graphicsObject.label : "", this.sizePercent = statsObjec.sizePercent ? statsObjec.sizePercent : 1, 
-        this.demage = statsObjec.demage ? statsObjec.demage : 1, this.fireSpeed = statsObjec.fireSpeed ? statsObjec.fireSpeed : 10, 
-        this.fireAcumMax = statsObjec.fireAcumMax ? statsObjec.fireAcumMax : 10, this.hasMultiple = statsObjec.hasMultiple ? statsObjec.hasMultiple : 1, 
-        this.hasBounce = statsObjec.hasBounce ? statsObjec.hasBounce : !1, this.piercing = statsObjec.piercing ? statsObjec.piercing : !1, 
-        this.sinoid = statsObjec.sinoid ? statsObjec.sinoid : 0;
+        this.label = graphicsObject.label ? graphicsObject.label : "", this.id = statsObjec.id ? statsObjec.id : 0, 
+        this.enabled = statsObjec.enabled ? statsObjec.enabled : !1, this.coast = statsObjec.coast ? statsObjec.coast : 200, 
+        this.sizePercent = statsObjec.sizePercent ? statsObjec.sizePercent : 1, this.demage = statsObjec.demage ? statsObjec.demage : 1, 
+        this.fireSpeed = statsObjec.fireSpeed ? statsObjec.fireSpeed : 10, this.fireAcumMax = statsObjec.fireAcumMax ? statsObjec.fireAcumMax : 10, 
+        this.hasMultiple = statsObjec.hasMultiple ? statsObjec.hasMultiple : 1, this.hasBounce = statsObjec.hasBounce ? statsObjec.hasBounce : !1, 
+        this.piercing = statsObjec.piercing ? statsObjec.piercing : !1, this.sinoid = statsObjec.sinoid ? statsObjec.sinoid : 0;
     },
     serialize: function() {}
 }), PlayerModel = Class.extend({
@@ -1407,10 +1488,12 @@ var Application = AbstractApplication.extend({
     },
     initApplication: function() {
         function updateVel(touchData) {
-            testMobile() && fullscreen();
-            var angle = Math.atan2(touchData.global.y - self.hornPos.y, touchData.global.x - self.hornPos.x), tempCompare = 180 * angle / Math.PI;
-            -45 > tempCompare && tempCompare > -125 && (self.mouseAngle = angle, angle = 180 * angle / Math.PI, 
-            angle += 90, angle = angle / 180 * Math.PI, self.unihorn.head.rotation = angle);
+            if (self.updateable) {
+                testMobile() && fullscreen();
+                var angle = Math.atan2(touchData.global.y - self.hornPos.y, touchData.global.x - self.hornPos.x), tempCompare = 180 * angle / Math.PI;
+                -45 > tempCompare && tempCompare > -125 && (self.mouseAngle = angle, angle = 180 * angle / Math.PI, 
+                angle += 90, angle = angle / 180 * Math.PI, self.unihorn.head.rotation = angle);
+            }
         }
         var self = this;
         this.bg = new SimpleSprite("fundo1.png"), this.addChild(this.bg.getContent()), scaleConverter(this.bg.getContent().width, windowWidth, 1.2, this.bg), 
@@ -1436,11 +1519,7 @@ var Application = AbstractApplication.extend({
         }, this.hitTouch.touchend = function(touchData) {
             self.touchDown = !1, updateVel(touchData);
         }, this.updateable = !0, this.fireAcumMax = APP.currentHornModel.fireAcumMax, this.fireAcum = this.fireAcumMax, 
-        this.pauseButton = new DefaultButton("UI_button_pause_1.png", "UI_button_pause_1_over.png", "UI_button_pause_1_over.png"), 
-        this.pauseButton.build(), scaleConverter(this.pauseButton.getContent().width, windowWidth, .1, this.pauseButton), 
-        this.pauseButton.setPosition(20, 20), this.addChild(this.pauseButton), this.pauseButton.clickCallback = function() {
-            self.pauseModal.show();
-        }, this.backButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
+        this.backButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
         this.backButton.build(), this.backButton.addLabel(new PIXI.Text("BACK", {
             font: "50px Vagron",
             fill: "#FFFFFF"
@@ -1458,8 +1537,7 @@ var Application = AbstractApplication.extend({
         this.endGameButton.setPosition(windowWidth - 20 - this.endGameButton.getContent().width, windowHeight - 2.5 * this.endGameButton.getContent().height), 
         this.endGameButton.clickCallback = function() {
             self.updateable = !1, self.endModal.show();
-        }, this.fromTween(), this.pauseModal = new PauseModal(this), this.endModal = new EndModal(this), 
-        APP.withAPI && GameAPI.GameBreak.request(function() {
+        }, APP.withAPI && GameAPI.GameBreak.request(function() {
             self.pauseModal.show();
         }, function() {
             self.pauseModal.hide();
@@ -1480,7 +1558,17 @@ var Application = AbstractApplication.extend({
         this.thumbContainer.position.y = .05 * windowHeight, this.badClouds = [], this.maxClouds = 10, 
         this.arcoiris = new SimpleSprite("arcoiris_redondo.png"), this.thumbContainer.addChild(this.arcoiris.getContent()), 
         scaleConverter(this.arcoiris.getContent().width, windowWidth, 1.4, this.arcoiris), 
-        this.arcoiris.getContent().position.x = .2 * -windowWidth;
+        this.arcoiris.getContent().position.x = .2 * -windowWidth, this.pauseModal = new PauseModal(this), 
+        this.endModal = new EndModal(this), this.pauseButton = new DefaultButton("UI_button_pause_1.png", "UI_button_pause_1_over.png", "UI_button_pause_1_over.png"), 
+        this.pauseButton.build(), scaleConverter(this.pauseButton.getContent().width, windowWidth, .1, this.pauseButton), 
+        this.pauseButton.clickCallback = function() {
+            self.updateable && self.pauseModal.show();
+        }, this.HUDContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.HUDContainer), 
+        this.HUDback = new PIXI.Graphics(), this.HUDback.beginFill(0), this.HUDback.drawRect(0, 0, windowWidth, 1.2 * this.pauseButton.getContent().height), 
+        this.HUDback.alpha = .5, this.pauseButton.getContent().position.x = .1 * this.pauseButton.getContent().height, 
+        this.pauseButton.getContent().position.y = .1 * this.pauseButton.getContent().height, 
+        this.HUDContainer.addChild(this.HUDback), this.HUDContainer.addChild(this.pauseButton.getContent()), 
+        this.HUDContainer.position.y = windowHeight - this.HUDContainer.height, this.fromTween();
     },
     addEnemyThumb: function(enemy) {
         this.thumbContainer.addChild(enemy.thumb);
@@ -1551,10 +1639,6 @@ var Application = AbstractApplication.extend({
     toTween: function(callback) {
         TweenLite.to(this.bg.getContent(), .5, {
             alpha: 0
-        }), TweenLite.to(this.pauseButton.getContent(), .5, {
-            delay: .3,
-            y: -this.pauseButton.getContent().height,
-            ease: "easeOutBack"
         }), TweenLite.to(this.endGameButton.getContent(), .5, {
             delay: .2,
             y: windowHeight,
@@ -1579,10 +1663,6 @@ var Application = AbstractApplication.extend({
     fromTween: function(callback) {
         TweenLite.from(this.bg.getContent(), .5, {
             alpha: 0
-        }), TweenLite.from(this.pauseButton.getContent(), .5, {
-            delay: .1,
-            y: -this.pauseButton.getContent().height,
-            ease: "easeOutBack"
         }), TweenLite.from(this.endGameButton.getContent(), .5, {
             delay: .5,
             y: windowHeight,
@@ -1644,8 +1724,8 @@ var Application = AbstractApplication.extend({
         this.bg = new SimpleSprite("bg1.jpg"), this.container.addChild(this.bg.getContent()), 
         scaleConverter(this.bg.getContent().width, windowWidth, 1.2, this.bg), this.bg.getContent().position.x = windowWidth / 2 - this.bg.getContent().width / 2, 
         this.bg.getContent().position.y = windowHeight / 2 - this.bg.getContent().height / 2, 
-        this.logo = new SimpleSprite("logo.png"), this.container.addChild(this.logo.getContent()), 
-        scaleConverter(this.logo.getContent().width, windowWidth, .5, this.logo), this.logo.getContent().position.x = windowWidth / 2 - this.logo.getContent().width / 2, 
+        this.logo = new SimpleSprite("logo.png"), scaleConverter(this.logo.getContent().width, windowWidth, .5, this.logo), 
+        this.logo.getContent().position.x = windowWidth / 2 - this.logo.getContent().width / 2, 
         this.logo.getContent().position.y = windowHeight / 2 - this.logo.getContent().height / 2, 
         APP.withAPI && (this.moreGames = new DefaultButton("UI_button_default_2.png", "UI_button_default_2.png"), 
         this.moreGames.build(), this.moreGames.addLabel(new PIXI.Text("MORE GAMES", {
@@ -1662,15 +1742,10 @@ var Application = AbstractApplication.extend({
         }), 45, 2), scaleConverter(this.playButton.getContent().width, windowWidth, .4, this.playButton), 
         this.playButton.setPosition(windowWidth / 2 - this.playButton.getContent().width / 2, windowHeight - 2.5 * this.playButton.getContent().height), 
         this.addChild(this.playButton), this.playButton.clickCallback = function() {
-            self.updateable = !1, self.toTween(function() {
-                self.screenManager.change("Choice");
+            fullscreen(), self.updateable = !1, self.toTween(function() {
+                self.screenManager.change("Game");
             });
-        }, possibleFullscreen() && !isfull && (this.fullscreenButton = new DefaultButton("fullscreen.png", "fullscreen.png"), 
-        this.fullscreenButton.build(), scaleConverter(this.fullscreenButton.getContent().width, windowWidth, .1, this.fullscreenButton), 
-        this.fullscreenButton.setPosition(windowWidth - this.fullscreenButton.getContent().width - 20, windowHeight - this.fullscreenButton.getContent().height - 20), 
-        this.addChild(this.fullscreenButton), this.fullscreenButton.clickCallback = function() {
-            fullscreen(), self.fullscreenButton.getContent().alpha = 0;
-        }), this.setAudioButtons(), this.fromTween();
+        }, this.fromTween();
     },
     toTween: function(callback) {
         TweenLite.to(this.bg.getContent(), .5, {
@@ -1762,7 +1837,7 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        var assetsToLoader = [ "dist/img/atlas.json" ];
+        var assetsToLoader = [ "dist/img/atlas2.json" ];
         assetsToLoader.length > 0 && !this.isLoaded ? (this.loader = new PIXI.AssetLoader(assetsToLoader), 
         this.initLoad()) : this.onAssetsLoaded();
     },
@@ -1795,7 +1870,7 @@ var Application = AbstractApplication.extend({
     },
     initApplication: function() {
         this.isLoaded = !0;
-        APP.currentHornModel = APP.appModel.hornModels[0], this.screenManager.change("Game");
+        APP.currentHornModel = APP.appModel.hornModels[0], this.screenManager.change("Init");
     },
     transitionIn: function() {
         return this.isLoaded ? void this.build() : void this.build();
@@ -1846,48 +1921,55 @@ var Application = AbstractApplication.extend({
     }
 }), EndModal = Class.extend({
     init: function(screen) {
-        this.screen = screen, this.container = new PIXI.DisplayObjectContainer(), this.boxContainer = new PIXI.DisplayObjectContainer(), 
+        this.screen = screen, this.container = new PIXI.DisplayObjectContainer(), this.scrollContainer = new PIXI.DisplayObjectContainer(), 
         this.bg = new PIXI.Graphics(), this.bg.beginFill(1383495), this.bg.drawRect(0, 0, windowWidth, windowHeight), 
-        this.bg.alpha = .8, this.container.addChild(this.bg), this.container.addChild(this.boxContainer);
+        this.bg.alpha = .8, this.container.addChild(this.bg), this.container.addChild(this.scrollContainer), 
+        this.applyScroll(this.scrollContainer);
         var self = this;
-        this.back = new SimpleSprite("UI_modal_back_1.png"), this.boxContainer.addChild(this.back.getContent());
-        var thirdPart = this.back.getContent().width / 3;
-        this.textScreen = new PIXI.Text("Something like\nUpgrades\nor Stats", {
-            align: "center",
-            font: "50px Vagron",
-            fill: "#000",
-            wordWrap: !0,
-            wordWrapWidth: 500
-        }), scaleConverter(this.textScreen.width, this.back.getContent().width, .5, this.textScreen), 
-        this.textScreen.position.x = this.back.getContent().width / 2 - this.textScreen.width / 2, 
-        this.textScreen.position.y = 20, this.back.getContent().addChild(this.textScreen), 
-        this.closeButton = new DefaultButton("UI_button_close_1.png", "UI_button_close_1.png"), 
-        this.closeButton.build(), this.closeButton.setPosition(this.back.getContent().width - this.closeButton.getContent().width, 0), 
-        this.closeButton.clickCallback = function() {
+        this.backScroll = new PIXI.Graphics(), this.backScroll.beginFill(1383495), this.backScroll.drawRect(0, 0, windowWidth, 2 * windowHeight), 
+        this.backScroll.alpha = .8, this.scrollContainer.addChild(this.backScroll), this.closeButton = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
+        this.closeButton.build(), this.closeButton.setPosition(20, 20), this.closeButton.clickCallback = function() {
             self.hide(function() {
                 self.screen.updateable = !0, self.screen.reset();
             });
-        }, this.back.getContent().addChild(this.closeButton.getContent()), this.backButton = new DefaultButton("UI_button_facebook_1.png", "UI_button_facebook_1.png"), 
-        this.backButton.build(), this.backButton.setPosition(1 * thirdPart - thirdPart / 2 - this.backButton.getContent().width / 2, this.back.getContent().height - this.backButton.getContent().height - 20), 
-        this.backButton.clickCallback = function() {}, this.back.getContent().addChild(this.backButton.getContent()), 
-        this.continueButton = new DefaultButton("UI_button_ranking_1.png", "UI_button_ranking_1.png"), 
-        this.continueButton.build(), scaleConverter(this.continueButton.getContent().width, this.back.getContent().width, .3, this.continueButton), 
-        this.continueButton.setPosition(2 * thirdPart - thirdPart / 2 - this.continueButton.getContent().width / 2, this.back.getContent().height - this.continueButton.getContent().height - 20), 
-        this.continueButton.clickCallback = function() {}, this.back.getContent().addChild(this.continueButton.getContent()), 
-        this.restartButton = new DefaultButton("UI_button_twitter_1.png", "UI_button_twitter_1.png"), 
-        this.restartButton.build(), this.restartButton.setPosition(3 * thirdPart - thirdPart / 2 - this.restartButton.getContent().width / 2, this.back.getContent().height - this.restartButton.getContent().height - 20), 
-        this.restartButton.clickCallback = function() {}, this.back.getContent().addChild(this.restartButton.getContent()), 
-        scaleConverter(this.boxContainer.width, windowWidth, .8, this.boxContainer);
+        }, this.container.addChild(this.closeButton.getContent()), scaleConverter(this.closeButton.getContent().height, windowHeight, .08, this.closeButton);
+        var thirdPart = this.backScroll.width / 3;
+        this.textScreen = new PIXI.Text("$ 5000", {
+            align: "center",
+            font: "50px Vagron",
+            fill: "#FFF",
+            wordWrap: !0,
+            wordWrapWidth: 500
+        }), scaleConverter(this.textScreen.height, this.closeButton.getContent().height, 1, this.textScreen), 
+        this.textScreen.position.x = windowWidth - this.textScreen.width - 20, this.textScreen.position.y = 20, 
+        this.container.addChild(this.textScreen), this.addShopList(), this.fbButton = new DefaultButton("UI_button_facebook_1.png", "UI_button_facebook_1.png"), 
+        this.fbButton.build(), this.fbButton.setPosition(1 * thirdPart - thirdPart / 2 - this.fbButton.getContent().width / 2, this.backScroll.height - this.fbButton.getContent().height - 20), 
+        this.fbButton.clickCallback = function() {}, this.scrollContainer.addChild(this.fbButton.getContent()), 
+        this.rankingButton = new DefaultButton("UI_button_ranking_1.png", "UI_button_ranking_1.png"), 
+        this.rankingButton.build(), scaleConverter(this.rankingButton.getContent().width, this.backScroll.width, .3, this.rankingButton), 
+        this.rankingButton.setPosition(2 * thirdPart - thirdPart / 2 - this.rankingButton.getContent().width / 2, this.backScroll.height - this.rankingButton.getContent().height - 20), 
+        this.rankingButton.clickCallback = function() {}, this.twitterButton = new DefaultButton("UI_button_twitter_1.png", "UI_button_twitter_1.png"), 
+        this.twitterButton.build(), this.twitterButton.setPosition(3 * thirdPart - thirdPart / 2 - this.twitterButton.getContent().width / 2, this.backScroll.height - this.twitterButton.getContent().height - 20), 
+        this.twitterButton.clickCallback = function() {}, this.scrollContainer.addChild(this.twitterButton.getContent());
+    },
+    addShopList: function() {
+        var _s = 0, marginTopBottom = .2 * windowHeight, totItens = APP.appModel.hornModels.length, marginItens = 20, tempShopItem = null;
+        this.shopList = [];
+        for (var i = 0; i < APP.appModel.hornModels.length; i++) tempShopItem = new ShopItem(this), 
+        tempShopItem.build(APP.appModel.hornModels[i]), this.shopList.push(tempShopItem), 
+        this.scrollContainer.addChild(tempShopItem.getContent()), scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, .2, tempShopItem), 
+        _s = tempShopItem.getContent().height + marginItens, tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2, 
+        tempShopItem.getContent().position.y = i * _s + marginTopBottom;
+        this.backScroll.height = totItens * _s + 2 * marginTopBottom + 100;
     },
     show: function() {
-        this.screen.addChild(this), this.screen.blockPause = !0, this.boxContainer.visible = !0, 
+        this.screen.addChild(this), this.screen.blockPause = !0, this.scrollContainer.visible = !0, 
         this.container.parent.setChildIndex(this.container, this.container.parent.children.length - 1), 
-        this.screen.updateable = !1, this.boxContainer.position.x = windowWidth / 2 - this.boxContainer.width / 2, 
-        this.boxContainer.position.y = windowHeight / 2 - this.boxContainer.height / 2, 
-        this.bg.alpha = .8, this.boxContainer.alpha = 1, TweenLite.from(this.bg, .5, {
+        this.screen.updateable = !1, this.scrollContainer.position.x = windowWidth / 2 - this.scrollContainer.width / 2, 
+        this.bg.alpha = .8, this.scrollContainer.alpha = 1, TweenLite.from(this.bg, .5, {
             alpha: 0
-        }), TweenLite.from(this.boxContainer, .5, {
-            y: -this.boxContainer.height
+        }), TweenLite.from(this.scrollContainer, .5, {
+            alpha: 0
         });
     },
     hide: function(callback) {
@@ -1899,15 +1981,36 @@ var Application = AbstractApplication.extend({
                 self.container.parent && self.container.parent.removeChild(self.container), callback && callback(), 
                 self.kill = !0;
             }
-        }), TweenLite.to(this.boxContainer.position, .5, {
-            y: -this.boxContainer.height,
+        }), TweenLite.to(this.scrollContainer.position, .5, {
+            y: -this.scrollContainer.height,
             ease: "easeInBack"
-        }), TweenLite.to(this.boxContainer, .5, {
+        }), TweenLite.to(this.scrollContainer, .5, {
             alpha: 0
         });
     },
     getContent: function() {
         return this.container;
+    },
+    applyScroll: function(container) {
+        function verifyPos(posReturn) {
+            return posReturn > 0 && (posReturn = 0), container.height > windowHeight ? Math.abs(posReturn) + windowHeight > container.height && (posReturn = -container.height + windowHeight) : posReturn + container.height > windowHeight && (posReturn = windowHeight - container.height), 
+            posReturn;
+        }
+        container.interactive = !0, container.mousedown = container.touchstart = function(mouseData) {
+            container.mouseDown = !0, container.initGlobalY = mouseData.global.y - container.position.y;
+        }, container.mousemove = container.touchmove = function(mouseData) {
+            if (container.mouseDown) {
+                container.lastVelY = mouseData.global.y - container.initGlobalY - container.position.y;
+                var posDest = verifyPos(mouseData.global.y - container.initGlobalY);
+                container.position.y = posDest, TweenLite.killTweensOf(container.position);
+            }
+        }, container.mouseup = container.touchend = function() {
+            container.mouseDown = !1;
+            var posDest = verifyPos(container.position.y + 5 * container.lastVelY);
+            TweenLite.to(container.position, Math.abs(container.lastVelY) / 120, {
+                y: posDest
+            });
+        };
     }
 }), NewBirdModal = Class.extend({
     init: function(screen) {
@@ -2001,7 +2104,7 @@ var Application = AbstractApplication.extend({
         this.backButton.build(), this.backButton.setPosition(1 * thirdPart - thirdPart / 2 - this.backButton.getContent().width / 2, this.back.getContent().height / 2 - this.backButton.getContent().height / 2), 
         this.backButton.clickCallback = function() {
             self.hide(function() {
-                self.screen.screenManager.prevScreen();
+                self.screen.endModal.show();
             });
         }, this.back.getContent().addChild(this.backButton.getContent()), this.continueButton = new DefaultButton("UI_button_play_1_retina.png", "UI_button_play_1_over_retina.png"), 
         this.continueButton.build(), scaleConverter(this.continueButton.getContent().width, this.back.getContent().width, .3, this.continueButton), 
@@ -2048,9 +2151,7 @@ var Application = AbstractApplication.extend({
             self.hide(function() {
                 APP.currentHornModel = APP.appModel.hornModels[4];
             });
-        }, this.back.getContent().addChild(this.chifre1.getContent()), this.back.getContent().addChild(this.chifre2.getContent()), 
-        this.back.getContent().addChild(this.chifre3.getContent()), this.back.getContent().addChild(this.chifre4.getContent()), 
-        this.back.getContent().addChild(this.chifre5.getContent());
+        };
     },
     show: function() {
         this.screen.addChild(this), this.screen.blockPause = !0, this.boxContainer.visible = !0, 

@@ -44,7 +44,7 @@ var InitScreen = AbstractScreen.extend({
         this.bg.getContent().position.y = windowHeight / 2 - this.bg.getContent().height / 2;
 
         this.logo = new SimpleSprite('logo.png');
-        this.container.addChild(this.logo.getContent());
+        // this.container.addChild(this.logo.getContent());
         scaleConverter(this.logo.getContent().width, windowWidth, 0.5, this.logo);
         this.logo.getContent().position.x = windowWidth / 2 - this.logo.getContent().width / 2;
         this.logo.getContent().position.y = windowHeight / 2 - this.logo.getContent().height / 2;
@@ -80,28 +80,30 @@ var InitScreen = AbstractScreen.extend({
         this.addChild(this.playButton);
       
         this.playButton.clickCallback = function(){
+            fullscreen();
             self.updateable = false;
             self.toTween(function(){
-                self.screenManager.change('Choice');
+
+                self.screenManager.change('Game');
             });
         };
 
 
-        if(possibleFullscreen() && !isfull){
-            this.fullscreenButton = new DefaultButton('fullscreen.png', 'fullscreen.png');
-            this.fullscreenButton.build();
-            scaleConverter(this.fullscreenButton.getContent().width, windowWidth, 0.1, this.fullscreenButton);
-            this.fullscreenButton.setPosition(windowWidth - this.fullscreenButton.getContent().width - 20,
-                windowHeight - this.fullscreenButton.getContent().height - 20);
-            this.addChild(this.fullscreenButton);
+        // if(possibleFullscreen() && !isfull){
+        //     this.fullscreenButton = new DefaultButton('fullscreen.png', 'fullscreen.png');
+        //     this.fullscreenButton.build();
+        //     scaleConverter(this.fullscreenButton.getContent().width, windowWidth, 0.1, this.fullscreenButton);
+        //     this.fullscreenButton.setPosition(windowWidth - this.fullscreenButton.getContent().width - 20,
+        //         windowHeight - this.fullscreenButton.getContent().height - 20);
+        //     this.addChild(this.fullscreenButton);
           
-            this.fullscreenButton.clickCallback = function(){
-                fullscreen();
-                self.fullscreenButton.getContent().alpha = 0;
-            };
-        }
+        //     this.fullscreenButton.clickCallback = function(){
+        //         fullscreen();
+        //         self.fullscreenButton.getContent().alpha = 0;
+        //     };
+        // }
 
-        this.setAudioButtons();
+        //this.setAudioButtons();
 
         
         this.fromTween();

@@ -57,7 +57,7 @@ var Bullet = Entity.extend({
         this.birdsCollided = [];
 
         // this.particlesCounterMax = (Math.abs(this.velocity.x) + Math.abs(this.velocity.y)) / 3;
-        this.particlesCounterMax = (Math.abs(this.velocity.x) + Math.abs(this.velocity.y)) / 20;
+        this.particlesCounterMax = (Math.abs(this.velocity.x) + Math.abs(this.velocity.y)) / 10;
         this.particlesCounter = 20;//this.particlesCounterMax *2;
 
         this.collideArea = new PIXI.Rectangle(-50, -50, windowWidth + 100, windowHeight + 100);
@@ -102,16 +102,17 @@ var Bullet = Entity.extend({
         //     this.sin += 0.2;
         //     this.getContent().rotation = 0;
         // }
-        if(this.hasBounce && (this.getPosition().x + this.velocity.x < 0 || this.getPosition().x + this.velocity.x > windowWidth)){
-            this.velocity.x *= -1;
-        }
-
         if(this.sinoid !== 0){
             // this.velocity.x = Math.sin(this.sin) * (Math.abs(this.startVel.x) + Math.abs(this.startVel.y)) + this.startVel.x;//this.vel;
             this.velocity.x = Math.sin(this.sin) *5 + this.startVel.x;//this.vel;
             this.sin += this.sinoid;
             console.log(this.velocity);
         }
+        if(this.hasBounce && (this.getPosition().x + this.velocity.x < 0 || this.getPosition().x + this.velocity.x > windowWidth)){
+            this.velocity.x *= -1;
+            this.startVel.x *= -1;
+        }
+
 
         if(!this.collideArea.contains(this.getPosition().x, this.getPosition().y)){
             this.kill = true;

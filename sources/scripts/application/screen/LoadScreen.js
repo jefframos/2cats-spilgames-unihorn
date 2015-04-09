@@ -11,7 +11,7 @@ var LoadScreen = AbstractScreen.extend({
     build: function () {
         this._super();
 
-        var assetsToLoader = ['dist/img/atlas.json'];
+        var assetsToLoader = ['dist/img/atlas2.json'];
         if(assetsToLoader.length > 0 && !this.isLoaded){
             this.loader = new PIXI.AssetLoader(assetsToLoader);
             this.initLoad();
@@ -52,7 +52,7 @@ var LoadScreen = AbstractScreen.extend({
         this.isLoaded = true;
         var self = this;
         APP.currentHornModel = APP.appModel.hornModels[0];
-        this.screenManager.change('Game');
+        this.screenManager.change('Init');
     },
     transitionIn:function()
     {

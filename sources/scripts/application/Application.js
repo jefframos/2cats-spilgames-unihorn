@@ -6,9 +6,9 @@ var Application = AbstractApplication.extend({
         this.stage.setBackgroundColor(0x2c2359);
         this.stage.removeChild(this.loadText);
 
-        this.labelDebug = new PIXI.Text('', {font:'15px Arial'});
-        this.stage.addChild(this.labelDebug);
-        this.labelDebug.position.y = windowHeight - 20;
+        this.labelDebug = new PIXI.Text('', {font:'15px Arial', fill:'#FFF'});
+        // this.stage.addChild(this.labelDebug);
+        this.labelDebug.position.y = 20;
         this.labelDebug.position.x = 20;
 
         this.mute = false;
@@ -33,9 +33,11 @@ var Application = AbstractApplication.extend({
         if(!this.screenManager.currentScreen){
             return;
         }
-        this.childsCounter = 1;
-        this.recursiveCounter(this.screenManager.currentScreen);
-        this.labelDebug.setText(this.childsCounter);
+        if(this.labelDebug && this.labelDebug.parent){
+            this.childsCounter = 1;
+            this.recursiveCounter(this.screenManager.currentScreen);
+            this.labelDebug.setText(this.childsCounter);
+        }
         // Retrieves the logo from Spil
         
     },

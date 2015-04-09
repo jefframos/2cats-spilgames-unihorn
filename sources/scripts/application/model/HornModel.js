@@ -7,6 +7,9 @@ var HornModel = Class.extend({
 		this.bulletSource = graphicsObject.bulletSource?graphicsObject.bulletSource:'bullet.png';
 		this.label = graphicsObject.label?graphicsObject.label:'';
 		
+		this.id = statsObjec.id?statsObjec.id:0;
+		this.enabled = statsObjec.enabled?statsObjec.enabled:false;
+		this.coast = statsObjec.coast?statsObjec.coast:200;
 		this.sizePercent = statsObjec.sizePercent?statsObjec.sizePercent:1;
 		this.demage = statsObjec.demage?statsObjec.demage:1;
 		this.fireSpeed = statsObjec.fireSpeed?statsObjec.fireSpeed:10;

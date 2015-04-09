@@ -300,10 +300,10 @@
 "meta": {
 	"app": "http://www.codeandweb.com/texturepacker",
 	"version": "1.0",
-	"image": "atlas.png",
+	"image": "atlas2.png",
 	"format": "RGBA8888",
 	"size": {"w":1387,"h":1002},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:c6a6f7857856906d99959e95ae1a1e21:e7b16ae3f2b9b3fbf399bd0f4ec1a0dd:cbce6b53f0f49e0bf15173c25c41f876$"
+	"smartupdate": "$TexturePacker:SmartUpdate:d9d93165c607c0c117aae65b20aa2418:e7b16ae3f2b9b3fbf399bd0f4ec1a0dd:d2928af382b1462a4e1e9d203dd4c4a5$"
 }
 }
