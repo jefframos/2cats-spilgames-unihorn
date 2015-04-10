@@ -284,7 +284,7 @@ var AppModel = Class.extend({
 			{
 				size: 1,
 				demage: 0.9,
-				fireAcumMax:30,
+				fireAcumMax:40,
 				hasMultiple:3,
 				hasBounce:true,
 				piercing:true,
@@ -445,7 +445,7 @@ var AppModel = Class.extend({
 	},
 	getNewEnemy:function(player, screen){
 		this.currentHorde ++;
-		if(APP.accelGame < 3){
+		if(APP.accelGame < 3.5){
 			APP.accelGame += this.currentHorde / 800;
 		}
 		var max = this.enemyProbs.length;

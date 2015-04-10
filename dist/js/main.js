@@ -755,7 +755,7 @@ var Application = AbstractApplication.extend({
     build: function() {
         this.sprite = new PIXI.Sprite(), this.sprite.anchor.x = .5, this.sprite.anchor.y = .5, 
         this.sprite.addChild(this.neck), this.neck.addChild(this.head), this.head.anchor.x = .51, 
-        this.head.anchor.y = .7, this.head.position.x = 215, this.head.position.y = 120, 
+        this.head.anchor.y = .7, this.head.position.x = 283, this.head.position.y = 205, 
         this.head.addChild(this.horn), this.horn.anchor.x = .5, this.horn.anchor.y = 1, 
         this.horn.position.y = -75;
     },
@@ -1346,7 +1346,7 @@ var Application = AbstractApplication.extend({
         }, {
             size: 1,
             demage: .9,
-            fireAcumMax: 30,
+            fireAcumMax: 40,
             hasMultiple: 3,
             hasBounce: !0,
             piercing: !0,
@@ -1451,7 +1451,7 @@ var Application = AbstractApplication.extend({
         return obs;
     },
     getNewEnemy: function(player, screen) {
-        this.currentHorde++, APP.accelGame < 3 && (APP.accelGame += this.currentHorde / 800);
+        this.currentHorde++, APP.accelGame < 3.5 && (APP.accelGame += this.currentHorde / 800);
         var max = this.enemyProbs.length;
         this.currentHorde < max && (max = this.currentHorde);
         for (var id = 99999; id > this.totalEnemy - 1; ) id = this.enemyProbs[Math.floor(max * Math.random())];
@@ -1803,7 +1803,7 @@ var Application = AbstractApplication.extend({
         this.layer = new Layer(), this.layer.build("EntityLayer"), this.layerManager.addLayer(this.layer), 
         this.spawner = new Spawner(this), this.unihorn = new Unihorn(), this.unihorn.build(), 
         this.addChild(this.unihorn), this.unihorn.felling = 1;
-        var scl = scaleConverter(this.unihorn.neck.height, windowHeight, .2, this.unihorn);
+        var scl = scaleConverter(this.unihorn.neck.height, windowHeight, .3, this.unihorn);
         this.unihorn.getContent().position.y = windowHeight - this.unihorn.neck.height * scl, 
         this.unihorn.getContent().position.x = windowWidth / 2 - this.unihorn.head.position.x * scl, 
         this.topD = new SimpleSprite("top_degrade.png"), this.addChild(this.topD.getContent()), 
@@ -2175,7 +2175,7 @@ var Application = AbstractApplication.extend({
     initApplication: function() {
         this.isLoaded = !0;
         APP.currentHornModel = APP.appModel.hornModels[0], APP.currentClothModel = APP.appModel.clothModels[0], 
-        APP.currentEnvModel = APP.appModel.envModels[0], this.screenManager.change("Game");
+        APP.currentEnvModel = APP.appModel.envModels[0], this.screenManager.change("Init");
     },
     transitionIn: function() {
         return this.isLoaded ? void this.build() : void this.build();

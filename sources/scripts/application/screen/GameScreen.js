@@ -174,7 +174,7 @@ var GameScreen = AbstractScreen.extend({
         this.addChild(this.unihorn);
         this.unihorn.felling = 1;
         // console.log(this.unihorn.sprite.height);
-        var scl = scaleConverter(this.unihorn.neck.height, windowHeight, 0.2, this.unihorn);
+        var scl = scaleConverter(this.unihorn.neck.height, windowHeight, 0.3, this.unihorn);
         this.unihorn.getContent().position.y = windowHeight - this.unihorn.neck.height * scl;//this.unihorn.getContent().height;
         this.unihorn.getContent().position.x = windowWidth / 2 - this.unihorn.head.position.x * scl;//this.unihorn.getContent().height;
         // console.log(this.unihorn.head.position.x * scl);

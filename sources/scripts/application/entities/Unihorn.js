@@ -66,10 +66,12 @@ var Unihorn = Entity.extend({
 
         this.sprite.addChild(this.neck);
         this.neck.addChild(this.head);
+        // this.neck.position.x = -70;
+
         this.head.anchor.x = 0.51;
         this.head.anchor.y = 0.7;
-        this.head.position.x = 215;
-        this.head.position.y = 120;
+        this.head.position.x = 215 + 68;
+        this.head.position.y = 120 + 85;
 
         this.head.addChild(this.horn);
         this.horn.anchor.x = 0.5;
