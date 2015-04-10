@@ -1145,6 +1145,9 @@ var Application = AbstractApplication.extend({
     serialize: function() {}
 }), AppModel = Class.extend({
     init: function() {
+        function getBalanceCoast(id) {
+            return 5 * Math.floor(id * id * id / 5) * Math.floor(id * id / 5) * 5 + 25 * id;
+        }
         this.currentPlayerModel = {}, console.log(APP);
         var points = 0, high = 0;
         this.highScore = high ? high : 0, this.totalPoints = points ? points : 0, this.currentPoints = 0, 
@@ -1160,7 +1163,7 @@ var Application = AbstractApplication.extend({
             extraCoins: 0,
             fireSpeed: 0,
             enabled: !0,
-            coast: 5
+            coast: getBalanceCoast(this.clothModels.length)
         })), this.clothModels.push(new ClothModel({
             cover: "uni_corpo.png",
             source: "uni_corpo.png",
@@ -1173,7 +1176,7 @@ var Application = AbstractApplication.extend({
             extraCoins: 2,
             fireSpeed: 0,
             enabled: !1,
-            coast: 0
+            coast: getBalanceCoast(this.clothModels.length)
         })), this.clothModels.push(new ClothModel({
             cover: "uni_corpo.png",
             source: "uni_corpo.png",
@@ -1186,7 +1189,7 @@ var Application = AbstractApplication.extend({
             extraCoins: 0,
             fireSpeed: 0,
             enabled: !1,
-            coast: 5e3
+            coast: getBalanceCoast(this.clothModels.length)
         })), this.clothModels.push(new ClothModel({
             cover: "uni_corpo.png",
             source: "uni_corpo.png",
@@ -1199,7 +1202,7 @@ var Application = AbstractApplication.extend({
             extraCoins: 0,
             fireSpeed: 0,
             enabled: !1,
-            coast: 5e3
+            coast: getBalanceCoast(this.clothModels.length)
         })), this.clothModels.push(new ClothModel({
             cover: "uni_corpo.png",
             source: "uni_corpo.png",
@@ -1212,7 +1215,7 @@ var Application = AbstractApplication.extend({
             extraCoins: 0,
             fireSpeed: 0,
             enabled: !1,
-            coast: 5e3
+            coast: getBalanceCoast(this.clothModels.length)
         })), this.clothModels.push(new ClothModel({
             cover: "uni_corpo.png",
             source: "uni_corpo.png",
@@ -1225,7 +1228,7 @@ var Application = AbstractApplication.extend({
             extraCoins: 5,
             fireSpeed: 3,
             enabled: !1,
-            coast: 5e3
+            coast: getBalanceCoast(this.clothModels.length)
         })), this.hornModels = [], this.hornModels.push(new HornModel({
             cover: "uni_horn1.png",
             source: "uni_horn1.png",
@@ -1240,7 +1243,7 @@ var Application = AbstractApplication.extend({
             piercing: !1,
             sinoid: 0,
             enabled: !0,
-            coast: 0,
+            coast: getBalanceCoast(this.hornModels.length),
             id: this.hornModels.length + 1e3
         })), this.hornModels.push(new HornModel({
             cover: "uni_horn1.png",
@@ -1256,7 +1259,7 @@ var Application = AbstractApplication.extend({
             fireSpeed: 11,
             sinoid: .7,
             enabled: !1,
-            coast: 0,
+            coast: getBalanceCoast(this.hornModels.length),
             id: this.hornModels.length + 1e3
         })), this.hornModels.push(new HornModel({
             cover: "uni_horn1.png",
@@ -1272,7 +1275,7 @@ var Application = AbstractApplication.extend({
             piercing: !0,
             sinoid: 0,
             enabled: !1,
-            coast: 5e3,
+            coast: getBalanceCoast(this.hornModels.length),
             id: this.hornModels.length + 1e3
         })), this.hornModels.push(new HornModel({
             cover: "uni_horn1.png",
@@ -1287,7 +1290,7 @@ var Application = AbstractApplication.extend({
             hasBounce: !0,
             sinoid: 0,
             enabled: !1,
-            coast: 5e3,
+            coast: getBalanceCoast(this.hornModels.length),
             id: this.hornModels.length + 1e3
         })), this.hornModels.push(new HornModel({
             cover: "uni_horn1.png",
@@ -1302,7 +1305,7 @@ var Application = AbstractApplication.extend({
             hasBounce: !1,
             sinoid: 0,
             enabled: !1,
-            coast: 5e3,
+            coast: getBalanceCoast(this.hornModels.length),
             id: this.hornModels.length + 1e3
         })), this.hornModels.push(new HornModel({
             cover: "uni_horn1.png",
@@ -1318,7 +1321,7 @@ var Application = AbstractApplication.extend({
             piercing: !0,
             sinoid: .5,
             enabled: !1,
-            coast: 5e3,
+            coast: getBalanceCoast(this.hornModels.length),
             id: this.hornModels.length + 1e3
         })), this.enemyModels = [ new EnemyModel({
             cover: "cloud1a.png",
@@ -1358,7 +1361,7 @@ var Application = AbstractApplication.extend({
             label: "Nuvem"
         }, {
             vel: 1.8,
-            toNext: 60,
+            toNext: 80,
             behaviour: new BirdBehaviourSinoid({
                 sinAcc: .05
             }),
@@ -1373,7 +1376,7 @@ var Application = AbstractApplication.extend({
             label: "Nuvem"
         }, {
             vel: 1.5,
-            toNext: 60,
+            toNext: 90,
             behaviour: new BirdBehaviourSinoid({
                 sinAcc: .05
             }),

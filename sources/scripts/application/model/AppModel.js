@@ -24,6 +24,9 @@ var AppModel = Class.extend({
 		
 		this.playerModels = [];
 
+		function getBalanceCoast(id){
+			return Math.floor((id * id * id) / 5) * 5 * Math.floor((id * id) / 5) * 5 + (5 * 5 * id);
+		}
 		this.clothModels = [];
 		this.clothModels.push(new ClothModel(
 			{
@@ -39,26 +42,9 @@ var AppModel = Class.extend({
 				extraCoins:0,
 				fireSpeed:0,
 				enabled: true,
-				coast: 5
+				coast: getBalanceCoast(this.clothModels.length)
 			}
 		));
-		// this.clothModels.push(new ClothModel(
-		// 	{
-		// 		cover:'uni_corpo.png',
-		// 		source:'uni_corpo.png',
-		// 		label:'Speed'
-		// 	},
-		// 	{
-		// 		id:this.clothModels.length * 10,
-		// 		sizePercent: 0,
-		// 		demage: 0,
-		// 		fireAcumMax:0,
-		// 		extraCoins:0,
-		// 		fireSpeed:3,
-		// 		enabled: false,
-		// 		coast: 5000
-		// 	}
-		// ));
 		this.clothModels.push(new ClothModel(
 			{
 				cover:'uni_corpo.png',
@@ -73,7 +59,7 @@ var AppModel = Class.extend({
 				extraCoins:2,
 				fireSpeed:0,
 				enabled: false,
-				coast: 0
+				coast: getBalanceCoast(this.clothModels.length)
 			}
 		));
 		this.clothModels.push(new ClothModel(
@@ -90,7 +76,7 @@ var AppModel = Class.extend({
 				extraCoins:0,
 				fireSpeed:0,
 				enabled: false,
-				coast: 5000
+				coast: getBalanceCoast(this.clothModels.length)
 			}
 		));
 		this.clothModels.push(new ClothModel(
@@ -107,7 +93,7 @@ var AppModel = Class.extend({
 				extraCoins:0,
 				fireSpeed:0,
 				enabled: false,
-				coast: 5000
+				coast: getBalanceCoast(this.clothModels.length)
 			}
 		));
 		this.clothModels.push(new ClothModel(
@@ -124,7 +110,7 @@ var AppModel = Class.extend({
 				extraCoins:0,
 				fireSpeed:0,
 				enabled: false,
-				coast: 5000
+				coast: getBalanceCoast(this.clothModels.length)
 			}
 		));
 		this.clothModels.push(new ClothModel(
@@ -141,7 +127,7 @@ var AppModel = Class.extend({
 				extraCoins:5,
 				fireSpeed:3,
 				enabled: false,
-				coast: 5000
+				coast: getBalanceCoast(this.clothModels.length)
 			}
 		));
 
@@ -162,7 +148,7 @@ var AppModel = Class.extend({
 				piercing:false,
 				sinoid:0,
 				enabled: true,
-				coast: 0,
+				coast: getBalanceCoast(this.hornModels.length),
 				id:this.hornModels.length + 1000
 			}
 		));
@@ -184,7 +170,7 @@ var AppModel = Class.extend({
 				// piercing:false,
 				sinoid:0.7,
 				enabled: false,
-				coast: 0,
+				coast: getBalanceCoast(this.hornModels.length),
 				id:this.hornModels.length + 1000
 			}
 		));
@@ -204,7 +190,7 @@ var AppModel = Class.extend({
 				piercing:true,
 				sinoid:0,
 				enabled: false,
-				coast: 5000,
+				coast: getBalanceCoast(this.hornModels.length),
 				id:this.hornModels.length + 1000
 			}
 		));
@@ -224,7 +210,7 @@ var AppModel = Class.extend({
 				// piercing:false,
 				sinoid:0,
 				enabled: false,
-				coast: 5000,
+				coast: getBalanceCoast(this.hornModels.length),
 				id:this.hornModels.length + 1000
 			}
 		));
@@ -244,7 +230,7 @@ var AppModel = Class.extend({
 				// piercing:false,
 				sinoid:0,
 				enabled: false,
-				coast: 5000,
+				coast: getBalanceCoast(this.hornModels.length),
 				id:this.hornModels.length + 1000
 			}
 		));
@@ -264,7 +250,7 @@ var AppModel = Class.extend({
 				piercing:true,
 				sinoid:0.5,
 				enabled: false,
-				coast: 5000,
+				coast: getBalanceCoast(this.hornModels.length),
 				id:this.hornModels.length + 1000
 			}
 		));
@@ -314,7 +300,7 @@ var AppModel = Class.extend({
 				},
 				{
 					vel: 1.8,
-					toNext: 60,
+					toNext: 80,
 					behaviour: new BirdBehaviourSinoid({sinAcc:0.05}),
 					money:5,
 					hp:3,
@@ -331,7 +317,7 @@ var AppModel = Class.extend({
 				},
 				{
 					vel: 1.5,
-					toNext: 60,
+					toNext: 90,
 					behaviour: new BirdBehaviourSinoid({sinAcc:0.05}),
 					money:5,
 					hp:2,
