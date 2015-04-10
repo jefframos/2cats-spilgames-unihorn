@@ -222,6 +222,7 @@
             <filename>top_degrade.png</filename>
             <filename>back_shop_button.png</filename>
             <filename>moeda.png</filename>
+            <filename>uni_head_2.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
