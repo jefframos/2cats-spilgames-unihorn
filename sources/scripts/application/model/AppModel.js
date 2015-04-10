@@ -146,26 +146,26 @@ var AppModel = Class.extend({
 		));
 
 		this.hornModels = [];
-		// this.hornModels.push(new HornModel(
-		// 	{
-		// 		cover:'uni_horn1.png',
-		// 		source:'uni_horn1.png',
-		// 		bulletSource:'bullet.png',
-		// 		label:'Normal'
-		// 	},
-		// 	{
-		// 		size: 1,
-		// 		demage: 1,
-		// 		fireAcumMax:25,
-		// 		hasMultiple:1,
-		// 		hasBounce:false,
-		// 		piercing:false,
-		// 		sinoid:0,
-		// 		enabled: true,
-		// 		coast: 0,
-		// 		id:this.hornModels.length + 1000
-		// 	}
-		// ));
+		this.hornModels.push(new HornModel(
+			{
+				cover:'uni_horn1.png',
+				source:'uni_horn1.png',
+				bulletSource:'bullet.png',
+				label:'Normal'
+			},
+			{
+				size: 1,
+				demage: 1,
+				fireAcumMax:25,
+				hasMultiple:1,
+				hasBounce:false,
+				piercing:false,
+				sinoid:0,
+				enabled: true,
+				coast: 0,
+				id:this.hornModels.length + 1000
+			}
+		));
 
 		this.hornModels.push(new HornModel(
 			{
@@ -296,9 +296,9 @@ var AppModel = Class.extend({
 					label:'Nuvem'
 				},
 				{
-					vel: 0.7,
-					toNext: 190,
-					behaviour: null,
+					vel: 0.6,
+					toNext: 180,
+					behaviour: new BirdBehaviourSinoid({sinAcc:0.03}),
 					money:5,
 					hp:6,
 					resistance: 0.6
@@ -314,14 +314,51 @@ var AppModel = Class.extend({
 				},
 				{
 					vel: 1.8,
-					toNext: 50,
-					behaviour: null,
+					toNext: 60,
+					behaviour: new BirdBehaviourSinoid({sinAcc:0.05}),
 					money:5,
 					hp:3,
 					resistance: 4.5
 				}
+			),
+				new EnemyModel(
+				{
+					cover:'cloud3a.png',
+					source:['cloud3a.png'],
+					particles:['bullet.png'],
+					sizePercent: 0.15,
+					label:'Nuvem'
+				},
+				{
+					vel: 1.5,
+					toNext: 60,
+					behaviour: new BirdBehaviourSinoid({sinAcc:0.05}),
+					money:5,
+					hp:2,
+					resistance: 4.5,
+					subdivide:2
+				}
 			)
 			];
+
+
+		this.smallEnemyModel = new EnemyModel(
+			{
+				cover:'cloud3a.png',
+				source:['cloud3a.png'],
+				particles:['bullet.png'],
+				sizePercent: 0.18,
+				label:'Nuvem'
+			},
+			{
+				vel: 1,
+				toNext: 5000000,
+				behaviour: null,
+				money:1,
+				hp:1,
+				resistance: 4.5
+			}
+		);
 
 		this.setModel(0);
 
@@ -332,11 +369,11 @@ var AppModel = Class.extend({
 				this.totalPlayers ++;
 			}
 		}
-		this.enemyProbs = [0,1,2];//,1,0,0,0,2,0,0,0,1,2,3,0,0,2,0,3,4,4,4,4,4,0,5,5,5,5,5,0,6,6,6,6,0,7,7,7,7,4,5,6,7];
+		this.enemyProbs = [0,1,2,3];//,1,0,0,0,2,0,0,0,1,2,3,0,0,2,0,3,4,4,4,4,4,0,5,5,5,5,5,0,6,6,6,6,0,7,7,7,7,4,5,6,7];
 
 		this.currentHorde = 0;
 
-		this.totalEnemy = 3;
+		this.totalEnemy = 4;
 	},
 	
 	setModel:function(id){

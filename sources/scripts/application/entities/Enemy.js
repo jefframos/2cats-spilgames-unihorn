@@ -14,6 +14,7 @@ var Enemy = Entity.extend({
         this.hp = this.model.hp;
         this.behaviour = this.model.behaviour?this.model.behaviour.clone():null;
         this.resistance = this.model.resistance;
+        this.subdivide = this.model.subdivide;
     },
     build: function(){
 
@@ -87,6 +88,21 @@ var Enemy = Entity.extend({
         }
 
         this.screen.unihorn.killed();
+
+
+        for (var i = this.subdivide - 1; i >= 0; i--) {
+            console.log(APP.appModel.smallEnemyModel);
+            var enemy = new Enemy(APP.appModel.smallEnemyModel, this.screen);
+            enemy.build();
+            // scaleConverter(enemy.getContent().height,windowHeight, 0.08, enemy);
+            //UTILIZAR O ANGULO PARA CALCULAR A POSIÇÃO CORRETA DO TIRO
+            enemy.setPosition(this.getPosition().x, this.getPosition().y);
+            TweenLite.to(enemy.getContent(), 0.5, {x:this.getPosition().x - 50 + 100 * i, y:this.getPosition().y - 50});
+            this.screen.spawner.enemyList.push(enemy);
+            this.screen.addEnemyThumb(enemy);
+            this.screen.layer.addChild(enemy);
+        }
+
 
         var tempLAbel = new PIXI.Text('+'+(this.model.money + APP.currentClothModel.extraCoins), {font:'30px Vagron', fill:'#ffe63e', stroke:'#665c18', strokeThickness:3});
         // scaleConverter(tempLAbel.width, windowWidth, 0.06, tempLAbel);

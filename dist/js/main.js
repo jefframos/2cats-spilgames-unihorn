@@ -656,7 +656,7 @@ var Application = AbstractApplication.extend({
         this._super(!0), this.updateable = !1, this.screen = screen, this.range = .05 * windowWidth, 
         this.width = 1, this.height = 1, this.type = "enemy", this.model = model, this.velocity.y = this.model.vel * APP.accelGame, 
         this.vel = this.model.vel, this.hp = this.model.hp, this.behaviour = this.model.behaviour ? this.model.behaviour.clone() : null, 
-        this.resistance = this.model.resistance;
+        this.resistance = this.model.resistance, this.subdivide = this.model.subdivide;
     },
     build: function() {
         this.thumb = new PIXI.Sprite(new PIXI.Texture.fromImage(this.model.imgSource[0])), 
@@ -684,6 +684,15 @@ var Application = AbstractApplication.extend({
         if (this.collidable) {
             this.onList = !0, this.thumb.parent && this.thumb.parent.removeChild(this.thumb), 
             this.screen.unihorn.killed();
+            for (var i = this.subdivide - 1; i >= 0; i--) {
+                console.log(APP.appModel.smallEnemyModel);
+                var enemy = new Enemy(APP.appModel.smallEnemyModel, this.screen);
+                enemy.build(), enemy.setPosition(this.getPosition().x, this.getPosition().y), TweenLite.to(enemy.getContent(), .5, {
+                    x: this.getPosition().x - 50 + 100 * i,
+                    y: this.getPosition().y - 50
+                }), this.screen.spawner.enemyList.push(enemy), this.screen.addEnemyThumb(enemy), 
+                this.screen.layer.addChild(enemy);
+            }
             var tempLAbel = new PIXI.Text("+" + (this.model.money + APP.currentClothModel.extraCoins), {
                 font: "30px Vagron",
                 fill: "#ffe63e",
@@ -713,16 +722,21 @@ var Application = AbstractApplication.extend({
         this.height = 1, this.neck = new PIXI.Sprite(new PIXI.Texture.fromImage(APP.currentClothModel.imgSource)), 
         this.head = new PIXI.Sprite(new PIXI.Texture.fromImage("uni_head.png")), this.horn = new PIXI.Sprite(new PIXI.Texture.fromImage(APP.currentHornModel.imgSource)), 
         this.felling = 1, this.fellingMaster = 10, this.lastKillAccum = 0, this.lastKillAccumMax = 150, 
-        this.lastKillCounter = 0, this.nonKillOnusMax = 200, this.nonKillOnus = this.nonKillOnusMax;
+        this.lastKillCounter = 0, this.nonKillOnusMax = 200, this.nonKillOnus = this.nonKillOnusMax, 
+        this.vecExpressions = [], this.sadArray = [ "uni_head.png" ], this.happyArray = [ "uni_head.png" ], 
+        this.normalArray = [ "uni_head.png" ], this.vecExpressions = this.normalArray, this.acumChangeExpressions = 5;
     },
     getContent: function() {
         return this.sprite;
     },
     shoot: function() {
-        this.horn.scale.x = this.horn.scale.y = .3, TweenLite.to(this.horn.scale, .5, {
+        if (this.horn.scale.y = .5, TweenLite.to(this.horn.scale, .2, {
             y: 1,
-            ease: "easeOutElastic"
-        });
+            ease: "easeOutBack"
+        }), this.acumChangeExpressions--, this.acumChangeExpressions <= 0) {
+            var texture = new PIXI.Texture.fromImage(this.vecExpressions[Math.floor(this.vecExpressions.length * Math.random())]);
+            this.head.setTexture(texture), this.acumChangeExpressions = 2 + Math.floor(5 * Math.random());
+        }
     },
     killed: function() {
         this.lastKillCounter++, this.lastKillAccum = this.lastKillAccumMax, this.nonKillOnus = this.nonKillOnusMax, 
@@ -733,13 +747,14 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this.sprite = new PIXI.Sprite(), this.sprite.anchor.x = .5, this.sprite.anchor.y = .5, 
-        this.sprite.addChild(this.neck), this.neck.addChild(this.head), this.head.anchor.x = .5, 
-        this.head.anchor.y = .8, this.head.position.x = 215, this.head.position.y = 120, 
+        this.sprite.addChild(this.neck), this.neck.addChild(this.head), this.head.anchor.x = .51, 
+        this.head.anchor.y = .7, this.head.position.x = 215, this.head.position.y = 120, 
         this.head.addChild(this.horn), this.horn.anchor.x = .5, this.horn.anchor.y = 1, 
         this.horn.position.y = -75;
     },
     update: function() {
-        console.log(this.fellingMaster + this.felling), this.nonKillOnus > 0 ? this.nonKillOnus-- : this.felling > -10 && (this.felling--, 
+        this.vecExpressions = this.fellingMaster + this.felling < 8 ? this.sadArray : this.fellingMaster + this.felling > 12 ? this.happyArray : this.normalArray, 
+        this.nonKillOnus > 0 ? this.nonKillOnus-- : this.felling > -10 && (this.felling--, 
         this.nonKillOnus = this.nonKillOnusMax), this.lastKillAccum > 0 ? this.lastKillAccum-- : this.lastKillCounter = 0;
     }
 }), Bird = Entity.extend({
@@ -1215,6 +1230,22 @@ var Application = AbstractApplication.extend({
             cover: "uni_horn1.png",
             source: "uni_horn1.png",
             bulletSource: "bullet.png",
+            label: "Normal"
+        }, {
+            size: 1,
+            demage: 1,
+            fireAcumMax: 25,
+            hasMultiple: 1,
+            hasBounce: !1,
+            piercing: !1,
+            sinoid: 0,
+            enabled: !0,
+            coast: 0,
+            id: this.hornModels.length + 1e3
+        })), this.hornModels.push(new HornModel({
+            cover: "uni_horn1.png",
+            source: "uni_horn1.png",
+            bulletSource: "bullet.png",
             label: "Sinoid"
         }, {
             size: 1,
@@ -1311,9 +1342,11 @@ var Application = AbstractApplication.extend({
             sizePercent: .25,
             label: "Nuvem"
         }, {
-            vel: .7,
-            toNext: 190,
-            behaviour: null,
+            vel: .6,
+            toNext: 180,
+            behaviour: new BirdBehaviourSinoid({
+                sinAcc: .03
+            }),
             money: 5,
             hp: 6,
             resistance: .6
@@ -1325,15 +1358,46 @@ var Application = AbstractApplication.extend({
             label: "Nuvem"
         }, {
             vel: 1.8,
-            toNext: 50,
-            behaviour: null,
+            toNext: 60,
+            behaviour: new BirdBehaviourSinoid({
+                sinAcc: .05
+            }),
             money: 5,
             hp: 3,
             resistance: 4.5
-        }) ], this.setModel(0), this.totalPlayers = 0;
+        }), new EnemyModel({
+            cover: "cloud3a.png",
+            source: [ "cloud3a.png" ],
+            particles: [ "bullet.png" ],
+            sizePercent: .15,
+            label: "Nuvem"
+        }, {
+            vel: 1.5,
+            toNext: 60,
+            behaviour: new BirdBehaviourSinoid({
+                sinAcc: .05
+            }),
+            money: 5,
+            hp: 2,
+            resistance: 4.5,
+            subdivide: 2
+        }) ], this.smallEnemyModel = new EnemyModel({
+            cover: "cloud3a.png",
+            source: [ "cloud3a.png" ],
+            particles: [ "bullet.png" ],
+            sizePercent: .18,
+            label: "Nuvem"
+        }, {
+            vel: 1,
+            toNext: 5e6,
+            behaviour: null,
+            money: 1,
+            hp: 1,
+            resistance: 4.5
+        }), this.setModel(0), this.totalPlayers = 0;
         for (var i = this.playerModels.length - 1; i >= 0; i--) this.playerModels[i].toAble <= this.totalPoints && (this.playerModels[i].able = !0, 
         this.totalPlayers++);
-        this.enemyProbs = [ 0, 1, 2 ], this.currentHorde = 0, this.totalEnemy = 3;
+        this.enemyProbs = [ 0, 1, 2, 3 ], this.currentHorde = 0, this.totalEnemy = 4;
     },
     setModel: function(id) {
         this.currentID = id, this.currentPlayerModel = this.playerModels[id];
@@ -1433,7 +1497,8 @@ var Application = AbstractApplication.extend({
         this.label = graphicsObject.label ? graphicsObject.label : "", this.sizePercent = graphicsObject.sizePercent ? graphicsObject.sizePercent : .1, 
         this.demage = statsObjec.demage, this.vel = statsObjec.vel, this.hp = statsObjec.hp, 
         this.target = statsObjec.target, this.timeLive = 999, this.toNext = statsObjec.toNext ? statsObjec.toNext : 150, 
-        this.behaviour = statsObjec.behaviour, this.money = statsObjec.money, this.resistance = statsObjec.resistance ? statsObjec.resistance : 0;
+        this.behaviour = statsObjec.behaviour, this.money = statsObjec.money, this.resistance = statsObjec.resistance ? statsObjec.resistance : 0, 
+        this.subdivide = statsObjec.subdivide ? statsObjec.subdivide : 0;
     },
     serialize: function() {}
 }), HornModel = Class.extend({
@@ -1759,7 +1824,7 @@ var Application = AbstractApplication.extend({
     },
     endGame: function() {
         function onComplete(target) {
-            target.parent.removeChild(target);
+            target && target.parent && target.parent.removeChild(target);
             var tempCoin = new Coin(self);
             tempCoin.build(), scaleConverter(tempCoin.getContent().height, target.height, .8, tempCoin), 
             tempCoin.getContent().position.x = target.position.x, tempCoin.getContent().position.y = target.position.y, 
@@ -1796,15 +1861,19 @@ var Application = AbstractApplication.extend({
         }
     },
     shoot: function(angle) {
-        if (!this.blockPause) for (var timeLive = 100, vel = APP.currentHornModel.fireSpeed + APP.currentClothModel.fireSpeed, angleOpen = .1, totalFires = APP.currentHornModel.hasMultiple, i = 0; totalFires > i; i++) {
-            var tempAngle = angle + angleOpen * (i - totalFires / 2), bullet = new Bullet({
-                x: Math.cos(tempAngle) * vel,
-                y: Math.sin(tempAngle) * vel
-            }, timeLive, 5, null, !0);
-            bullet.build(), bullet.hasBounce = APP.currentHornModel.hasBounce, bullet.piercing = APP.currentHornModel.piercing, 
-            bullet.sinoid = APP.currentHornModel.sinoid, bullet.demage = APP.currentHornModel.demage + APP.currentClothModel.demage, 
-            console.log(bullet.demage), scaleConverter(bullet.getContent().height, windowHeight, .06 + APP.currentClothModel.sizePercent, bullet), 
-            bullet.startScaleTween(), bullet.setPosition(this.hornPos.x, this.hornPos.y), this.layer.addChild(bullet);
+        if (!this.blockPause) {
+            var timeLive = 100, vel = APP.currentHornModel.fireSpeed + APP.currentClothModel.fireSpeed, angleOpen = .1, totalFires = APP.currentHornModel.hasMultiple;
+            this.unihorn.shoot();
+            for (var i = 0; totalFires > i; i++) {
+                var tempAngle = angle + angleOpen * (i - totalFires / 2), bullet = new Bullet({
+                    x: Math.cos(tempAngle) * vel,
+                    y: Math.sin(tempAngle) * vel
+                }, timeLive, 5, null, !0);
+                bullet.build(), bullet.hasBounce = APP.currentHornModel.hasBounce, bullet.piercing = APP.currentHornModel.piercing, 
+                bullet.sinoid = APP.currentHornModel.sinoid, bullet.demage = APP.currentHornModel.demage + APP.currentClothModel.demage, 
+                scaleConverter(bullet.getContent().height, windowHeight, .06 + APP.currentClothModel.sizePercent, bullet), 
+                bullet.startScaleTween(), bullet.setPosition(this.hornPos.x, this.hornPos.y), this.layer.addChild(bullet);
+            }
         }
     },
     reset: function() {
@@ -2029,7 +2098,7 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        var assetsToLoader = [ "dist/img/atlas2.json" ];
+        var assetsToLoader = [ "dist/img/atlas.json" ];
         assetsToLoader.length > 0 && !this.isLoaded ? (this.loader = new PIXI.AssetLoader(assetsToLoader), 
         this.initLoad()) : this.onAssetsLoaded();
     },

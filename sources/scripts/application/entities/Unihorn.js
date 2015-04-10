@@ -20,14 +20,30 @@ var Unihorn = Entity.extend({
 
         this.nonKillOnusMax = 200;
         this.nonKillOnus = this.nonKillOnusMax;
+
+        this.vecExpressions = [];
+        this.sadArray = ['uni_head.png'];
+        this.happyArray = ['uni_head.png'];
+        this.normalArray = ['uni_head.png'];
+
+        this.vecExpressions = this.normalArray;
+
+        this.acumChangeExpressions = 5;
         // this.enemyModel
     },
     getContent: function(){
         return this.sprite;
     },
     shoot: function(){
-        this.horn.scale.x = this.horn.scale.y = 0.3;
-        TweenLite.to(this.horn.scale, 0.5, {y:1, ease:'easeOutElastic'});
+        // console.log('shoot');
+        this.horn.scale.y = 0.5;
+        TweenLite.to(this.horn.scale, 0.2, {y:1, ease:'easeOutBack'});
+        this.acumChangeExpressions --;
+        if(this.acumChangeExpressions<=0){
+            var texture = new PIXI.Texture.fromImage(this.vecExpressions[Math.floor(this.vecExpressions.length * Math.random())]);
+            this.head.setTexture(texture);
+            this.acumChangeExpressions = 2 + Math.floor(5 * Math.random());
+        }
     },
     killed: function(){
         this.lastKillCounter ++;
@@ -50,8 +66,8 @@ var Unihorn = Entity.extend({
 
         this.sprite.addChild(this.neck);
         this.neck.addChild(this.head);
-        this.head.anchor.x = 0.5;
-        this.head.anchor.y = 0.8;
+        this.head.anchor.x = 0.51;
+        this.head.anchor.y = 0.7;
         this.head.position.x = 215;
         this.head.position.y = 120;
 
@@ -63,7 +79,14 @@ var Unihorn = Entity.extend({
     },
     update: function(){
         // this._super();
-        console.log(this.fellingMaster + this.felling);
+        // console.log(this.fellingMaster + this.felling);
+        if(this.fellingMaster + this.felling < 8){
+            this.vecExpressions = this.sadArray;
+        }else if(this.fellingMaster + this.felling > 12){
+            this.vecExpressions = this.happyArray;
+        }else{
+            this.vecExpressions = this.normalArray;
+        }
         if(this.nonKillOnus > 0){
             this.nonKillOnus --;
         }else if(this.felling > -10){

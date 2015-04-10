@@ -38,7 +38,7 @@
         <key>dataFormat</key>
         <string>json</string>
         <key>textureFileName</key>
-        <filename>../../dist/img/atlas2.png</filename>
+        <filename>../../dist/img/atlas.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -145,7 +145,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../dist/img/atlas2.json</filename>
+                <filename>../../dist/img/atlas.json</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -221,6 +221,7 @@
             <filename>arcoiris_redondo.png</filename>
             <filename>top_degrade.png</filename>
             <filename>back_shop_button.png</filename>
+            <filename>moeda.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

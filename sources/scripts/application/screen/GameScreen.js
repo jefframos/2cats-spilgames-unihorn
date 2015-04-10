@@ -318,7 +318,9 @@ var GameScreen = AbstractScreen.extend({
         var self = this;
         self.arrayCoins = [];
         function onComplete(target){
-            target.parent.removeChild(target);
+            if(target && target.parent){
+                target.parent.removeChild(target);
+            }
             var tempCoin = new Coin(self);
             tempCoin.build();
             scaleConverter(tempCoin.getContent().height, target.height, 0.8, tempCoin);
@@ -394,7 +396,7 @@ var GameScreen = AbstractScreen.extend({
         // this.layer.addChild(bullet);
         var angleOpen = 0.1;
         var totalFires = APP.currentHornModel.hasMultiple;
-        // this.unihorn.shoot();
+        this.unihorn.shoot();
         // console.log(totalFires);
         for (var i = 0; i < totalFires; i++) {
             var tempAngle = angle + angleOpen * (i - totalFires / 2);
@@ -406,7 +408,7 @@ var GameScreen = AbstractScreen.extend({
             bullet.piercing = APP.currentHornModel.piercing;
             bullet.sinoid = APP.currentHornModel.sinoid;
             bullet.demage = APP.currentHornModel.demage + APP.currentClothModel.demage;
-            console.log((bullet.demage));
+            // console.log((bullet.demage));
             scaleConverter(bullet.getContent().height,windowHeight, 0.06 + APP.currentClothModel.sizePercent, bullet);
             bullet.startScaleTween();
             //UTILIZAR O ANGULO PARA CALCULAR A POSIÇÃO CORRETA DO TIRO
