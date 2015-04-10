@@ -562,8 +562,9 @@ var Application = AbstractApplication.extend({
         }), 33, 5), this.equipButton.setPosition(this.backScroll.width - this.equipButton.getContent().width - .1 * this.backShopItem.getContent().height, this.backShopItem.getContent().height - this.equipButton.getContent().height + this.backShopItem.getContent().position.y), 
         this.equipButton.clickCallback = this.equipButton.mouseDownCallback = function() {
             var targetArray = [];
-            "horn" === self.type ? (APP.currentHornModel = self.model, targetArray = self.screen.hornList) : "cloth" === self.type && (APP.currentClothModel = self.model, 
-            targetArray = self.screen.clothList), targetArray = this.arrayPlaced;
+            "horn" === self.type ? (APP.currentHornModel = self.model, targetArray = self.screen.hornList) : "cloth" === self.type ? (APP.currentClothModel = self.model, 
+            targetArray = self.screen.clothList) : "env" === self.type && (APP.currentEnvModel = self.model, 
+            targetArray = self.screen.envList), targetArray = this.arrayPlaced;
             for (var i = targetArray.length - 1; i >= 0; i--) targetArray[i].updateStats();
             self.updateStats();
         }, this.buyButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
@@ -576,8 +577,9 @@ var Application = AbstractApplication.extend({
                 APP.appModel.totalPoints -= self.model.coast, self.screen.updateCoins();
                 var targetArray = [];
                 "horn" === self.type ? (APP.currentHornModel = self.model, APP.currentHornModel.enabled = !0, 
-                targetArray = self.screen.hornList) : "cloth" === self.type && (APP.currentClothModel = self.model, 
-                APP.currentClothModel.enabled = !0, targetArray = self.screen.clothList);
+                targetArray = self.screen.hornList) : "cloth" === self.type ? (APP.currentClothModel = self.model, 
+                APP.currentClothModel.enabled = !0, targetArray = self.screen.clothList) : "env" === self.type && (APP.currentEnvModel = self.model, 
+                APP.currentEnvModel.enabled = !0, targetArray = self.screen.envList);
                 for (var i = targetArray.length - 1; i >= 0; i--) targetArray[i].updateStats();
                 self.updateStats();
             }
@@ -589,7 +591,8 @@ var Application = AbstractApplication.extend({
         this.buyButton.getContent() && this.buyButton.getContent().parent && this.buyButton.getContent().parent.removeChild(this.buyButton.getContent());
         var isEquiped = !1;
         "horn" === this.type ? APP.currentHornModel.id === this.model.id && (this.container.addChild(this.equipped), 
-        isEquiped = !0) : "cloth" === this.type && APP.currentClothModel.id === this.model.id && (this.container.addChild(this.equipped), 
+        isEquiped = !0) : "cloth" === this.type ? APP.currentClothModel.id === this.model.id && (this.container.addChild(this.equipped), 
+        isEquiped = !0) : "env" === this.type && APP.currentEnvModel.id === this.model.id && (this.container.addChild(this.equipped), 
         isEquiped = !0), !isEquiped && this.model.enabled ? this.container.addChild(this.equipButton.getContent()) : this.model.enabled || this.container.addChild(this.buyButton.getContent());
     },
     getContent: function() {
@@ -654,8 +657,9 @@ var Application = AbstractApplication.extend({
 }), Enemy = Entity.extend({
     init: function(model, screen) {
         this._super(!0), this.updateable = !1, this.screen = screen, this.range = .05 * windowWidth, 
-        this.width = 1, this.height = 1, this.type = "enemy", this.model = model, this.velocity.y = this.model.vel * APP.accelGame, 
-        this.vel = this.model.vel, this.hp = this.model.hp, this.behaviour = this.model.behaviour ? this.model.behaviour.clone() : null, 
+        this.width = 1, this.height = 1, this.type = "enemy", this.model = model, this.velocity.y = this.model.vel * (APP.accelGame / 2), 
+        this.vel = this.model.vel, this.hp = this.model.hp + Math.floor(APP.accelGame - 1), 
+        console.log(this.model.hp, APP.accelGame), this.behaviour = this.model.behaviour ? this.model.behaviour.clone() : null, 
         this.resistance = this.model.resistance, this.subdivide = this.model.subdivide;
     },
     build: function() {
@@ -666,12 +670,13 @@ var Application = AbstractApplication.extend({
         var motionIdle = new SpritesheetAnimation();
         motionIdle.build("idle", this.model.imgSource, 5, !0, null), this.spritesheet = new Spritesheet(), 
         this.spritesheet.addAnimation(motionIdle), this.spritesheet.play("idle"), this.getContent().addChild(this.spritesheet.container), 
-        this.spritesheet.setPosition(0, 0), scaleConverter(this.spritesheet.container.width, windowWidth, this.model.sizePercent, this.getContent());
+        this.spritesheet.setPosition(0, 0), scaleConverter(this.spritesheet.container.width, windowWidth, this.model.sizePercent, this.getContent()), 
+        this.collideArea = new PIXI.Rectangle(-50, -50, windowWidth + 100, windowHeight + 100);
     },
     update: function() {
         this.range = this.spritesheet.container.width / 2, this._super(), this.velocity.y < this.vel ? this.velocity.y += .1 : this.velocity.y = this.vel, 
         this.behaviour && this.behaviour.update(this), this.spritesheet.update(), this.getContent().position.y > windowHeight + 100 && (this.onList = !0, 
-        this.kill = !0);
+        this.kill = !0), this.collideArea.contains(this.getPosition().x, this.getPosition().y) || (this.kill = !0);
     },
     hurt: function(demage) {
         this.hp -= demage, this.velocity.y -= this.resistance, this.hp <= 0 && this.preKill();
@@ -685,10 +690,12 @@ var Application = AbstractApplication.extend({
             this.onList = !0, this.thumb.parent && this.thumb.parent.removeChild(this.thumb), 
             this.screen.unihorn.killed();
             for (var i = this.subdivide - 1; i >= 0; i--) {
-                console.log(APP.appModel.smallEnemyModel);
                 var enemy = new Enemy(APP.appModel.smallEnemyModel, this.screen);
-                enemy.build(), enemy.setPosition(this.getPosition().x, this.getPosition().y), TweenLite.to(enemy.getContent(), .5, {
-                    x: this.getPosition().x - 50 + 100 * i,
+                enemy.build(), enemy.setPosition(this.getPosition().x, this.getPosition().y);
+                var destX = this.getPosition().x - 50 + 100 * i;
+                50 > destX ? destX = this.getPosition().x + 100 * i : destX > windowWidth - 50 && (destX = this.getPosition().x - 100 + 100 * i), 
+                TweenLite.to(enemy.getContent(), .5, {
+                    x: destX,
                     y: this.getPosition().y - 50
                 }), this.screen.spawner.enemyList.push(enemy), this.screen.addEnemyThumb(enemy), 
                 this.screen.layer.addChild(enemy);
@@ -906,7 +913,7 @@ var Application = AbstractApplication.extend({
             ease: "easeOutBack"
         }), this.getContent().alpha = 0;
         var self = this;
-        TweenLite.to(this.getContent(), .08, {
+        TweenLite.to(this.getContent(), .09, {
             delay: .15,
             alpha: 1,
             onComplete: function() {
@@ -1150,8 +1157,32 @@ var Application = AbstractApplication.extend({
         }
         this.currentPlayerModel = {}, console.log(APP);
         var points = 0, high = 0;
-        this.highScore = high ? high : 0, this.totalPoints = points ? points : 0, this.currentPoints = 0, 
-        this.playerModels = [], this.clothModels = [], this.clothModels.push(new ClothModel({
+        this.highScore = high ? high : 0, this.totalPoints = points ? points : 5e4, this.currentPoints = 5e4, 
+        this.playerModels = [], this.envModels = [], this.envModels.push(new EnvironmentModel({
+            cover: "uni_horn1.png",
+            source: "fundo1.png",
+            label: "Normal"
+        }, {
+            id: 750 * this.envModels.length,
+            enabled: !0,
+            coast: getBalanceCoast(this.envModels.length)
+        })), this.envModels.push(new EnvironmentModel({
+            cover: "uni_horn1.png",
+            source: "fullscreen.png",
+            label: "Normal 2"
+        }, {
+            id: 750 * this.envModels.length,
+            enabled: !1,
+            coast: getBalanceCoast(this.envModels.length) * getBalanceCoast(this.envModels.length)
+        })), this.envModels.push(new EnvironmentModel({
+            cover: "uni_horn1.png",
+            source: "fundo1.png",
+            label: "Normal 3"
+        }, {
+            id: 750 * this.envModels.length,
+            enabled: !1,
+            coast: getBalanceCoast(this.envModels.length) * getBalanceCoast(this.envModels.length)
+        })), this.clothModels = [], this.clothModels.push(new ClothModel({
             cover: "uni_corpo.png",
             source: "uni_corpo.png",
             label: "Normal"
@@ -1256,7 +1287,7 @@ var Application = AbstractApplication.extend({
             fireAcumMax: 25,
             hasMultiple: 1,
             hasBounce: !1,
-            fireSpeed: 11,
+            fireSpeed: 10.5,
             sinoid: .7,
             enabled: !1,
             coast: getBalanceCoast(this.hornModels.length),
@@ -1299,8 +1330,8 @@ var Application = AbstractApplication.extend({
             label: "x3"
         }, {
             size: 1,
-            demage: 1,
-            fireAcumMax: 25,
+            demage: .9,
+            fireAcumMax: 30,
             hasMultiple: 3,
             hasBounce: !1,
             sinoid: 0,
@@ -1314,8 +1345,8 @@ var Application = AbstractApplication.extend({
             label: "ALL STATS"
         }, {
             size: 1,
-            demage: 1,
-            fireAcumMax: 25,
+            demage: .9,
+            fireAcumMax: 30,
             hasMultiple: 3,
             hasBounce: !0,
             piercing: !0,
@@ -1330,29 +1361,14 @@ var Application = AbstractApplication.extend({
             sizePercent: .2,
             label: "Nuvem"
         }, {
-            vel: 1,
-            toNext: 80,
+            vel: .9,
+            toNext: 100,
             behaviour: new BirdBehaviourSinoid({
                 sinAcc: .05
             }),
             money: 5,
-            hp: 4,
-            resistance: 1
-        }), new EnemyModel({
-            cover: "cloud2a.png",
-            source: [ "cloud2a.png" ],
-            particles: [ "bullet.png" ],
-            sizePercent: .25,
-            label: "Nuvem"
-        }, {
-            vel: .6,
-            toNext: 180,
-            behaviour: new BirdBehaviourSinoid({
-                sinAcc: .03
-            }),
-            money: 5,
-            hp: 6,
-            resistance: .6
+            hp: 3,
+            resistance: 1.8
         }), new EnemyModel({
             cover: "cloud3a.png",
             source: [ "cloud3a.png" ],
@@ -1360,7 +1376,7 @@ var Application = AbstractApplication.extend({
             sizePercent: .18,
             label: "Nuvem"
         }, {
-            vel: 1.8,
+            vel: 1.1,
             toNext: 80,
             behaviour: new BirdBehaviourSinoid({
                 sinAcc: .05
@@ -1375,8 +1391,8 @@ var Application = AbstractApplication.extend({
             sizePercent: .15,
             label: "Nuvem"
         }, {
-            vel: 1.5,
-            toNext: 90,
+            vel: 1.2,
+            toNext: 110,
             behaviour: new BirdBehaviourSinoid({
                 sinAcc: .05
             }),
@@ -1384,11 +1400,26 @@ var Application = AbstractApplication.extend({
             hp: 2,
             resistance: 4.5,
             subdivide: 2
+        }), new EnemyModel({
+            cover: "cloud2a.png",
+            source: [ "cloud2a.png" ],
+            particles: [ "bullet.png" ],
+            sizePercent: .25,
+            label: "Nuvem"
+        }, {
+            vel: .4,
+            toNext: 180,
+            behaviour: new BirdBehaviourSinoid({
+                sinAcc: .03
+            }),
+            money: 5,
+            hp: 8,
+            resistance: .6
         }) ], this.smallEnemyModel = new EnemyModel({
             cover: "cloud3a.png",
             source: [ "cloud3a.png" ],
             particles: [ "bullet.png" ],
-            sizePercent: .18,
+            sizePercent: .12,
             label: "Nuvem"
         }, {
             vel: 1,
@@ -1400,7 +1431,7 @@ var Application = AbstractApplication.extend({
         }), this.setModel(0), this.totalPlayers = 0;
         for (var i = this.playerModels.length - 1; i >= 0; i--) this.playerModels[i].toAble <= this.totalPoints && (this.playerModels[i].able = !0, 
         this.totalPlayers++);
-        this.enemyProbs = [ 0, 1, 2, 3 ], this.currentHorde = 0, this.totalEnemy = 4;
+        this.enemyProbs = [ 0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 3 ], this.currentHorde = 0, this.totalEnemy = 4;
     },
     setModel: function(id) {
         this.currentID = id, this.currentPlayerModel = this.playerModels[id];
@@ -1420,7 +1451,7 @@ var Application = AbstractApplication.extend({
         return obs;
     },
     getNewEnemy: function(player, screen) {
-        this.currentHorde++;
+        this.currentHorde++, APP.accelGame < 3 && (APP.accelGame += this.currentHorde / 800);
         var max = this.enemyProbs.length;
         this.currentHorde < max && (max = this.currentHorde);
         for (var id = 99999; id > this.totalEnemy - 1; ) id = this.enemyProbs[Math.floor(max * Math.random())];
@@ -1502,6 +1533,13 @@ var Application = AbstractApplication.extend({
         this.target = statsObjec.target, this.timeLive = 999, this.toNext = statsObjec.toNext ? statsObjec.toNext : 150, 
         this.behaviour = statsObjec.behaviour, this.money = statsObjec.money, this.resistance = statsObjec.resistance ? statsObjec.resistance : 0, 
         this.subdivide = statsObjec.subdivide ? statsObjec.subdivide : 0;
+    },
+    serialize: function() {}
+}), EnvironmentModel = Class.extend({
+    init: function(graphicsObject, statsObjec) {
+        this.cover = graphicsObject.cover ? graphicsObject.cover : "uni_horn1.png", this.imgSource = graphicsObject.source ? graphicsObject.source : "fundo1.png", 
+        this.label = graphicsObject.label ? graphicsObject.label : "", this.id = statsObjec.id ? statsObjec.id : 0, 
+        this.coast = statsObjec.coast ? statsObjec.coast : 0, this.enabled = statsObjec.enabled ? statsObjec.enabled : !1;
     },
     serialize: function() {}
 }), HornModel = Class.extend({
@@ -1716,16 +1754,16 @@ var Application = AbstractApplication.extend({
             }
         }
         var self = this;
-        this.bg = new SimpleSprite("fundo1.png"), this.addChild(this.bg.getContent()), scaleConverter(this.bg.getContent().width, windowWidth, 1.2, this.bg), 
-        this.bg.getContent().position.x = windowWidth / 2 - this.bg.getContent().width / 2, 
+        this.bg = new SimpleSprite(APP.currentEnvModel.imgSource), this.addChild(this.bg.getContent()), 
+        scaleConverter(this.bg.getContent().width, windowWidth, 1.2, this.bg), this.bg.getContent().position.x = windowWidth / 2 - this.bg.getContent().width / 2, 
         this.bg.getContent().position.y = windowHeight / 2 - this.bg.getContent().height / 2, 
         this.darkShape = new PIXI.DisplayObjectContainer(), this.addChild(this.darkShape);
         var dark = new PIXI.Graphics();
         dark.beginFill(0), dark.drawRect(0, 0, windowWidth, windowHeight), this.darkShape.addChild(dark), 
-        this.darkShape.alpha = 0, this.darkShape.blendModes = PIXI.blendModes.OVERLAY, this.renderLevel(), 
-        this.hitTouch = new PIXI.Graphics(), this.hitTouch.interactive = !0, this.hitTouch.beginFill(0), 
-        this.hitTouch.drawRect(0, 0, windowWidth, windowHeight), this.addChild(this.hitTouch), 
-        this.hitTouch.alpha = 0, this.hitTouch.hitArea = new PIXI.Rectangle(0, 0, windowWidth, windowHeight), 
+        this.darkShape.alpha = 0, this.darkShape.blendModes = PIXI.blendModes.OVERLAY, APP.accelGame = 1, 
+        this.renderLevel(), this.hitTouch = new PIXI.Graphics(), this.hitTouch.interactive = !0, 
+        this.hitTouch.beginFill(0), this.hitTouch.drawRect(0, 0, windowWidth, windowHeight), 
+        this.addChild(this.hitTouch), this.hitTouch.alpha = 0, this.hitTouch.hitArea = new PIXI.Rectangle(0, 0, windowWidth, windowHeight), 
         this.mouseAngle = 0, testMobile() || (this.hitTouch.mousemove = function(touchData) {
             updateVel(touchData);
         }, this.hitTouch.mousedown = function(mouseData) {
@@ -1739,7 +1777,7 @@ var Application = AbstractApplication.extend({
         }, this.hitTouch.touchend = function(touchData) {
             self.touchDown = !1, updateVel(touchData);
         }, this.updateable = !0, this.fireAcumMax = APP.currentHornModel.fireAcumMax - APP.currentClothModel.fireAcumMax, 
-        this.fireAcum = this.fireAcumMax, console.log(APP.currentClothModel), this.backButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
+        this.fireAcum = this.fireAcumMax, this.backButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
         this.backButton.build(), this.backButton.addLabel(new PIXI.Text("BACK", {
             font: "50px Vagron",
             fill: "#FFFFFF"
@@ -1865,10 +1903,12 @@ var Application = AbstractApplication.extend({
     },
     shoot: function(angle) {
         if (!this.blockPause) {
-            var timeLive = 100, vel = APP.currentHornModel.fireSpeed + APP.currentClothModel.fireSpeed, angleOpen = .1, totalFires = APP.currentHornModel.hasMultiple;
+            var timeLive = 100, vel = APP.currentHornModel.fireSpeed + APP.currentClothModel.fireSpeed, angleOpen = .3, totalFires = APP.currentHornModel.hasMultiple;
             this.unihorn.shoot();
             for (var i = 0; totalFires > i; i++) {
-                var tempAngle = angle + angleOpen * (i - totalFires / 2), bullet = new Bullet({
+                var tempAngle = angle + angleOpen * (i - totalFires / 2);
+                1 === totalFires && (tempAngle = angle);
+                var bullet = new Bullet({
                     x: Math.cos(tempAngle) * vel,
                     y: Math.sin(tempAngle) * vel
                 }, timeLive, 5, null, !0);
@@ -2135,7 +2175,7 @@ var Application = AbstractApplication.extend({
     initApplication: function() {
         this.isLoaded = !0;
         APP.currentHornModel = APP.appModel.hornModels[0], APP.currentClothModel = APP.appModel.clothModels[0], 
-        this.screenManager.change("Game");
+        APP.currentEnvModel = APP.appModel.envModels[0], this.screenManager.change("Game");
     },
     transitionIn: function() {
         return this.isLoaded ? void this.build() : void this.build();
@@ -2188,11 +2228,11 @@ var Application = AbstractApplication.extend({
     init: function(screen) {
         this.screen = screen, this.container = new PIXI.DisplayObjectContainer(), this.scrollContainer = new PIXI.DisplayObjectContainer(), 
         this.bg = new PIXI.Graphics(), this.bg.beginFill(1383495), this.bg.drawRect(0, 0, windowWidth, windowHeight), 
-        this.bg.alpha = .8, this.container.addChild(this.bg), this.container.addChild(this.scrollContainer), 
+        this.bg.alpha = .5, this.container.addChild(this.bg), this.container.addChild(this.scrollContainer), 
         this.applyScroll(this.scrollContainer);
         var self = this;
         this.backScroll = new PIXI.Graphics(), this.backScroll.beginFill(1383495), this.backScroll.drawRect(0, 0, windowWidth, 2 * windowHeight), 
-        this.backScroll.alpha = .8, this.scrollContainer.addChild(this.backScroll), this.closeButton = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
+        this.backScroll.alpha = .5, this.scrollContainer.addChild(this.backScroll), this.closeButton = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
         this.closeButton.build(), this.closeButton.setPosition(20, 20), this.closeButton.clickCallback = function() {
             self.hide(function() {
                 self.screen.updateable = !0, self.screen.reset();
@@ -2222,21 +2262,52 @@ var Application = AbstractApplication.extend({
         this.textScreen.position.y = 20;
     },
     addShopList: function() {
-        var _s = 0, marginTopBottom = .1 * windowHeight, totItens = APP.appModel.hornModels.length + APP.appModel.clothModels.length, marginItens = 10, tempShopItem = null;
+        var _s = 0, marginTopBottom = .1 * windowHeight, marginItens = (APP.appModel.hornModels.length + APP.appModel.clothModels.length + APP.appModel.envModels.length, 
+        10), tempShopItem = null;
         this.hornList = [];
         var i = 0;
-        for (i = 0; i < APP.appModel.hornModels.length; i++) tempShopItem = new ShopItem(this, "horn", APP.appModel.hornModels, this.hornList), 
+        for (this.hornLabel = new PIXI.Text("HORNS", {
+            align: "center",
+            font: "50px Vagron",
+            fill: "#FFF",
+            wordWrap: !0,
+            wordWrapWidth: 500
+        }), scaleConverter(this.hornLabel.height, this.closeButton.getContent().height, 1, this.hornLabel), 
+        this.hornLabel.position.x = windowWidth / 2 - this.hornLabel.width / 2, this.hornLabel.position.y = marginTopBottom / 2, 
+        this.scrollContainer.addChild(this.hornLabel), i = 0; i < APP.appModel.hornModels.length; i++) tempShopItem = new ShopItem(this, "horn", APP.appModel.hornModels, this.hornList), 
         tempShopItem.build(APP.appModel.hornModels[i]), this.hornList.push(tempShopItem), 
         this.scrollContainer.addChild(tempShopItem.getContent()), scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, .2, tempShopItem), 
         _s = tempShopItem.getContent().height + marginItens, tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2, 
-        tempShopItem.getContent().position.y = i * _s + marginTopBottom;
+        tempShopItem.getContent().position.y = i * _s + marginTopBottom + this.hornLabel.height;
         var lastHorn = tempShopItem.getContent().position.y + tempShopItem.getContent().height;
-        for (this.clothList = [], i = 0; i < APP.appModel.clothModels.length; i++) tempShopItem = new ShopItem(this, "cloth", APP.appModel.clothModels, this.clothList), 
+        for (this.clothesLabel = new PIXI.Text("CLOTHES", {
+            align: "center",
+            font: "50px Vagron",
+            fill: "#FFF",
+            wordWrap: !0,
+            wordWrapWidth: 500
+        }), scaleConverter(this.clothesLabel.height, this.closeButton.getContent().height, 1, this.clothesLabel), 
+        this.clothesLabel.position.x = windowWidth / 2 - this.clothesLabel.width / 2, this.clothesLabel.position.y = marginTopBottom / 2 + lastHorn, 
+        this.scrollContainer.addChild(this.clothesLabel), this.clothList = [], i = 0; i < APP.appModel.clothModels.length; i++) tempShopItem = new ShopItem(this, "cloth", APP.appModel.clothModels, this.clothList), 
         tempShopItem.build(APP.appModel.clothModels[i]), this.clothList.push(tempShopItem), 
         this.scrollContainer.addChild(tempShopItem.getContent()), scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, .2, tempShopItem), 
         _s = tempShopItem.getContent().height + marginItens, tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2, 
-        tempShopItem.getContent().position.y = i * _s + marginTopBottom + lastHorn;
-        this.backScroll.height = totItens * _s + 4 * marginTopBottom + 100;
+        tempShopItem.getContent().position.y = i * _s + marginTopBottom + lastHorn + this.clothesLabel.height;
+        var lastCloath = tempShopItem.getContent().position.y + tempShopItem.getContent().height;
+        for (this.envLabel = new PIXI.Text("ENVIRONMENTS", {
+            align: "center",
+            font: "50px Vagron",
+            fill: "#FFF",
+            wordWrap: !0,
+            wordWrapWidth: 500
+        }), scaleConverter(this.envLabel.height, this.closeButton.getContent().height, 1, this.envLabel), 
+        this.envLabel.position.x = windowWidth / 2 - this.envLabel.width / 2, this.envLabel.position.y = marginTopBottom / 2 + lastCloath, 
+        this.scrollContainer.addChild(this.envLabel), this.envList = [], i = 0; i < APP.appModel.envModels.length; i++) tempShopItem = new ShopItem(this, "env", APP.appModel.envModels, this.envList), 
+        tempShopItem.build(APP.appModel.envModels[i]), this.envList.push(tempShopItem), 
+        this.scrollContainer.addChild(tempShopItem.getContent()), scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, .2, tempShopItem), 
+        _s = tempShopItem.getContent().height + marginItens, tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2, 
+        tempShopItem.getContent().position.y = i * _s + marginTopBottom + lastCloath + this.envLabel.height;
+        this.backScroll.height = this.scrollContainer.height + 100;
     },
     show: function() {
         this.updateCoins(), this.screen.addChild(this), this.screen.blockPause = !0, this.scrollContainer.visible = !0, 
@@ -2504,7 +2575,7 @@ var Application = AbstractApplication.extend({
     update: function() {
         if (this.accum < 0) {
             var enemy = APP.appModel.getNewEnemy(null, this.screen);
-            enemy.build(), this.accum = enemy.model.toNext / APP.accelGame;
+            enemy.build(), this.accum = enemy.model.toNext / APP.accelGame, this.accum < 80 && (this.accum = 80);
             var part10 = .1 * windowWidth;
             enemy.setPosition(part10 + (windowWidth - 2 * part10) * Math.random(), 0), this.enemyList.push(enemy), 
             this.screen.addEnemyThumb(enemy), this.screen.layer.addChild(enemy);

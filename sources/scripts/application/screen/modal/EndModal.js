@@ -8,7 +8,7 @@ var EndModal = Class.extend({
         this.bg = new PIXI.Graphics();
         this.bg.beginFill(0x151c47);
         this.bg.drawRect(0,0,windowWidth, windowHeight);
-        this.bg.alpha = 0.8;
+        this.bg.alpha = 0.5;
         this.container.addChild(this.bg);
         this.container.addChild(this.scrollContainer);
 
@@ -20,7 +20,7 @@ var EndModal = Class.extend({
         this.backScroll = new PIXI.Graphics();
         this.backScroll.beginFill(0x151c47);
         this.backScroll.drawRect(0,0,windowWidth, windowHeight * 2);
-        this.backScroll.alpha = 0.8;
+        this.backScroll.alpha = 0.5;
         this.scrollContainer.addChild(this.backScroll);
 
         this.closeButton = new DefaultButton('UI_button_play_1.png', 'UI_button_play_1.png');
@@ -89,11 +89,18 @@ var EndModal = Class.extend({
         // this.scrollContainer;
         var _s = 0;
         var marginTopBottom = windowHeight * 0.1;
-        var totItens = APP.appModel.hornModels.length + APP.appModel.clothModels.length;
+        var totItens = APP.appModel.hornModels.length + APP.appModel.clothModels.length + APP.appModel.envModels.length;
         var marginItens = 10;//20;
         var tempShopItem = null;
         this.hornList = [];
         var i = 0;
+
+        this.hornLabel = new PIXI.Text('HORNS', {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500});
+        scaleConverter(this.hornLabel.height, this.closeButton.getContent().height, 1, this.hornLabel);
+        this.hornLabel.position.x = windowWidth / 2 - this.hornLabel.width / 2 ;
+        this.hornLabel.position.y = marginTopBottom / 2;
+        this.scrollContainer.addChild(this.hornLabel);
+
         for (i = 0; i < APP.appModel.hornModels.length; i++) {
             tempShopItem = new ShopItem(this, 'horn', APP.appModel.hornModels, this.hornList);
             tempShopItem.build(APP.appModel.hornModels[i]);
@@ -102,9 +109,18 @@ var EndModal = Class.extend({
             scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, 0.2, tempShopItem);
             _s = (tempShopItem.getContent().height + marginItens);
             tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2;
-            tempShopItem.getContent().position.y = i * _s + marginTopBottom;
+            tempShopItem.getContent().position.y = i * _s + marginTopBottom + this.hornLabel.height;
         }
+
         var lastHorn = tempShopItem.getContent().position.y + tempShopItem.getContent().height;
+
+        this.clothesLabel = new PIXI.Text('CLOTHES', {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500});
+        scaleConverter(this.clothesLabel.height, this.closeButton.getContent().height, 1, this.clothesLabel);
+        this.clothesLabel.position.x = windowWidth / 2 - this.clothesLabel.width / 2 ;
+        this.clothesLabel.position.y = marginTopBottom / 2 + lastHorn;
+        this.scrollContainer.addChild(this.clothesLabel);
+
+
         this.clothList = [];
         for (i = 0; i < APP.appModel.clothModels.length; i++) {
             tempShopItem = new ShopItem(this, 'cloth', APP.appModel.clothModels, this.clothList);
@@ -114,10 +130,31 @@ var EndModal = Class.extend({
             scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, 0.2, tempShopItem);
             _s = (tempShopItem.getContent().height + marginItens);
             tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2;
-            tempShopItem.getContent().position.y = i * _s + marginTopBottom + lastHorn;
+            tempShopItem.getContent().position.y = i * _s + marginTopBottom + lastHorn + this.clothesLabel.height;
         }
 
-        this.backScroll.height = totItens * _s + marginTopBottom * 4 + 100;
+        var lastCloath = tempShopItem.getContent().position.y + tempShopItem.getContent().height;
+
+        this.envLabel = new PIXI.Text('ENVIRONMENTS', {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500});
+        scaleConverter(this.envLabel.height, this.closeButton.getContent().height, 1, this.envLabel);
+        this.envLabel.position.x = windowWidth / 2 - this.envLabel.width / 2 ;
+        this.envLabel.position.y = marginTopBottom / 2 + lastCloath;
+        this.scrollContainer.addChild(this.envLabel);
+
+
+        this.envList = [];
+        for (i = 0; i < APP.appModel.envModels.length; i++) {
+            tempShopItem = new ShopItem(this, 'env', APP.appModel.envModels, this.envList);
+            tempShopItem.build(APP.appModel.envModels[i]);
+            this.envList.push(tempShopItem);
+            this.scrollContainer.addChild(tempShopItem.getContent());
+            scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, 0.2, tempShopItem);
+            _s = (tempShopItem.getContent().height + marginItens);
+            tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2;
+            tempShopItem.getContent().position.y = i * _s + marginTopBottom + lastCloath + this.envLabel.height;
+        }
+
+        this.backScroll.height = this.scrollContainer.height + 100;//totItens * _s + marginTopBottom * 4 + 100;
     },
     show:function(){
         this.updateCoins();

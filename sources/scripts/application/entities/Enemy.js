@@ -9,9 +9,10 @@ var Enemy = Entity.extend({
         this.height = 1;
         this.type = 'enemy';
         this.model = model;
-        this.velocity.y = this.model.vel * APP.accelGame;
+        this.velocity.y = this.model.vel * (APP.accelGame / 2);
         this.vel = this.model.vel;
-        this.hp = this.model.hp;
+        this.hp = this.model.hp + Math.floor(APP.accelGame - 1);
+        console.log(this.model.hp,APP.accelGame);
         this.behaviour = this.model.behaviour?this.model.behaviour.clone():null;
         this.resistance = this.model.resistance;
         this.subdivide = this.model.subdivide;
@@ -44,6 +45,8 @@ var Enemy = Entity.extend({
         // console.log(this.model.sizePercent);
         scaleConverter(this.spritesheet.container.width, windowWidth, this.model.sizePercent, this.getContent());
 
+        this.collideArea = new PIXI.Rectangle(-50, -50, windowWidth + 100, windowHeight + 100);
+
     },
     update: function(){
         this.range = this.spritesheet.container.width / 2;
@@ -59,6 +62,9 @@ var Enemy = Entity.extend({
         this.spritesheet.update();
         if(this.getContent().position.y > windowHeight + 100){
             this.onList = true;
+            this.kill = true;
+        }
+        if(!this.collideArea.contains(this.getPosition().x, this.getPosition().y)){
             this.kill = true;
         }
     },
@@ -91,13 +97,19 @@ var Enemy = Entity.extend({
 
 
         for (var i = this.subdivide - 1; i >= 0; i--) {
-            console.log(APP.appModel.smallEnemyModel);
+            // console.log(APP.appModel.smallEnemyModel);
             var enemy = new Enemy(APP.appModel.smallEnemyModel, this.screen);
             enemy.build();
             // scaleConverter(enemy.getContent().height,windowHeight, 0.08, enemy);
             //UTILIZAR O ANGULO PARA CALCULAR A POSIÇÃO CORRETA DO TIRO
             enemy.setPosition(this.getPosition().x, this.getPosition().y);
-            TweenLite.to(enemy.getContent(), 0.5, {x:this.getPosition().x - 50 + 100 * i, y:this.getPosition().y - 50});
+            var destX = this.getPosition().x - 50 + 100 * i;
+            if(destX < 50){
+                destX = this.getPosition().x + 100 * i;
+            }else if(destX > windowWidth - 50){
+                destX = this.getPosition().x - 100 + 100 * i;
+            }
+            TweenLite.to(enemy.getContent(), 0.5, {x:destX, y:this.getPosition().y - 50});
             this.screen.spawner.enemyList.push(enemy);
             this.screen.addEnemyThumb(enemy);
             this.screen.layer.addChild(enemy);

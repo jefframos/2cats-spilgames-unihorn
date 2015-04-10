@@ -37,7 +37,7 @@ var Bullet = Entity.extend({
         TweenLite.from(this.getContent().scale, 0.8, {x:0, y:0, ease:'easeOutBack'});
         this.getContent().alpha = 0;
         var self = this;
-        TweenLite.to(this.getContent(), 0.08, {delay:0.15, alpha:1, onComplete:function(){
+        TweenLite.to(this.getContent(), 0.09, {delay:0.15, alpha:1, onComplete:function(){
             self.collidable = true;
         }});
     },

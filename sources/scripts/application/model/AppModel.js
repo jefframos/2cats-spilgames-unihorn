@@ -18,8 +18,8 @@ var AppModel = Class.extend({
 		var high = 0;//parseInt(APP.cookieManager.getCookie('highScore'));
 
 		this.highScore = high?high:0;
-		this.totalPoints = points?points:0;
-		this.currentPoints = 0;
+		this.totalPoints = points?points:50000;
+		this.currentPoints = 50000;
 
 		
 		this.playerModels = [];
@@ -27,6 +27,46 @@ var AppModel = Class.extend({
 		function getBalanceCoast(id){
 			return Math.floor((id * id * id) / 5) * 5 * Math.floor((id * id) / 5) * 5 + (5 * 5 * id);
 		}
+		this.envModels = [];
+		this.envModels.push(new EnvironmentModel(
+			{
+				cover:'uni_horn1.png',
+				source:'fundo1.png',
+				label:'Normal'
+			},
+			{
+				id:this.envModels.length * 750,
+				enabled: true,
+				coast: getBalanceCoast(this.envModels.length)
+			}
+		));
+
+		this.envModels.push(new EnvironmentModel(
+			{
+				cover:'uni_horn1.png',
+				source:'fullscreen.png',
+				label:'Normal 2'
+			},
+			{
+				id:this.envModels.length * 750,
+				enabled: false,
+				coast: getBalanceCoast(this.envModels.length) * getBalanceCoast(this.envModels.length)
+			}
+		));
+
+		this.envModels.push(new EnvironmentModel(
+			{
+				cover:'uni_horn1.png',
+				source:'fundo1.png',
+				label:'Normal 3'
+			},
+			{
+				id:this.envModels.length * 750,
+				enabled: false,
+				coast: getBalanceCoast(this.envModels.length) * getBalanceCoast(this.envModels.length)
+			}
+		));
+
 		this.clothModels = [];
 		this.clothModels.push(new ClothModel(
 			{
@@ -166,7 +206,7 @@ var AppModel = Class.extend({
 				fireAcumMax:25,
 				hasMultiple:1,
 				hasBounce:false,
-				fireSpeed:11,
+				fireSpeed:10.5,
 				// piercing:false,
 				sinoid:0.7,
 				enabled: false,
@@ -223,8 +263,8 @@ var AppModel = Class.extend({
 			},
 			{
 				size: 1,
-				demage: 1,
-				fireAcumMax:25,
+				demage: 0.9,
+				fireAcumMax:30,
 				hasMultiple:3,
 				hasBounce:false,
 				// piercing:false,
@@ -243,8 +283,8 @@ var AppModel = Class.extend({
 			},
 			{
 				size: 1,
-				demage: 1,
-				fireAcumMax:25,
+				demage: 0.9,
+				fireAcumMax:30,
 				hasMultiple:3,
 				hasBounce:true,
 				piercing:true,
@@ -265,29 +305,12 @@ var AppModel = Class.extend({
 					label:'Nuvem'
 				},
 				{
-					vel: 1,
-					toNext: 80,
+					vel: 0.9,
+					toNext: 100,
 					behaviour:new BirdBehaviourSinoid({sinAcc:0.05}),
 					money:5,
-					hp:4,
-					resistance: 1
-				}
-			),
-				new EnemyModel(
-				{
-					cover:'cloud2a.png',
-					source:['cloud2a.png'],
-					particles:['bullet.png'],
-					sizePercent: 0.25,
-					label:'Nuvem'
-				},
-				{
-					vel: 0.6,
-					toNext: 180,
-					behaviour: new BirdBehaviourSinoid({sinAcc:0.03}),
-					money:5,
-					hp:6,
-					resistance: 0.6
+					hp:3,
+					resistance: 1.8
 				}
 			),
 				new EnemyModel(
@@ -299,7 +322,7 @@ var AppModel = Class.extend({
 					label:'Nuvem'
 				},
 				{
-					vel: 1.8,
+					vel: 1.1,
 					toNext: 80,
 					behaviour: new BirdBehaviourSinoid({sinAcc:0.05}),
 					money:5,
@@ -316,15 +339,32 @@ var AppModel = Class.extend({
 					label:'Nuvem'
 				},
 				{
-					vel: 1.5,
-					toNext: 90,
+					vel: 1.2,
+					toNext: 110,
 					behaviour: new BirdBehaviourSinoid({sinAcc:0.05}),
 					money:5,
 					hp:2,
 					resistance: 4.5,
 					subdivide:2
 				}
-			)
+			),
+				new EnemyModel(
+				{
+					cover:'cloud2a.png',
+					source:['cloud2a.png'],
+					particles:['bullet.png'],
+					sizePercent: 0.25,
+					label:'Nuvem'
+				},
+				{
+					vel: 0.4,
+					toNext: 180,
+					behaviour: new BirdBehaviourSinoid({sinAcc:0.03}),
+					money:5,
+					hp:8,
+					resistance: 0.6
+				}
+			),
 			];
 
 
@@ -333,7 +373,7 @@ var AppModel = Class.extend({
 				cover:'cloud3a.png',
 				source:['cloud3a.png'],
 				particles:['bullet.png'],
-				sizePercent: 0.18,
+				sizePercent: 0.12,
 				label:'Nuvem'
 			},
 			{
@@ -355,7 +395,7 @@ var AppModel = Class.extend({
 				this.totalPlayers ++;
 			}
 		}
-		this.enemyProbs = [0,1,2,3];//,1,0,0,0,2,0,0,0,1,2,3,0,0,2,0,3,4,4,4,4,4,0,5,5,5,5,5,0,6,6,6,6,0,7,7,7,7,4,5,6,7];
+		this.enemyProbs = [0,1,2,0,1,2,0,1,2,3,3];//,1,0,0,0,2,0,0,0,1,2,3,0,0,2,0,3,4,4,4,4,4,0,5,5,5,5,5,0,6,6,6,6,0,7,7,7,7,4,5,6,7];
 
 		this.currentHorde = 0;
 
@@ -405,6 +445,9 @@ var AppModel = Class.extend({
 	},
 	getNewEnemy:function(player, screen){
 		this.currentHorde ++;
+		if(APP.accelGame < 3){
+			APP.accelGame += this.currentHorde / 800;
+		}
 		var max = this.enemyProbs.length;
 
 		if(this.currentHorde < max){

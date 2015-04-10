@@ -30,7 +30,7 @@ var GameScreen = AbstractScreen.extend({
     },
     initApplication:function(){
         var self = this;
-        this.bg = new SimpleSprite('fundo1.png');
+        this.bg = new SimpleSprite(APP.currentEnvModel.imgSource);
         this.addChild(this.bg.getContent());
         scaleConverter(this.bg.getContent().width, windowWidth, 1.2, this.bg);
         this.bg.getContent().position.x = windowWidth / 2 - this.bg.getContent().width / 2;
@@ -48,7 +48,7 @@ var GameScreen = AbstractScreen.extend({
 
 
 
-
+        APP.accelGame = 1;
 
 
 
@@ -69,7 +69,7 @@ var GameScreen = AbstractScreen.extend({
             if(testMobile()){
                 fullscreen();
             }
-            var angle = Math.atan2(touchData.global.y - self.hornPos.y, touchData.global.x - self.hornPos.x);
+            var angle = Math.atan2(touchData.global.y - self.hornPos.y, (touchData.global.x) - self.hornPos.x);
             
             var tempCompare = angle* 180 / Math.PI;
             // console.log(tempCompare);
@@ -115,10 +115,6 @@ var GameScreen = AbstractScreen.extend({
         this.updateable = true;
         this.fireAcumMax = APP.currentHornModel.fireAcumMax - APP.currentClothModel.fireAcumMax;
         this.fireAcum = this.fireAcumMax;
-
-
-        console.log((APP.currentClothModel));
-        
 
         this.backButton = new DefaultButton('UI_button_default_1.png', 'UI_button_default_1.png');
         this.backButton.build();
@@ -394,12 +390,15 @@ var GameScreen = AbstractScreen.extend({
         // //UTILIZAR O ANGULO PARA CALCULAR A POSIÇÃO CORRETA DO TIRO
         // bullet.setPosition(this.hornPos.x, this.hornPos.y);
         // this.layer.addChild(bullet);
-        var angleOpen = 0.1;
+        var angleOpen = 0.3;
         var totalFires = APP.currentHornModel.hasMultiple;
         this.unihorn.shoot();
         // console.log(totalFires);
         for (var i = 0; i < totalFires; i++) {
             var tempAngle = angle + angleOpen * (i - totalFires / 2);
+            if(totalFires === 1){
+                tempAngle = angle;
+            }
             var bullet = new Bullet({x:Math.cos(tempAngle) * vel,
             y:Math.sin(tempAngle) * vel},
             timeLive, 5, null, true);

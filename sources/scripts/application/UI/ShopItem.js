@@ -62,6 +62,9 @@ var ShopItem = Class.extend({
 			}else if(self.type === 'cloth'){
 				APP.currentClothModel = self.model;
 				targetArray = self.screen.clothList;
+			}else if(self.type === 'env'){
+				APP.currentEnvModel = self.model;
+				targetArray = self.screen.envList;
 			}
 			targetArray = this.arrayPlaced;
 			for (var i = targetArray.length - 1; i >= 0; i--) {
@@ -90,6 +93,10 @@ var ShopItem = Class.extend({
 				APP.currentClothModel = self.model;
 				APP.currentClothModel.enabled = true;
 				targetArray = self.screen.clothList;
+			}else if(self.type === 'env'){
+				APP.currentEnvModel = self.model;
+				APP.currentEnvModel.enabled = true;
+				targetArray = self.screen.envList;
 			}
 			for (var i = targetArray.length - 1; i >= 0; i--) {
 				targetArray[i].updateStats();
@@ -122,6 +129,11 @@ var ShopItem = Class.extend({
 			}
 		}else if(this.type === 'cloth'){
 			if(APP.currentClothModel.id === this.model.id){
+				this.container.addChild(this.equipped);
+				isEquiped = true;
+			}
+		}else if(this.type === 'env'){
+			if(APP.currentEnvModel.id === this.model.id){
 				this.container.addChild(this.equipped);
 				isEquiped = true;
 			}

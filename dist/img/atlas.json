@@ -261,6 +261,15 @@
 	"sourceSize": {"w":265,"h":182},
 	"pivot": {"x":0.5,"y":0.5}
 },
+"uni_head_2.png":
+{
+	"frame": {"x":669,"y":212,"w":265,"h":182},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":265,"h":182},
+	"sourceSize": {"w":265,"h":182},
+	"pivot": {"x":0.5,"y":0.5}
+},
 "uni_horn1.png":
 {
 	"frame": {"x":656,"y":2,"w":41,"h":111},
@@ -311,8 +320,8 @@
 	"version": "1.0",
 	"image": "atlas.png",
 	"format": "RGBA8888",
-	"size": {"w":925,"h":1542},
+	"size": {"w":936,"h":1542},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:c1f0108ee4643aaa266f355ecaf4176a:6dc936b3d3e46af4084c9e3de5b6d5f5:cbce6b53f0f49e0bf15173c25c41f876$"
+	"smartupdate": "$TexturePacker:SmartUpdate:ea64294add999356fadd631af13c9f9e:12fd6a204b896e8019eb1c6a93768e87:cbce6b53f0f49e0bf15173c25c41f876$"
 }
 }
