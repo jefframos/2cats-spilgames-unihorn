@@ -176,8 +176,9 @@ var GameScreen = AbstractScreen.extend({
         this.unihorn = new Unihorn();
         this.unihorn.build();
         this.addChild(this.unihorn);
+        this.unihorn.felling = 1;
         // console.log(this.unihorn.sprite.height);
-        var scl = scaleConverter(this.unihorn.neck.height, windowHeight, 0.25, this.unihorn);
+        var scl = scaleConverter(this.unihorn.neck.height, windowHeight, 0.2, this.unihorn);
         this.unihorn.getContent().position.y = windowHeight - this.unihorn.neck.height * scl;//this.unihorn.getContent().height;
         this.unihorn.getContent().position.x = windowWidth / 2 - this.unihorn.head.position.x * scl;//this.unihorn.getContent().height;
         // console.log(this.unihorn.head.position.x * scl);
@@ -189,7 +190,17 @@ var GameScreen = AbstractScreen.extend({
         this.topD.getContent().position.x = -windowWidth * 0.25;
         this.topD.getContent().blendModes = PIXI.blendModes.MULTIPLY;
 
-        this.hornPos = {x:this.unihorn.head.position.x * scl, y:windowHeight - (this.unihorn.head.position.y * this.unihorn.head.anchor.y) * scl};// - this.unihorn.head.position.y * scl};
+        // this.hornPos = {x:this.unihorn.head.position.x * scl, y:windowHeight - (this.unihorn.head.position.y * this.unihorn.head.anchor.y) * scl};// - this.unihorn.head.position.y * scl};
+        // this.hornPos = {x:(this.unihorn.getContent().position.x * this.unihorn.getContent().anchor.x) + (this.unihorn.head.position.x * this.unihorn.head.anchor.x)+ (this.unihorn.horn.position.x * this.unihorn.horn.anchor.x),
+        this.hornPos = {x:(this.unihorn.getContent().position.x)+ (this.unihorn.head.position.x * scl),//  + (this.unihorn.horn.position.x),
+        y:(this.unihorn.getContent().position.y)+ (this.unihorn.head.position.y * scl)};// - this.unihorn.head.position.y * scl};
+        // y:windowHeight - (this.unihorn.head.position.y * this.unihorn.head.anchor.y) * scl};// - this.unihorn.head.position.y * scl};
+        
+        // test = new PIXI.Graphics();
+        // test.beginFill(0);
+        // test.drawRect(this.hornPos.x - 5,this.hornPos.y - 5,10, 10);
+        // this.addChild(test);
+
         this.thumbContainer = new PIXI.DisplayObjectContainer();
         this.addChild(this.thumbContainer);
         this.back = new PIXI.Graphics();
@@ -291,6 +302,7 @@ var GameScreen = AbstractScreen.extend({
                 if(tempEnemy.getContent().position.y > windowHeight){
                     tempEnemy.removeSprite();
                     this.badClouds.push(thumbEnemy);
+                    this.unihorn.deaded();
                     hasbad = true;
                     TweenLite.to(this.darkShape, 0.5, {alpha:0.8 * this.badClouds.length / this.maxClouds});
                 }
@@ -322,7 +334,7 @@ var GameScreen = AbstractScreen.extend({
         }
         times = shuffle(times);
         for (var i = this.badClouds.length - 1; i >= 0; i--) {
-            TweenLite.to(this.badClouds[i], 0.3, {delay:0.5 + times[i] / 5, alpha:0});
+            TweenLite.to(this.badClouds[i], 0.3, {delay:1 + times[i] / 5, alpha:0});
             TweenLite.to(this.badClouds[i].scale, 0.3, {delay:0.5 + times[i] / 5, x:this.badClouds[i].scale.x+0.2, y:this.badClouds[i].scale.y+0.2,
                 ease:'easeOutElastic', onCompleteParams:[this.badClouds[i]],
                 onComplete:onComplete});
@@ -334,17 +346,9 @@ var GameScreen = AbstractScreen.extend({
         }
         this._super();
         if(!this.end){
+            this.unihorn.update();
             this.spawner.update();
             this.updateCloudList();
-
-            if(this.fireAcum > 0){
-                this.fireAcum--;
-            }else{
-                if(this.touchDown){
-                    this.shoot(this.mouseAngle);
-                    this.fireAcum = this.fireAcumMax;
-                }
-            }
         }else{
             if(this.startCoinMonitore){
                 for (var i = this.arrayCoins.length - 1; i >= 0; i--) {
@@ -357,6 +361,14 @@ var GameScreen = AbstractScreen.extend({
                 }
             }
 
+        }
+        if(this.fireAcum > 0){
+            this.fireAcum--;
+        }else{
+            if(this.touchDown){
+                this.shoot(this.mouseAngle);
+                this.fireAcum = this.fireAcumMax;
+            }
         }
         this.coinsLabel.setText(APP.appModel.totalPoints);
         this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - this.pauseButton.getContent().height * 0.1;

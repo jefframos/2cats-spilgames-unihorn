@@ -1,8 +1,10 @@
 /*jshint undef:false */
 var ShopItem = Class.extend({
-	init:function(screen, type){
+	init:function(screen, type, arrayModels, arrayPlaced){
 		this.screen = screen;
 		this.type = type;
+		this.arrayModels = arrayModels;
+		this.arrayPlaced = arrayPlaced;
 		this.container = new PIXI.DisplayObjectContainer();
 	},
 	build:function(model){
@@ -31,7 +33,7 @@ var ShopItem = Class.extend({
 
 		this.labelName = new PIXI.Text(this.model.label, {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500});
 		scaleConverter(this.labelName.height, this.backShopItem.getContent().height, 0.3, this.labelName);
-		this.labelName.position.x = this.backShopItem.getContent().x + this.backShopItem.getContent().width;
+		this.labelName.position.x = this.backScroll.width - this.labelName.width - this.backShopItem.getContent().height * 0.1;
 		this.labelName.position.y = this.backShopItem.getContent().position.y;
 		// this.labelName.position.y = 20;
 		this.container.addChild(this.labelName);
@@ -42,14 +44,14 @@ var ShopItem = Class.extend({
 
 		this.equipped = new PIXI.Text('EQUIPPED', {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500});
 		scaleConverter(this.equipped.height, this.backShopItem.getContent().height, 0.3, this.equipped);
-		this.equipped.position.x = this.backShopItem.getContent().x + this.backShopItem.getContent().width;
+		this.equipped.position.x = this.backScroll.width - this.equipped.width - this.backShopItem.getContent().height * 0.1;
 		this.equipped.position.y = this.backShopItem.getContent().height - this.equipped.height  + this.backShopItem.getContent().position.y;
 		// this.equipped.position.y = 20;
 
 		this.equipButton = new DefaultButton('UI_button_default_2.png', 'UI_button_default_2.png');
 		this.equipButton.build();
 		this.equipButton.addLabel(new PIXI.Text('EQUIP', {font:'30px Vagron', fill:'#FFFFFF'}), 33,5);
-		this.equipButton.setPosition(this.backShopItem.getContent().x + this.backShopItem.getContent().width,this.backShopItem.getContent().height - this.equipButton.getContent().height + this.backShopItem.getContent().position.y);//this.backBars.getContent().height - 20 - this.continueButton.height / 2 - 10);
+		this.equipButton.setPosition(this.backScroll.width - this.equipButton.getContent().width - this.backShopItem.getContent().height * 0.1,this.backShopItem.getContent().height - this.equipButton.getContent().height + this.backShopItem.getContent().position.y);//this.backBars.getContent().height - 20 - this.continueButton.height / 2 - 10);
 		this.equipButton.clickCallback = this.equipButton.mouseDownCallback = function(){
 			
 
@@ -61,6 +63,7 @@ var ShopItem = Class.extend({
 				APP.currentClothModel = self.model;
 				targetArray = self.screen.clothList;
 			}
+			targetArray = this.arrayPlaced;
 			for (var i = targetArray.length - 1; i >= 0; i--) {
 				targetArray[i].updateStats();
 			}
@@ -70,9 +73,14 @@ var ShopItem = Class.extend({
 		this.buyButton = new DefaultButton('UI_button_default_1.png', 'UI_button_default_1.png');
 		this.buyButton.build();
 		this.buyButton.addLabel(new PIXI.Text(this.model.coast+' BUY', {font:'30px Vagron', fill:'#FFFFFF'}), 33,10);
-		this.buyButton.setPosition(this.backShopItem.getContent().x + this.backShopItem.getContent().width,this.backShopItem.getContent().height - this.buyButton.getContent().height + this.backShopItem.getContent().position.y);//this.backBars.getContent().height - 20 - this.continueButton.height / 2 - 10);
+		this.buyButton.setPosition(this.backScroll.width - this.buyButton.getContent().width - this.backShopItem.getContent().height * 0.1,this.backShopItem.getContent().height - this.buyButton.getContent().height + this.backShopItem.getContent().position.y);//this.backBars.getContent().height - 20 - this.continueButton.height / 2 - 10);
 		this.buyButton.clickCallback = this.buyButton.mouseDownCallback = function(){
-			
+			// alert(self.model.coast);
+			if(self.model.coast > APP.appModel.totalPoints){
+				return;
+			}
+			APP.appModel.totalPoints -= self.model.coast;
+			self.screen.updateCoins();
 			var targetArray = [];//self.screen.shopList;
 			if(self.type === 'horn'){
 				APP.currentHornModel = self.model;

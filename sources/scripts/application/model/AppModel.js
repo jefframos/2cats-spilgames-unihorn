@@ -24,213 +24,250 @@ var AppModel = Class.extend({
 		
 		this.playerModels = [];
 
-		this.clothModels = [
-			new ClothModel(
-				{
-					cover:'uni_corpo.png',
-					source:'uni_corpo.png',
-					label:'Speed'
-				},
-				{
-					id:1000,
-					sizePercent: 0,
-					demage: 0,
-					fireAcumMax:0,
-					extraCoins:0,
-					fireSpeed:3,
-					enabled: true,
-					coast: 5000
-				}
-			),
-				new ClothModel(
-				{
-					cover:'uni_corpo.png',
-					source:'uni_corpo.png',
-					label:'+Coins'
-				},
-				{
-					id:1001,
-					sizePercent: 0,
-					demage: 0,
-					fireAcumMax:0,
-					extraCoins:2,
-					fireSpeed:0,
-					enabled: true,
-					coast: 5000
-				}
-			),
-				new ClothModel(
-				{
-					cover:'uni_corpo.png',
-					source:'uni_corpo.png',
-					label:'Size'
-				},
-				{
-					id:1002,
-					sizePercent: 0.03,
-					demage: 0,
-					fireAcumMax:0,
-					extraCoins:0,
-					fireSpeed:0,
-					enabled: true,
-					coast: 5000
-				}
-			),
-				new ClothModel(
-				{
-					cover:'uni_corpo.png',
-					source:'uni_corpo.png',
-					label:'Demage'
-				},
-				{
-					id:1003,
-					sizePercent: 0,
-					demage: 3,
-					fireAcumMax:0,
-					extraCoins:0,
-					fireSpeed:0,
-					enabled: true,
-					coast: 5000
-				}
-			),
-				new ClothModel(
-				{
-					cover:'uni_corpo.png',
-					source:'uni_corpo.png',
-					label:'Freq.'
-				},
-				{
-					id:1004,
-					sizePercent: 0,
-					demage: 0,
-					fireAcumMax:10,
-					extraCoins:0,
-					fireSpeed:0,
-					enabled: true,
-					coast: 5000
-				}
-			),
-				new ClothModel(
-				{
-					cover:'uni_corpo.png',
-					source:'uni_corpo.png',
-					label:'All Stats'
-				},
-				{
-					id:1005,
-					sizePercent: 0.03,
-					demage: 3,
-					fireAcumMax:10,
-					extraCoins:5,
-					fireSpeed:3,
-					enabled: true,
-					coast: 5000
-				}
-			)
-			];
-		this.hornModels = [
-			new HornModel(
-				{
-					cover:'uni_horn1.png',
-					source:'uni_horn1.png',
-					bulletSource:'bullet.png',
-					label:'Sinoid'
-				},
-				{
-					size: 1,
-					demage: 1,
-					fireAcumMax:20,
-					hasMultiple:1,
-					hasBounce:false,
-					// piercing:false,
-					sinoid:0.5,
-					enabled: true,
-					coast: 5000,
-					id:0
-				}
-			),
-				new HornModel(
-				{
-					cover:'uni_horn1.png',
-					source:'uni_horn1.png',
-					bulletSource:'bullet.png',
-					label:'Piercing'
-				},
-				{
-					size: 1,
-					demage: 1,
-					fireAcumMax:20,
-					hasMultiple:1,
-					hasBounce:false,
-					piercing:true,
-					sinoid:0,
-					enabled: false,
-					coast: 5000,
-					id:1
-				}
-			),
-				new HornModel(
-				{
-					cover:'uni_horn1.png',
-					source:'uni_horn1.png',
-					bulletSource:'bullet.png',
-					label:'Bounce'
-				},
-				{
-					size: 1,
-					demage: 1,
-					fireAcumMax:20,
-					hasMultiple:1,
-					hasBounce:true,
-					// piercing:false,
-					sinoid:0,
-					enabled: false,
-					coast: 5000,
-					id:2
-				}
-			),
-				new HornModel(
-				{
-					cover:'uni_horn1.png',
-					source:'uni_horn1.png',
-					bulletSource:'bullet.png',
-					label:'x3'
-				},
-				{
-					size: 1,
-					demage: 1,
-					fireAcumMax:20,
-					hasMultiple:3,
-					hasBounce:false,
-					// piercing:false,
-					sinoid:0,
-					enabled: false,
-					coast: 5000,
-					id:3
-				}
-			),
-				new HornModel(
-				{
-					cover:'uni_horn1.png',
-					source:'uni_horn1.png',
-					bulletSource:'bullet.png',
-					label:'ALL STATS'
-				},
-				{
-					size: 1,
-					demage: 1,
-					fireAcumMax:20,
-					hasMultiple:3,
-					hasBounce:true,
-					piercing:true,
-					sinoid:0.5,
-					enabled: false,
-					coast: 5000,
-					id:4
-				}
-			),
-			];
+		this.clothModels = [];
+		this.clothModels.push(new ClothModel(
+			{
+				cover:'uni_corpo.png',
+				source:'uni_corpo.png',
+				label:'Normal'
+			},
+			{
+				id:this.clothModels.length * 10,
+				sizePercent: 0,
+				demage: 0,
+				fireAcumMax:0,
+				extraCoins:0,
+				fireSpeed:0,
+				enabled: true,
+				coast: 5
+			}
+		));
+		// this.clothModels.push(new ClothModel(
+		// 	{
+		// 		cover:'uni_corpo.png',
+		// 		source:'uni_corpo.png',
+		// 		label:'Speed'
+		// 	},
+		// 	{
+		// 		id:this.clothModels.length * 10,
+		// 		sizePercent: 0,
+		// 		demage: 0,
+		// 		fireAcumMax:0,
+		// 		extraCoins:0,
+		// 		fireSpeed:3,
+		// 		enabled: false,
+		// 		coast: 5000
+		// 	}
+		// ));
+		this.clothModels.push(new ClothModel(
+			{
+				cover:'uni_corpo.png',
+				source:'uni_corpo.png',
+				label:'+Coins'
+			},
+			{
+				id:this.clothModels.length * 10,
+				sizePercent: 0,
+				demage: 0,
+				fireAcumMax:0,
+				extraCoins:2,
+				fireSpeed:0,
+				enabled: false,
+				coast: 0
+			}
+		));
+		this.clothModels.push(new ClothModel(
+			{
+				cover:'uni_corpo.png',
+				source:'uni_corpo.png',
+				label:'Size'
+			},
+			{
+				id:this.clothModels.length * 10,
+				sizePercent: 0.03,
+				demage: 0,
+				fireAcumMax:0,
+				extraCoins:0,
+				fireSpeed:0,
+				enabled: false,
+				coast: 5000
+			}
+		));
+		this.clothModels.push(new ClothModel(
+			{
+				cover:'uni_corpo.png',
+				source:'uni_corpo.png',
+				label:'Demage'
+			},
+			{
+				id:this.clothModels.length * 10,
+				sizePercent: 0,
+				demage: 3,
+				fireAcumMax:0,
+				extraCoins:0,
+				fireSpeed:0,
+				enabled: false,
+				coast: 5000
+			}
+		));
+		this.clothModels.push(new ClothModel(
+			{
+				cover:'uni_corpo.png',
+				source:'uni_corpo.png',
+				label:'Freq.'
+			},
+			{
+				id:this.clothModels.length * 10,
+				sizePercent: 0,
+				demage: 0,
+				fireAcumMax:10,
+				extraCoins:0,
+				fireSpeed:0,
+				enabled: false,
+				coast: 5000
+			}
+		));
+		this.clothModels.push(new ClothModel(
+			{
+				cover:'uni_corpo.png',
+				source:'uni_corpo.png',
+				label:'All Stats'
+			},
+			{
+				id:this.clothModels.length * 10,
+				sizePercent: 0.03,
+				demage: 3,
+				fireAcumMax:10,
+				extraCoins:5,
+				fireSpeed:3,
+				enabled: false,
+				coast: 5000
+			}
+		));
 
+		this.hornModels = [];
+		// this.hornModels.push(new HornModel(
+		// 	{
+		// 		cover:'uni_horn1.png',
+		// 		source:'uni_horn1.png',
+		// 		bulletSource:'bullet.png',
+		// 		label:'Normal'
+		// 	},
+		// 	{
+		// 		size: 1,
+		// 		demage: 1,
+		// 		fireAcumMax:25,
+		// 		hasMultiple:1,
+		// 		hasBounce:false,
+		// 		piercing:false,
+		// 		sinoid:0,
+		// 		enabled: true,
+		// 		coast: 0,
+		// 		id:this.hornModels.length + 1000
+		// 	}
+		// ));
+
+		this.hornModels.push(new HornModel(
+			{
+				cover:'uni_horn1.png',
+				source:'uni_horn1.png',
+				bulletSource:'bullet.png',
+				label:'Sinoid'
+			},
+			{
+				size: 1,
+				demage: 1,
+				fireAcumMax:25,
+				hasMultiple:1,
+				hasBounce:false,
+				fireSpeed:11,
+				// piercing:false,
+				sinoid:0.7,
+				enabled: false,
+				coast: 0,
+				id:this.hornModels.length + 1000
+			}
+		));
+		this.hornModels.push(new HornModel(
+			{
+				cover:'uni_horn1.png',
+				source:'uni_horn1.png',
+				bulletSource:'bullet.png',
+				label:'Piercing'
+			},
+			{
+				size: 1,
+				demage: 1,
+				fireAcumMax:25,
+				hasMultiple:1,
+				hasBounce:false,
+				piercing:true,
+				sinoid:0,
+				enabled: false,
+				coast: 5000,
+				id:this.hornModels.length + 1000
+			}
+		));
+		this.hornModels.push(new HornModel(
+			{
+				cover:'uni_horn1.png',
+				source:'uni_horn1.png',
+				bulletSource:'bullet.png',
+				label:'Bounce'
+			},
+			{
+				size: 1,
+				demage: 1,
+				fireAcumMax:25,
+				hasMultiple:1,
+				hasBounce:true,
+				// piercing:false,
+				sinoid:0,
+				enabled: false,
+				coast: 5000,
+				id:this.hornModels.length + 1000
+			}
+		));
+		this.hornModels.push(new HornModel(
+			{
+				cover:'uni_horn1.png',
+				source:'uni_horn1.png',
+				bulletSource:'bullet.png',
+				label:'x3'
+			},
+			{
+				size: 1,
+				demage: 1,
+				fireAcumMax:25,
+				hasMultiple:3,
+				hasBounce:false,
+				// piercing:false,
+				sinoid:0,
+				enabled: false,
+				coast: 5000,
+				id:this.hornModels.length + 1000
+			}
+		));
+		this.hornModels.push(new HornModel(
+			{
+				cover:'uni_horn1.png',
+				source:'uni_horn1.png',
+				bulletSource:'bullet.png',
+				label:'ALL STATS'
+			},
+			{
+				size: 1,
+				demage: 1,
+				fireAcumMax:25,
+				hasMultiple:3,
+				hasBounce:true,
+				piercing:true,
+				sinoid:0.5,
+				enabled: false,
+				coast: 5000,
+				id:this.hornModels.length + 1000
+			}
+		));
 
 		this.enemyModels = [
 			new EnemyModel(

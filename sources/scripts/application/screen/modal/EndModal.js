@@ -37,7 +37,7 @@ var EndModal = Class.extend({
 
 
         var thirdPart = this.backScroll.width / 3;
-        this.textScreen = new PIXI.Text('$ 5000', {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500});
+        this.textScreen = new PIXI.Text(APP.appModel.totalPoints, {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500});
         scaleConverter(this.textScreen.height, this.closeButton.getContent().height, 1, this.textScreen);
         this.textScreen.position.x = windowWidth - this.textScreen.width - 20;
         this.textScreen.position.y = 20;
@@ -79,6 +79,11 @@ var EndModal = Class.extend({
 
         // scaleConverter(this.scrollContainer.width, windowWidth, 0.8, this.scrollContainer);
     },
+    updateCoins:function(){
+        this.textScreen.setText(APP.appModel.totalPoints);
+        this.textScreen.position.x = windowWidth - this.textScreen.width - 20;
+        this.textScreen.position.y = 20;
+    },
     addShopList:function(){
 
         // this.scrollContainer;
@@ -90,7 +95,7 @@ var EndModal = Class.extend({
         this.hornList = [];
         var i = 0;
         for (i = 0; i < APP.appModel.hornModels.length; i++) {
-            tempShopItem = new ShopItem(this, 'horn');
+            tempShopItem = new ShopItem(this, 'horn', APP.appModel.hornModels, this.hornList);
             tempShopItem.build(APP.appModel.hornModels[i]);
             this.hornList.push(tempShopItem);
             this.scrollContainer.addChild(tempShopItem.getContent());
@@ -102,7 +107,7 @@ var EndModal = Class.extend({
         var lastHorn = tempShopItem.getContent().position.y + tempShopItem.getContent().height;
         this.clothList = [];
         for (i = 0; i < APP.appModel.clothModels.length; i++) {
-            tempShopItem = new ShopItem(this, 'cloth');
+            tempShopItem = new ShopItem(this, 'cloth', APP.appModel.clothModels, this.clothList);
             tempShopItem.build(APP.appModel.clothModels[i]);
             this.clothList.push(tempShopItem);
             this.scrollContainer.addChild(tempShopItem.getContent());
@@ -115,6 +120,7 @@ var EndModal = Class.extend({
         this.backScroll.height = totItens * _s + marginTopBottom * 4 + 100;
     },
     show:function(){
+        this.updateCoins();
         this.screen.addChild(this);
         this.screen.blockPause = true;
         this.scrollContainer.visible = true;

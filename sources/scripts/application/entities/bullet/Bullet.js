@@ -37,7 +37,7 @@ var Bullet = Entity.extend({
         TweenLite.from(this.getContent().scale, 0.8, {x:0, y:0, ease:'easeOutBack'});
         this.getContent().alpha = 0;
         var self = this;
-        TweenLite.to(this.getContent(), 0.1, {delay:0.2, alpha:1, onComplete:function(){
+        TweenLite.to(this.getContent(), 0.08, {delay:0.15, alpha:1, onComplete:function(){
             self.collidable = true;
         }});
     },
@@ -49,7 +49,7 @@ var Bullet = Entity.extend({
         this.sprite.anchor.y = 0.5;
 
         this.updateable = true;
-        this.collidable = true;
+        this.collidable = false;
 
         // this.getContent().alpha = 0.5;
         // TweenLite.to(this.getContent(), 0.3, {alpha:1});
@@ -104,7 +104,7 @@ var Bullet = Entity.extend({
         // }
         if(this.sinoid !== 0){
             // this.velocity.x = Math.sin(this.sin) * (Math.abs(this.startVel.x) + Math.abs(this.startVel.y)) + this.startVel.x;//this.vel;
-            this.velocity.x = Math.sin(this.sin) *5 + this.startVel.x;//this.vel;
+            this.velocity.x = Math.sin(this.sin) * 20 + this.startVel.x;//this.vel;
             this.sin += this.sinoid;
             // console.log(this.velocity);
         }
@@ -196,6 +196,9 @@ var Bullet = Entity.extend({
                         this.hasCollideEntity.push(arrayCollide[i]);
                         arrayCollide[i].hurt(this.demage);
                     }
+                }else if(arrayCollide[i].type === 'coin'){
+                    this.preKill();
+                    arrayCollide[i].preKill();
                 }
             }
         }

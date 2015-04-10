@@ -3,7 +3,7 @@ var Enemy = Entity.extend({
     init:function(model, screen){
         this._super( true );
         this.updateable = false;
-       
+        this.screen = screen;
         this.range = windowWidth * 0.05;
         this.width = 1;
         this.height = 1;
@@ -85,6 +85,21 @@ var Enemy = Entity.extend({
         if(this.thumb.parent){
             this.thumb.parent.removeChild(this.thumb);
         }
+
+        this.screen.unihorn.killed();
+
+        var tempLAbel = new PIXI.Text('+'+(this.model.money + APP.currentClothModel.extraCoins), {font:'30px Vagron', fill:'#ffe63e', stroke:'#665c18', strokeThickness:3});
+        // scaleConverter(tempLAbel.width, windowWidth, 0.06, tempLAbel);
+        var mascadasLabel = new Particles({x:0, y:-(Math.random() * 0.2 + 0.3)}, 120,
+            tempLAbel,
+            0);
+        mascadasLabel.build();
+        mascadasLabel.setPosition(this.getPosition().x,
+            this.getPosition().y - Math.random() * 50);
+        mascadasLabel.alphadecress = 0.01;
+        // mascadasLabel.maxScale = tempLAbel.scale.x * 4;
+        this.screen.addChild(mascadasLabel);
+
         // for (var i = this.model.particles.length - 1; i >= 0; i--) {
         //     var particle = new Particles({x: Math.random() * 4 - 2, y:-(Math.random() * 2 + 1)}, 120, this.model.particles[i], Math.random() * 0.1);
         //     particle.build();

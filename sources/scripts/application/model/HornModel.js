@@ -9,7 +9,7 @@ var HornModel = Class.extend({
 		
 		this.id = statsObjec.id?statsObjec.id:0;
 		this.enabled = statsObjec.enabled?statsObjec.enabled:false;
-		this.coast = statsObjec.coast?statsObjec.coast:200;
+		this.coast = statsObjec.coast?statsObjec.coast:0;
 		this.sizePercent = statsObjec.sizePercent?statsObjec.sizePercent:1;
 		this.demage = statsObjec.demage?statsObjec.demage:1;
 		this.fireSpeed = statsObjec.fireSpeed?statsObjec.fireSpeed:10;
