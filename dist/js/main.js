@@ -1835,8 +1835,7 @@ var Application = AbstractApplication.extend({
         this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - .1 * this.pauseButton.getContent().height, 
         this.coinsLabel.position.y = .1 * this.pauseButton.getContent().height, this.HUDContainer.addChild(this.HUDback), 
         this.HUDContainer.addChild(this.pauseButton.getContent()), this.HUDContainer.addChild(this.coinsLabel), 
-        this.HUDContainer.position.y = windowHeight - this.HUDContainer.height, this.fromTween(), 
-        this.end = !1, this.startCoinMonitore = !1, this.blockPause = !1;
+        this.fromTween(), this.end = !1, this.startCoinMonitore = !1, this.blockPause = !1;
     },
     addEnemyThumb: function(enemy) {
         this.thumbContainer.addChild(enemy.thumb);

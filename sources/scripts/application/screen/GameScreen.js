@@ -255,7 +255,7 @@ var GameScreen = AbstractScreen.extend({
         this.HUDContainer.addChild(this.HUDback);
         this.HUDContainer.addChild(this.pauseButton.getContent());
         this.HUDContainer.addChild(this.coinsLabel);
-        this.HUDContainer.position.y = windowHeight - this.HUDContainer.height;
+        // this.HUDContainer.position.y = windowHeight - this.HUDContainer.height;
 
         this.fromTween();
 
