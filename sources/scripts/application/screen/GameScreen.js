@@ -176,7 +176,7 @@ var GameScreen = AbstractScreen.extend({
         // console.log(this.unihorn.sprite.height);
         var scl = scaleConverter(this.unihorn.neck.height, windowHeight, 0.3, this.unihorn);
         this.unihorn.getContent().position.y = windowHeight - this.unihorn.neck.height * scl;//this.unihorn.getContent().height;
-        this.unihorn.getContent().position.x = windowWidth / 2 - this.unihorn.head.position.x * scl;//this.unihorn.getContent().height;
+        this.unihorn.getContent().position.x = windowWidth / 2 - (this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl ;//this.unihorn.getContent().height;
         // console.log(this.unihorn.head.position.x * scl);
 
 
@@ -188,7 +188,7 @@ var GameScreen = AbstractScreen.extend({
 
         // this.hornPos = {x:this.unihorn.head.position.x * scl, y:windowHeight - (this.unihorn.head.position.y * this.unihorn.head.anchor.y) * scl};// - this.unihorn.head.position.y * scl};
         // this.hornPos = {x:(this.unihorn.getContent().position.x * this.unihorn.getContent().anchor.x) + (this.unihorn.head.position.x * this.unihorn.head.anchor.x)+ (this.unihorn.horn.position.x * this.unihorn.horn.anchor.x),
-        this.hornPos = {x:(this.unihorn.getContent().position.x)+ (this.unihorn.head.position.x * scl),//  + (this.unihorn.horn.position.x),
+        this.hornPos = {x:(this.unihorn.getContent().position.x)+ ((this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl),//  + (this.unihorn.horn.position.x),
         y:(this.unihorn.getContent().position.y)+ (this.unihorn.head.position.y * scl)};// - this.unihorn.head.position.y * scl};
         // y:windowHeight - (this.unihorn.head.position.y * this.unihorn.head.anchor.y) * scl};// - this.unihorn.head.position.y * scl};
         

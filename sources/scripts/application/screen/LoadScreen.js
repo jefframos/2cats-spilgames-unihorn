@@ -54,8 +54,8 @@ var LoadScreen = AbstractScreen.extend({
         APP.currentHornModel = APP.appModel.hornModels[0];
         APP.currentClothModel = APP.appModel.clothModels[0];
         APP.currentEnvModel = APP.appModel.envModels[0];
-        // this.screenManager.change('Game');
-        this.screenManager.change('Init');
+        this.screenManager.change('Game');
+        // this.screenManager.change('Init');
     },
     transitionIn:function()
     {

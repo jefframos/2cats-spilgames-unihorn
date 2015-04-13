@@ -70,8 +70,8 @@ var AppModel = Class.extend({
 		this.clothModels = [];
 		this.clothModels.push(new ClothModel(
 			{
-				cover:'uni_corpo_cavaleiro.png',
-				source:'uni_corpo_cavaleiro.png',
+				cover:'uni_corpo.png',
+				source:'uni_corpo.png',
 				label:'Normal'
 			},
 			{
@@ -216,6 +216,26 @@ var AppModel = Class.extend({
 		));
 		this.hornModels.push(new HornModel(
 			{
+				cover:'uni_horn2.png',
+				source:'uni_horn2.png',
+				bulletSource:'bullet.png',
+				label:'Hot Dog Bounce'
+			},
+			{
+				size: 1,
+				demage: 1,
+				fireAcumMax:25,
+				hasMultiple:1,
+				hasBounce:true,
+				// piercing:false,
+				sinoid:0,
+				enabled: false,
+				coast: getBalanceCoast(this.hornModels.length),
+				id:this.hornModels.length + 1000
+			}
+		));
+		this.hornModels.push(new HornModel(
+			{
 				cover:'uni_horn1.png',
 				source:'uni_horn1.png',
 				bulletSource:'bullet.png',
@@ -228,26 +248,6 @@ var AppModel = Class.extend({
 				hasMultiple:1,
 				hasBounce:false,
 				piercing:true,
-				sinoid:0,
-				enabled: false,
-				coast: getBalanceCoast(this.hornModels.length),
-				id:this.hornModels.length + 1000
-			}
-		));
-		this.hornModels.push(new HornModel(
-			{
-				cover:'uni_horn1.png',
-				source:'uni_horn1.png',
-				bulletSource:'bullet.png',
-				label:'Bounce'
-			},
-			{
-				size: 1,
-				demage: 1,
-				fireAcumMax:25,
-				hasMultiple:1,
-				hasBounce:true,
-				// piercing:false,
 				sinoid:0,
 				enabled: false,
 				coast: getBalanceCoast(this.hornModels.length),

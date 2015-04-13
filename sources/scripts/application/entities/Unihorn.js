@@ -9,7 +9,6 @@ var Unihorn = Entity.extend({
         this.height = 1;
 
         this.neck = new PIXI.Sprite(new PIXI.Texture.fromImage(APP.currentClothModel.imgSource));
-        this.head = new PIXI.Sprite(new PIXI.Texture.fromImage('uni_head.png'));
         this.horn = new PIXI.Sprite(new PIXI.Texture.fromImage(APP.currentHornModel.imgSource));
 
         this.felling = 1;
@@ -22,9 +21,11 @@ var Unihorn = Entity.extend({
         this.nonKillOnus = this.nonKillOnusMax;
 
         this.vecExpressions = [];
-        this.sadArray = ['uni_head.png'];
-        this.happyArray = ['uni_head.png'];
-        this.normalArray = ['uni_head.png'];
+        this.sadArray = ['uni_head2.png'];
+        this.happyArray = ['uni_head2.png'];
+        this.normalArray = ['uni_head2.png'];
+        
+        this.head = new PIXI.Sprite(new PIXI.Texture.fromImage(this.normalArray[0]));
 
         this.vecExpressions = this.normalArray;
 
@@ -76,7 +77,8 @@ var Unihorn = Entity.extend({
         this.head.addChild(this.horn);
         this.horn.anchor.x = 0.5;
         this.horn.anchor.y = 1;
-        this.horn.position.y = -75;
+        this.horn.position.y = -70;
+        this.horn.position.x = -20;
         // this.horn.position.x = -25;
     },
     update: function(){

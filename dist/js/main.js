@@ -727,11 +727,12 @@ var Application = AbstractApplication.extend({
     init: function() {
         this._super(!0), this.updateable = !1, this.range = .05 * windowWidth, this.width = 1, 
         this.height = 1, this.neck = new PIXI.Sprite(new PIXI.Texture.fromImage(APP.currentClothModel.imgSource)), 
-        this.head = new PIXI.Sprite(new PIXI.Texture.fromImage("uni_head.png")), this.horn = new PIXI.Sprite(new PIXI.Texture.fromImage(APP.currentHornModel.imgSource)), 
+        this.horn = new PIXI.Sprite(new PIXI.Texture.fromImage(APP.currentHornModel.imgSource)), 
         this.felling = 1, this.fellingMaster = 10, this.lastKillAccum = 0, this.lastKillAccumMax = 150, 
         this.lastKillCounter = 0, this.nonKillOnusMax = 200, this.nonKillOnus = this.nonKillOnusMax, 
-        this.vecExpressions = [], this.sadArray = [ "uni_head.png" ], this.happyArray = [ "uni_head.png" ], 
-        this.normalArray = [ "uni_head.png" ], this.vecExpressions = this.normalArray, this.acumChangeExpressions = 5;
+        this.vecExpressions = [], this.sadArray = [ "uni_head2.png" ], this.happyArray = [ "uni_head2.png" ], 
+        this.normalArray = [ "uni_head2.png" ], this.head = new PIXI.Sprite(new PIXI.Texture.fromImage(this.normalArray[0])), 
+        this.vecExpressions = this.normalArray, this.acumChangeExpressions = 5;
     },
     getContent: function() {
         return this.sprite;
@@ -757,7 +758,7 @@ var Application = AbstractApplication.extend({
         this.sprite.addChild(this.neck), this.neck.addChild(this.head), this.head.anchor.x = .51, 
         this.head.anchor.y = .7, this.head.position.x = 283, this.head.position.y = 205, 
         this.head.addChild(this.horn), this.horn.anchor.x = .5, this.horn.anchor.y = 1, 
-        this.horn.position.y = -75;
+        this.horn.position.y = -70, this.horn.position.x = -20;
     },
     update: function() {
         this.vecExpressions = this.fellingMaster + this.felling < 8 ? this.sadArray : this.fellingMaster + this.felling > 12 ? this.happyArray : this.normalArray, 
@@ -1183,8 +1184,8 @@ var Application = AbstractApplication.extend({
             enabled: !1,
             coast: getBalanceCoast(this.envModels.length) * getBalanceCoast(this.envModels.length)
         })), this.clothModels = [], this.clothModels.push(new ClothModel({
-            cover: "uni_corpo_cavaleiro.png",
-            source: "uni_corpo_cavaleiro.png",
+            cover: "uni_corpo.png",
+            source: "uni_corpo.png",
             label: "Normal"
         }, {
             id: 10 * this.clothModels.length,
@@ -1293,6 +1294,21 @@ var Application = AbstractApplication.extend({
             coast: getBalanceCoast(this.hornModels.length),
             id: this.hornModels.length + 1e3
         })), this.hornModels.push(new HornModel({
+            cover: "uni_horn2.png",
+            source: "uni_horn2.png",
+            bulletSource: "bullet.png",
+            label: "Hot Dog Bounce"
+        }, {
+            size: 1,
+            demage: 1,
+            fireAcumMax: 25,
+            hasMultiple: 1,
+            hasBounce: !0,
+            sinoid: 0,
+            enabled: !1,
+            coast: getBalanceCoast(this.hornModels.length),
+            id: this.hornModels.length + 1e3
+        })), this.hornModels.push(new HornModel({
             cover: "uni_horn1.png",
             source: "uni_horn1.png",
             bulletSource: "bullet.png",
@@ -1304,21 +1320,6 @@ var Application = AbstractApplication.extend({
             hasMultiple: 1,
             hasBounce: !1,
             piercing: !0,
-            sinoid: 0,
-            enabled: !1,
-            coast: getBalanceCoast(this.hornModels.length),
-            id: this.hornModels.length + 1e3
-        })), this.hornModels.push(new HornModel({
-            cover: "uni_horn1.png",
-            source: "uni_horn1.png",
-            bulletSource: "bullet.png",
-            label: "Bounce"
-        }, {
-            size: 1,
-            demage: 1,
-            fireAcumMax: 25,
-            hasMultiple: 1,
-            hasBounce: !0,
             sinoid: 0,
             enabled: !1,
             coast: getBalanceCoast(this.hornModels.length),
@@ -1805,11 +1806,11 @@ var Application = AbstractApplication.extend({
         this.addChild(this.unihorn), this.unihorn.felling = 1;
         var scl = scaleConverter(this.unihorn.neck.height, windowHeight, .3, this.unihorn);
         this.unihorn.getContent().position.y = windowHeight - this.unihorn.neck.height * scl, 
-        this.unihorn.getContent().position.x = windowWidth / 2 - this.unihorn.head.position.x * scl, 
+        this.unihorn.getContent().position.x = windowWidth / 2 - (this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl, 
         this.topD = new SimpleSprite("top_degrade.png"), this.addChild(this.topD.getContent()), 
         this.topD.getContent().width = 1.5 * windowWidth, this.topD.getContent().position.x = .25 * -windowWidth, 
         this.topD.getContent().blendModes = PIXI.blendModes.MULTIPLY, this.hornPos = {
-            x: this.unihorn.getContent().position.x + this.unihorn.head.position.x * scl,
+            x: this.unihorn.getContent().position.x + (this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl,
             y: this.unihorn.getContent().position.y + this.unihorn.head.position.y * scl
         }, this.thumbContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.thumbContainer), 
         this.back = new PIXI.Graphics(), this.back.beginFill(0), this.back.drawRect(0, 0, windowWidth, 40), 
@@ -2174,7 +2175,7 @@ var Application = AbstractApplication.extend({
     initApplication: function() {
         this.isLoaded = !0;
         APP.currentHornModel = APP.appModel.hornModels[0], APP.currentClothModel = APP.appModel.clothModels[0], 
-        APP.currentEnvModel = APP.appModel.envModels[0], this.screenManager.change("Init");
+        APP.currentEnvModel = APP.appModel.envModels[0], this.screenManager.change("Game");
     },
     transitionIn: function() {
         return this.isLoaded ? void this.build() : void this.build();
