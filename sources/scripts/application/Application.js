@@ -15,7 +15,7 @@ var Application = AbstractApplication.extend({
         this.accelGame = 1;
         this.audioController = new AudioController();
         this.appModel = new AppModel();
-        this.withAPI = true;
+        // this.withAPI = true;
         if(window.location.hash === '#withoutAPI'){
             this.withAPI = false;
         }

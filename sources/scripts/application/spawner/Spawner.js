@@ -19,8 +19,8 @@ var Spawner = Class.extend({
             var enemy = APP.appModel.getNewEnemy(null, this.screen);
             enemy.build();
             this.accum = enemy.model.toNext / (APP.accelGame);
-            if(this.accum < 80){
-                this.accum = 80;
+            if(this.accum < 70){
+                this.accum = 70;
             }
             // scaleConverter(enemy.getContent().height,windowHeight, 0.08, enemy);
             //UTILIZAR O ANGULO PARA CALCULAR A POSIÇÃO CORRETA DO TIRO

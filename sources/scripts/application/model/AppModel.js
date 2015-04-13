@@ -70,8 +70,8 @@ var AppModel = Class.extend({
 		this.clothModels = [];
 		this.clothModels.push(new ClothModel(
 			{
-				cover:'uni_corpo.png',
-				source:'uni_corpo.png',
+				cover:'uni_corpo_cavaleiro.png',
+				source:'uni_corpo_cavaleiro.png',
 				label:'Normal'
 			},
 			{
@@ -310,7 +310,7 @@ var AppModel = Class.extend({
 					behaviour:new BirdBehaviourSinoid({sinAcc:0.05}),
 					money:5,
 					hp:3,
-					resistance: 1.8
+					resistance: 1.2
 				}
 			),
 				new EnemyModel(
@@ -327,7 +327,7 @@ var AppModel = Class.extend({
 					behaviour: new BirdBehaviourSinoid({sinAcc:0.05}),
 					money:5,
 					hp:3,
-					resistance: 4.5
+					resistance: 1.5
 				}
 			),
 				new EnemyModel(
@@ -344,7 +344,7 @@ var AppModel = Class.extend({
 					behaviour: new BirdBehaviourSinoid({sinAcc:0.05}),
 					money:5,
 					hp:2,
-					resistance: 4.5,
+					resistance: 1.5,
 					subdivide:2
 				}
 			),
@@ -445,7 +445,7 @@ var AppModel = Class.extend({
 	},
 	getNewEnemy:function(player, screen){
 		this.currentHorde ++;
-		if(APP.accelGame < 3.5){
+		if(APP.accelGame < 5){
 			APP.accelGame += this.currentHorde / 800;
 		}
 		var max = this.enemyProbs.length;

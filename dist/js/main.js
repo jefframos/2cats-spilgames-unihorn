@@ -325,7 +325,7 @@ var Application = AbstractApplication.extend({
             fill: "#FFF"
         }), this.labelDebug.position.y = 20, this.labelDebug.position.x = 20, this.mute = !1, 
         this.accelGame = 1, this.audioController = new AudioController(), this.appModel = new AppModel(), 
-        this.withAPI = !0, "#withoutAPI" === window.location.hash && (this.withAPI = !1);
+        "#withoutAPI" === window.location.hash && (this.withAPI = !1);
     },
     update: function() {
         this._super(), this.withAPI && this.apiLogo && this.apiLogo.getContent().height > 1 && 0 === this.apiLogo.getContent().position.x && (scaleConverter(this.apiLogo.getContent().width, windowWidth, .5, this.apiLogo), 
@@ -1183,8 +1183,8 @@ var Application = AbstractApplication.extend({
             enabled: !1,
             coast: getBalanceCoast(this.envModels.length) * getBalanceCoast(this.envModels.length)
         })), this.clothModels = [], this.clothModels.push(new ClothModel({
-            cover: "uni_corpo.png",
-            source: "uni_corpo.png",
+            cover: "uni_corpo_cavaleiro.png",
+            source: "uni_corpo_cavaleiro.png",
             label: "Normal"
         }, {
             id: 10 * this.clothModels.length,
@@ -1368,7 +1368,7 @@ var Application = AbstractApplication.extend({
             }),
             money: 5,
             hp: 3,
-            resistance: 1.8
+            resistance: 1.2
         }), new EnemyModel({
             cover: "cloud3a.png",
             source: [ "cloud3a.png" ],
@@ -1383,7 +1383,7 @@ var Application = AbstractApplication.extend({
             }),
             money: 5,
             hp: 3,
-            resistance: 4.5
+            resistance: 1.5
         }), new EnemyModel({
             cover: "cloud3a.png",
             source: [ "cloud3a.png" ],
@@ -1398,7 +1398,7 @@ var Application = AbstractApplication.extend({
             }),
             money: 5,
             hp: 2,
-            resistance: 4.5,
+            resistance: 1.5,
             subdivide: 2
         }), new EnemyModel({
             cover: "cloud2a.png",
@@ -1451,7 +1451,7 @@ var Application = AbstractApplication.extend({
         return obs;
     },
     getNewEnemy: function(player, screen) {
-        this.currentHorde++, APP.accelGame < 3.5 && (APP.accelGame += this.currentHorde / 800);
+        this.currentHorde++, APP.accelGame < 5 && (APP.accelGame += this.currentHorde / 800);
         var max = this.enemyProbs.length;
         this.currentHorde < max && (max = this.currentHorde);
         for (var id = 99999; id > this.totalEnemy - 1; ) id = this.enemyProbs[Math.floor(max * Math.random())];
@@ -2575,7 +2575,7 @@ var Application = AbstractApplication.extend({
     update: function() {
         if (this.accum < 0) {
             var enemy = APP.appModel.getNewEnemy(null, this.screen);
-            enemy.build(), this.accum = enemy.model.toNext / APP.accelGame, this.accum < 80 && (this.accum = 80);
+            enemy.build(), this.accum = enemy.model.toNext / APP.accelGame, this.accum < 70 && (this.accum = 70);
             var part10 = .1 * windowWidth;
             enemy.setPosition(part10 + (windowWidth - 2 * part10) * Math.random(), 0), this.enemyList.push(enemy), 
             this.screen.addEnemyThumb(enemy), this.screen.layer.addChild(enemy);

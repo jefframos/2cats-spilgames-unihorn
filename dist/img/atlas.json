@@ -38,7 +38,7 @@
 },
 "UI_button_facebook_1.png":
 {
-	"frame": {"x":366,"y":2,"w":53,"h":53},
+	"frame": {"x":311,"y":2,"w":53,"h":53},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":53,"h":53},
@@ -56,7 +56,7 @@
 },
 "UI_button_help_1_over.png":
 {
-	"frame": {"x":164,"y":2,"w":29,"h":29},
+	"frame": {"x":71,"y":2,"w":29,"h":29},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":29,"h":29},
@@ -65,7 +65,7 @@
 },
 "UI_button_pause_1.png":
 {
-	"frame": {"x":133,"y":2,"w":29,"h":29},
+	"frame": {"x":40,"y":2,"w":29,"h":29},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":29,"h":29},
@@ -74,7 +74,7 @@
 },
 "UI_button_pause_1_over.png":
 {
-	"frame": {"x":40,"y":2,"w":29,"h":29},
+	"frame": {"x":133,"y":2,"w":29,"h":29},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":29,"h":29},
@@ -83,7 +83,7 @@
 },
 "UI_button_play_1.png":
 {
-	"frame": {"x":71,"y":2,"w":29,"h":29},
+	"frame": {"x":102,"y":2,"w":29,"h":29},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":29,"h":29},
@@ -92,7 +92,7 @@
 },
 "UI_button_play_1_over.png":
 {
-	"frame": {"x":102,"y":2,"w":29,"h":29},
+	"frame": {"x":164,"y":2,"w":29,"h":29},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":29,"h":29},
@@ -101,7 +101,7 @@
 },
 "UI_button_play_1_over_retina.png":
 {
-	"frame": {"x":596,"y":2,"w":58,"h":58},
+	"frame": {"x":536,"y":2,"w":58,"h":58},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":58,"h":58},
@@ -110,7 +110,7 @@
 },
 "UI_button_play_1_retina.png":
 {
-	"frame": {"x":536,"y":2,"w":58,"h":58},
+	"frame": {"x":596,"y":2,"w":58,"h":58},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":58,"h":58},
@@ -128,7 +128,7 @@
 },
 "UI_button_twitter_1.png":
 {
-	"frame": {"x":311,"y":2,"w":53,"h":53},
+	"frame": {"x":366,"y":2,"w":53,"h":53},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":53,"h":53},
@@ -137,7 +137,7 @@
 },
 "UI_modal_back_1.png":
 {
-	"frame": {"x":2,"y":385,"w":253,"h":264},
+	"frame": {"x":269,"y":385,"w":253,"h":264},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":253,"h":264},
@@ -146,7 +146,7 @@
 },
 "arcoiris_redondo.png":
 {
-	"frame": {"x":2,"y":1054,"w":921,"h":466},
+	"frame": {"x":2,"y":1333,"w":921,"h":466},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":921,"h":466},
@@ -209,7 +209,7 @@
 },
 "fundo1.png":
 {
-	"frame": {"x":634,"y":385,"w":375,"h":667},
+	"frame": {"x":379,"y":664,"w":375,"h":667},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":375,"h":667},
@@ -245,7 +245,16 @@
 },
 "uni_corpo.png":
 {
-	"frame": {"x":257,"y":385,"w":375,"h":277},
+	"frame": {"x":2,"y":664,"w":375,"h":277},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":375,"h":277},
+	"sourceSize": {"w":375,"h":277},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"uni_corpo_cavaleiro.png":
+{
+	"frame": {"x":524,"y":385,"w":375,"h":277},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":375,"h":277},
@@ -254,7 +263,7 @@
 },
 "uni_head.png":
 {
-	"frame": {"x":422,"y":201,"w":265,"h":182},
+	"frame": {"x":2,"y":385,"w":265,"h":182},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":265,"h":182},
@@ -263,7 +272,7 @@
 },
 "uni_head_2.png":
 {
-	"frame": {"x":689,"y":201,"w":265,"h":182},
+	"frame": {"x":422,"y":201,"w":265,"h":182},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":265,"h":182},
@@ -281,7 +290,7 @@
 },
 "volumeButton_off.png":
 {
-	"frame": {"x":531,"y":104,"w":103,"h":95},
+	"frame": {"x":426,"y":104,"w":103,"h":95},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":103,"h":95},
@@ -299,7 +308,7 @@
 },
 "volumeButton_on.png":
 {
-	"frame": {"x":426,"y":104,"w":103,"h":95},
+	"frame": {"x":741,"y":104,"w":103,"h":95},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":103,"h":95},
@@ -308,7 +317,7 @@
 },
 "volumeButton_on_over.png":
 {
-	"frame": {"x":741,"y":104,"w":103,"h":95},
+	"frame": {"x":531,"y":104,"w":103,"h":95},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":103,"h":95},
@@ -320,8 +329,8 @@
 	"version": "1.0",
 	"image": "atlas.png",
 	"format": "RGBA8888",
-	"size": {"w":1011,"h":1604},
+	"size": {"w":925,"h":1801},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:b92ace48c3113bc1253aa6f7afc6d878:08487135c98d5f569daffa36416b3235:cbce6b53f0f49e0bf15173c25c41f876$"
+	"smartupdate": "$TexturePacker:SmartUpdate:5f998dac250ee715da59bef44a51fc22:d06b03e60977bd0429edcf77a75ffb7f:cbce6b53f0f49e0bf15173c25c41f876$"
 }
 }
