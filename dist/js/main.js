@@ -1,4 +1,4 @@
-/*! jefframos 10-04-2015 */
+/*! jefframos 13-04-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -2706,7 +2706,7 @@ var Application = AbstractApplication.extend({
     }
 }), res = {
     x: 375,
-    y: 600
+    y: 667
 }, resizeProportional = !0, windowWidth = res.x, windowHeight = res.y, realWindowWidth = res.x, realWindowHeight = res.y, gameScale = 1.3, screenOrientation = "portait", windowWidthVar = window.innerHeight, windowHeightVar = window.innerWidth, gameView = document.getElementById("game");
 
 testMobile() || (document.body.className = ""), console.log(gameView), window.addEventListener("orientationchange", function() {
