@@ -21,10 +21,10 @@ var Unihorn = Entity.extend({
         this.nonKillOnus = this.nonKillOnusMax;
 
         this.vecExpressions = [];
-        this.sadArray = ['uni_head2.png'];
-        this.happyArray = ['uni_head2.png'];
-        this.normalArray = ['uni_head2.png'];
-        
+        this.sadArray = ['uni_head_normal.png', 'uni_head2_triste.png'];
+        this.happyArray = ['uni_head_normal.png', 'uni_head2_feliz.png'];
+        this.normalArray = ['uni_head_normal.png'];
+
         this.head = new PIXI.Sprite(new PIXI.Texture.fromImage(this.normalArray[0]));
 
         this.vecExpressions = this.normalArray;

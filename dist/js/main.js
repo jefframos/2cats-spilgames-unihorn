@@ -1,4 +1,4 @@
-/*! jefframos 13-04-2015 */
+/*! jefframos 14-04-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -730,9 +730,10 @@ var Application = AbstractApplication.extend({
         this.horn = new PIXI.Sprite(new PIXI.Texture.fromImage(APP.currentHornModel.imgSource)), 
         this.felling = 1, this.fellingMaster = 10, this.lastKillAccum = 0, this.lastKillAccumMax = 150, 
         this.lastKillCounter = 0, this.nonKillOnusMax = 200, this.nonKillOnus = this.nonKillOnusMax, 
-        this.vecExpressions = [], this.sadArray = [ "uni_head2.png" ], this.happyArray = [ "uni_head2.png" ], 
-        this.normalArray = [ "uni_head2.png" ], this.head = new PIXI.Sprite(new PIXI.Texture.fromImage(this.normalArray[0])), 
-        this.vecExpressions = this.normalArray, this.acumChangeExpressions = 5;
+        this.vecExpressions = [], this.sadArray = [ "uni_head_normal.png", "uni_head2_triste.png" ], 
+        this.happyArray = [ "uni_head_normal.png", "uni_head2_feliz.png" ], this.normalArray = [ "uni_head_normal.png" ], 
+        this.head = new PIXI.Sprite(new PIXI.Texture.fromImage(this.normalArray[0])), this.vecExpressions = this.normalArray, 
+        this.acumChangeExpressions = 5;
     },
     getContent: function() {
         return this.sprite;
