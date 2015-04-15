@@ -1,4 +1,4 @@
-/*! jefframos 14-04-2015 */
+/*! jefframos 15-04-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -901,12 +901,12 @@ var Application = AbstractApplication.extend({
 }), Bullet = Entity.extend({
     init: function(vel, timeLive, demage, particle, rotation) {
         this._super(!0), this.updateable = !1, this.deading = !1, this.range = 80, this.width = 1, 
-        this.height = 1, this.type = "bullet", this.target = "enemy", this.fireType = "physical", 
-        this.node = null, this.velocity.x = vel.x, this.velocity.y = vel.y, this.startVel = vel, 
-        this.timeLive = timeLive, this.demage = demage, this.vel = vel.x, this.defaultVelocity = 1, 
-        this.hasBounce = !1, this.piercing = !1, this.sinoid = 0, this.sin = 0, this.imgSource = "bullet.png", 
-        this.particleSource = particle ? particle : this.imgSource, this.isRotation = rotation, 
-        this.isRotation && (this.accumRot = .1 * Math.random() - .05), this.sin = 0, this.hasCollideEntity = [];
+        this.height = 1, this.type = "bullet", this.node = null, this.velocity.x = vel.x, 
+        this.velocity.y = vel.y, this.startVel = vel, this.timeLive = timeLive, this.demage = demage, 
+        this.vel = vel.x, this.defaultVelocity = 1, this.hasBounce = !1, this.piercing = !1, 
+        this.sinoid = 0, this.sin = 0, this.imgSource = "bullet.png", this.particleSource = particle ? particle : this.imgSource, 
+        this.isRotation = rotation, this.isRotation && (this.accumRot = .1 * Math.random() - .05), 
+        this.sin = 0, this.hasCollideEntity = [];
     },
     startScaleTween: function() {
         TweenLite.from(this.getContent().scale, .8, {
@@ -1198,8 +1198,8 @@ var Application = AbstractApplication.extend({
             enabled: !0,
             coast: getBalanceCoast(this.clothModels.length)
         })), this.clothModels.push(new ClothModel({
-            cover: "uni_corpo.png",
-            source: "uni_corpo.png",
+            cover: "uni_corpo_vestido.png",
+            source: "uni_corpo_vestido.png",
             label: "+Coins"
         }, {
             id: 10 * this.clothModels.length,
@@ -1211,8 +1211,8 @@ var Application = AbstractApplication.extend({
             enabled: !1,
             coast: getBalanceCoast(this.clothModels.length)
         })), this.clothModels.push(new ClothModel({
-            cover: "uni_corpo.png",
-            source: "uni_corpo.png",
+            cover: "uni_corpo_rambo.png",
+            source: "uni_corpo_rambo.png",
             label: "Size"
         }, {
             id: 10 * this.clothModels.length,
@@ -1224,8 +1224,8 @@ var Application = AbstractApplication.extend({
             enabled: !1,
             coast: getBalanceCoast(this.clothModels.length)
         })), this.clothModels.push(new ClothModel({
-            cover: "uni_corpo.png",
-            source: "uni_corpo.png",
+            cover: "uni_corpo_cowboy.png",
+            source: "uni_corpo_cowboy.png",
             label: "Demage"
         }, {
             id: 10 * this.clothModels.length,
@@ -1237,8 +1237,8 @@ var Application = AbstractApplication.extend({
             enabled: !1,
             coast: getBalanceCoast(this.clothModels.length)
         })), this.clothModels.push(new ClothModel({
-            cover: "uni_corpo.png",
-            source: "uni_corpo.png",
+            cover: "uni_corpo_super.png",
+            source: "uni_corpo_super.png",
             label: "Freq."
         }, {
             id: 10 * this.clothModels.length,
@@ -1250,15 +1250,15 @@ var Application = AbstractApplication.extend({
             enabled: !1,
             coast: getBalanceCoast(this.clothModels.length)
         })), this.clothModels.push(new ClothModel({
-            cover: "uni_corpo.png",
-            source: "uni_corpo.png",
+            cover: "uni_corpo_elvis.png",
+            source: "uni_corpo_elvis.png",
             label: "All Stats"
         }, {
             id: 10 * this.clothModels.length,
             sizePercent: .03,
-            demage: 3,
+            demage: 1,
             fireAcumMax: 10,
-            extraCoins: 5,
+            extraCoins: 2,
             fireSpeed: 3,
             enabled: !1,
             coast: getBalanceCoast(this.clothModels.length)

@@ -87,8 +87,8 @@ var AppModel = Class.extend({
 		));
 		this.clothModels.push(new ClothModel(
 			{
-				cover:'uni_corpo.png',
-				source:'uni_corpo.png',
+				cover:'uni_corpo_vestido.png',
+				source:'uni_corpo_vestido.png',
 				label:'+Coins'
 			},
 			{
@@ -104,8 +104,8 @@ var AppModel = Class.extend({
 		));
 		this.clothModels.push(new ClothModel(
 			{
-				cover:'uni_corpo.png',
-				source:'uni_corpo.png',
+				cover:'uni_corpo_rambo.png',
+				source:'uni_corpo_rambo.png',
 				label:'Size'
 			},
 			{
@@ -121,8 +121,8 @@ var AppModel = Class.extend({
 		));
 		this.clothModels.push(new ClothModel(
 			{
-				cover:'uni_corpo.png',
-				source:'uni_corpo.png',
+				cover:'uni_corpo_cowboy.png',
+				source:'uni_corpo_cowboy.png',
 				label:'Demage'
 			},
 			{
@@ -138,8 +138,8 @@ var AppModel = Class.extend({
 		));
 		this.clothModels.push(new ClothModel(
 			{
-				cover:'uni_corpo.png',
-				source:'uni_corpo.png',
+				cover:'uni_corpo_super.png',
+				source:'uni_corpo_super.png',
 				label:'Freq.'
 			},
 			{
@@ -155,16 +155,16 @@ var AppModel = Class.extend({
 		));
 		this.clothModels.push(new ClothModel(
 			{
-				cover:'uni_corpo.png',
-				source:'uni_corpo.png',
+				cover:'uni_corpo_elvis.png',
+				source:'uni_corpo_elvis.png',
 				label:'All Stats'
 			},
 			{
 				id:this.clothModels.length * 10,
 				sizePercent: 0.03,
-				demage: 3,
+				demage: 1,
 				fireAcumMax:10,
-				extraCoins:5,
+				extraCoins:2,
 				fireSpeed:3,
 				enabled: false,
 				coast: getBalanceCoast(this.clothModels.length)

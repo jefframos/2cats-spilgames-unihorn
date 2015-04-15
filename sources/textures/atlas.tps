@@ -222,7 +222,17 @@
             <filename>top_degrade.png</filename>
             <filename>back_shop_button.png</filename>
             <filename>moeda.png</filename>
-            <filename>uni_head_2.png</filename>
+            <filename>uni_corpo_bruxa.png</filename>
+            <filename>uni_corpo_cavaleiro.png</filename>
+            <filename>uni_corpo_cowboy.png</filename>
+            <filename>uni_corpo_elvis.png</filename>
+            <filename>uni_corpo_rambo.png</filename>
+            <filename>uni_corpo_vestido.png</filename>
+            <filename>uni_head_normal.png</filename>
+            <filename>uni_head2.png</filename>
+            <filename>uni_head2_feliz.png</filename>
+            <filename>uni_head2_triste.png</filename>
+            <filename>uni_corpo_super.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
