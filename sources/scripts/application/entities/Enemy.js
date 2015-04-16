@@ -24,7 +24,7 @@ var Enemy = Entity.extend({
         this.thumb.anchor.y = 0.5;
         scaleConverter(this.thumb.height, 50, 1, this.thumb);
         // this.thumb.scale.x = this.thumb.scale.y = 0.5;
-        this.thumb.position.x = windowWidth + this.thumb.width;
+        this.thumb.position.x = - this.thumb.width;
         this.sprite = new PIXI.Sprite();
 
         this.sprite.anchor.x = 0.5;

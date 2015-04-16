@@ -233,6 +233,7 @@
             <filename>uni_head2_feliz.png</filename>
             <filename>uni_head2_triste.png</filename>
             <filename>uni_corpo_super.png</filename>
+            <filename>uni_horn2.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

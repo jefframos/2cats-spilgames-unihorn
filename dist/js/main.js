@@ -1,4 +1,4 @@
-/*! jefframos 15-04-2015 */
+/*! jefframos 16-04-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -665,8 +665,8 @@ var Application = AbstractApplication.extend({
     build: function() {
         this.thumb = new PIXI.Sprite(new PIXI.Texture.fromImage(this.model.imgSource[0])), 
         this.thumb.anchor.x = .5, this.thumb.anchor.y = .5, scaleConverter(this.thumb.height, 50, 1, this.thumb), 
-        this.thumb.position.x = windowWidth + this.thumb.width, this.sprite = new PIXI.Sprite(), 
-        this.sprite.anchor.x = .5, this.sprite.anchor.y = .5, this.updateable = !0, this.collidable = !0;
+        this.thumb.position.x = -this.thumb.width, this.sprite = new PIXI.Sprite(), this.sprite.anchor.x = .5, 
+        this.sprite.anchor.y = .5, this.updateable = !0, this.collidable = !0;
         var motionIdle = new SpritesheetAnimation();
         motionIdle.build("idle", this.model.imgSource, 5, !0, null), this.spritesheet = new Spritesheet(), 
         this.spritesheet.addAnimation(motionIdle), this.spritesheet.play("idle"), this.getContent().addChild(this.spritesheet.container), 
@@ -1271,10 +1271,6 @@ var Application = AbstractApplication.extend({
             size: 1,
             demage: 1,
             fireAcumMax: 25,
-            hasMultiple: 1,
-            hasBounce: !1,
-            piercing: !1,
-            sinoid: 0,
             enabled: !0,
             coast: getBalanceCoast(this.hornModels.length),
             id: this.hornModels.length + 1e3
@@ -1287,9 +1283,6 @@ var Application = AbstractApplication.extend({
             size: 1,
             demage: 1,
             fireAcumMax: 25,
-            hasMultiple: 1,
-            hasBounce: !1,
-            fireSpeed: 10.5,
             sinoid: .7,
             enabled: !1,
             coast: getBalanceCoast(this.hornModels.length),
@@ -1303,9 +1296,6 @@ var Application = AbstractApplication.extend({
             size: 1,
             demage: 1,
             fireAcumMax: 25,
-            hasMultiple: 1,
-            hasBounce: !0,
-            sinoid: 0,
             enabled: !1,
             coast: getBalanceCoast(this.hornModels.length),
             id: this.hornModels.length + 1e3
@@ -1318,10 +1308,6 @@ var Application = AbstractApplication.extend({
             size: 1,
             demage: 1,
             fireAcumMax: 25,
-            hasMultiple: 1,
-            hasBounce: !1,
-            piercing: !0,
-            sinoid: 0,
             enabled: !1,
             coast: getBalanceCoast(this.hornModels.length),
             id: this.hornModels.length + 1e3
@@ -1333,10 +1319,7 @@ var Application = AbstractApplication.extend({
         }, {
             size: 1,
             demage: .9,
-            fireAcumMax: 30,
-            hasMultiple: 3,
-            hasBounce: !1,
-            sinoid: 0,
+            fireAcumMax: 25,
             enabled: !1,
             coast: getBalanceCoast(this.hornModels.length),
             id: this.hornModels.length + 1e3
@@ -1348,11 +1331,7 @@ var Application = AbstractApplication.extend({
         }, {
             size: 1,
             demage: .9,
-            fireAcumMax: 40,
-            hasMultiple: 3,
-            hasBounce: !0,
-            piercing: !0,
-            sinoid: .5,
+            fireAcumMax: 25,
             enabled: !1,
             coast: getBalanceCoast(this.hornModels.length),
             id: this.hornModels.length + 1e3
@@ -1363,7 +1342,7 @@ var Application = AbstractApplication.extend({
             sizePercent: .2,
             label: "Nuvem"
         }, {
-            vel: .9,
+            vel: 1,
             toNext: 100,
             behaviour: new BirdBehaviourSinoid({
                 sinAcc: .05
@@ -1378,7 +1357,7 @@ var Application = AbstractApplication.extend({
             sizePercent: .18,
             label: "Nuvem"
         }, {
-            vel: 1.1,
+            vel: 1.2,
             toNext: 80,
             behaviour: new BirdBehaviourSinoid({
                 sinAcc: .05
@@ -1393,7 +1372,7 @@ var Application = AbstractApplication.extend({
             sizePercent: .15,
             label: "Nuvem"
         }, {
-            vel: 1.2,
+            vel: 1.3,
             toNext: 110,
             behaviour: new BirdBehaviourSinoid({
                 sinAcc: .05
@@ -1409,13 +1388,13 @@ var Application = AbstractApplication.extend({
             sizePercent: .25,
             label: "Nuvem"
         }, {
-            vel: .4,
+            vel: .5,
             toNext: 180,
             behaviour: new BirdBehaviourSinoid({
                 sinAcc: .03
             }),
             money: 5,
-            hp: 8,
+            hp: 9,
             resistance: .6
         }) ], this.smallEnemyModel = new EnemyModel({
             cover: "cloud3a.png",
@@ -1453,7 +1432,7 @@ var Application = AbstractApplication.extend({
         return obs;
     },
     getNewEnemy: function(player, screen) {
-        this.currentHorde++, APP.accelGame < 5 && (APP.accelGame += this.currentHorde / 800);
+        this.currentHorde++, APP.accelGame < 5 && (APP.accelGame += this.currentHorde / 500);
         var max = this.enemyProbs.length;
         this.currentHorde < max && (max = this.currentHorde);
         for (var id = 99999; id > this.totalEnemy - 1; ) id = this.enemyProbs[Math.floor(max * Math.random())];
@@ -1750,9 +1729,11 @@ var Application = AbstractApplication.extend({
         function updateVel(touchData) {
             if (self.updateable) {
                 testMobile() && fullscreen();
-                var angle = Math.atan2(touchData.global.y - self.hornPos.y, touchData.global.x - self.hornPos.x), tempCompare = 180 * angle / Math.PI;
-                -45 > tempCompare && tempCompare > -125 && (self.mouseAngle = angle, angle = 180 * angle / Math.PI, 
-                angle += 90, angle = angle / 180 * Math.PI, self.unihorn.head.rotation = angle);
+                var angle = Math.atan2(touchData.global.y - self.hornPos.y, touchData.global.x - self.hornPos.x), tempCompare = 180 * angle / Math.PI, change = !1;
+                tempCompare > -45 && (change = !0), -125 > tempCompare && (change = !0), change && (tempCompare = touchData.global.x < windowWidth / 2 ? -125 : -45), 
+                console.log(tempCompare), -45 >= tempCompare && tempCompare >= -125 && (angle = degreesToRadians(tempCompare), 
+                self.mouseAngle = angle, angle = 180 * angle / Math.PI, angle += 90, angle = angle / 180 * Math.PI, 
+                self.unihorn.head.rotation = angle);
             }
         }
         var self = this;
@@ -1769,13 +1750,13 @@ var Application = AbstractApplication.extend({
         this.mouseAngle = 0, testMobile() || (this.hitTouch.mousemove = function(touchData) {
             updateVel(touchData);
         }, this.hitTouch.mousedown = function(mouseData) {
-            self.touchDown = !0, updateVel(mouseData);
+            self.touchDown = !0, self.fireAcum = 0, console.log("mousedown"), updateVel(mouseData);
         }, this.hitTouch.mouseup = function(mouseData) {
             self.touchDown = !1, updateVel(mouseData);
         }), this.hitTouch.touchmove = function(touchData) {
             updateVel(touchData);
         }, this.hitTouch.touchstart = function(touchData) {
-            self.touchDown = !0, updateVel(touchData);
+            self.touchDown = !0, self.fireAcum = 0, console.log("mousedown"), updateVel(touchData);
         }, this.hitTouch.touchend = function(touchData) {
             self.touchDown = !1, updateVel(touchData);
         }, this.updateable = !0, this.fireAcumMax = APP.currentHornModel.fireAcumMax - APP.currentClothModel.fireAcumMax, 
@@ -1852,7 +1833,7 @@ var Application = AbstractApplication.extend({
         this.spawner.enemyList.splice(i, 1); else if (!this.spawner.enemyList[i].onList && !this.spawner.enemyList[i].kill) {
             var tempEnemy = this.spawner.enemyList[i], thumbEnemy = this.spawner.enemyList[i].thumb, maxL = windowWidth - windowWidth * (this.badClouds.length / this.maxClouds), acc = windowWidth / this.maxClouds * this.badClouds.length, targetX = thumbEnemy.width / 4 + acc + maxL - maxL * (tempEnemy.getContent().position.y / windowHeight);
             TweenLite.to(thumbEnemy.position, .3, {
-                x: targetX
+                x: windowWidth - targetX
             });
             var center = Math.atan2(this.thumbContainer.position.y - windowHeight / 2, thumbEnemy.position.x - windowWidth / 2);
             TweenLite.to(thumbEnemy.position, .3, {

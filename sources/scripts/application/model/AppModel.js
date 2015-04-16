@@ -183,10 +183,10 @@ var AppModel = Class.extend({
 				size: 1,
 				demage: 1,
 				fireAcumMax:25,
-				hasMultiple:1,
-				hasBounce:false,
-				piercing:false,
-				sinoid:0,
+				// hasMultiple:1,
+				// hasBounce:false,
+				// piercing:false,
+				// sinoid:0,
 				enabled: true,
 				coast: getBalanceCoast(this.hornModels.length),
 				id:this.hornModels.length + 1000
@@ -204,10 +204,10 @@ var AppModel = Class.extend({
 				size: 1,
 				demage: 1,
 				fireAcumMax:25,
-				hasMultiple:1,
-				hasBounce:false,
-				fireSpeed:10.5,
-				// piercing:false,
+				// hasMultiple:1,
+				// hasBounce:false,
+				// fireSpeed:10.5,
+				// // piercing:false,
 				sinoid:0.7,
 				enabled: false,
 				coast: getBalanceCoast(this.hornModels.length),
@@ -225,10 +225,10 @@ var AppModel = Class.extend({
 				size: 1,
 				demage: 1,
 				fireAcumMax:25,
-				hasMultiple:1,
-				hasBounce:true,
-				// piercing:false,
-				sinoid:0,
+				// hasMultiple:1,
+				// hasBounce:true,
+				// // piercing:false,
+				// sinoid:0,
 				enabled: false,
 				coast: getBalanceCoast(this.hornModels.length),
 				id:this.hornModels.length + 1000
@@ -245,10 +245,10 @@ var AppModel = Class.extend({
 				size: 1,
 				demage: 1,
 				fireAcumMax:25,
-				hasMultiple:1,
-				hasBounce:false,
-				piercing:true,
-				sinoid:0,
+				// hasMultiple:1,
+				// hasBounce:false,
+				// piercing:true,
+				// sinoid:0,
 				enabled: false,
 				coast: getBalanceCoast(this.hornModels.length),
 				id:this.hornModels.length + 1000
@@ -264,11 +264,11 @@ var AppModel = Class.extend({
 			{
 				size: 1,
 				demage: 0.9,
-				fireAcumMax:30,
-				hasMultiple:3,
-				hasBounce:false,
-				// piercing:false,
-				sinoid:0,
+				fireAcumMax:25,
+				// hasMultiple:3,
+				// hasBounce:false,
+				// // piercing:false,
+				// sinoid:0,
 				enabled: false,
 				coast: getBalanceCoast(this.hornModels.length),
 				id:this.hornModels.length + 1000
@@ -284,11 +284,11 @@ var AppModel = Class.extend({
 			{
 				size: 1,
 				demage: 0.9,
-				fireAcumMax:40,
-				hasMultiple:3,
-				hasBounce:true,
-				piercing:true,
-				sinoid:0.5,
+				fireAcumMax:25,
+				// hasMultiple:3,
+				// hasBounce:true,
+				// piercing:true,
+				// sinoid:0.5,
 				enabled: false,
 				coast: getBalanceCoast(this.hornModels.length),
 				id:this.hornModels.length + 1000
@@ -305,7 +305,7 @@ var AppModel = Class.extend({
 					label:'Nuvem'
 				},
 				{
-					vel: 0.9,
+					vel: 1,
 					toNext: 100,
 					behaviour:new BirdBehaviourSinoid({sinAcc:0.05}),
 					money:5,
@@ -322,7 +322,7 @@ var AppModel = Class.extend({
 					label:'Nuvem'
 				},
 				{
-					vel: 1.1,
+					vel: 1.2,
 					toNext: 80,
 					behaviour: new BirdBehaviourSinoid({sinAcc:0.05}),
 					money:5,
@@ -339,7 +339,7 @@ var AppModel = Class.extend({
 					label:'Nuvem'
 				},
 				{
-					vel: 1.2,
+					vel: 1.3,
 					toNext: 110,
 					behaviour: new BirdBehaviourSinoid({sinAcc:0.05}),
 					money:5,
@@ -357,11 +357,11 @@ var AppModel = Class.extend({
 					label:'Nuvem'
 				},
 				{
-					vel: 0.4,
+					vel: 0.5,
 					toNext: 180,
 					behaviour: new BirdBehaviourSinoid({sinAcc:0.03}),
 					money:5,
-					hp:8,
+					hp:9,
 					resistance: 0.6
 				}
 			),
@@ -446,7 +446,7 @@ var AppModel = Class.extend({
 	getNewEnemy:function(player, screen){
 		this.currentHorde ++;
 		if(APP.accelGame < 5){
-			APP.accelGame += this.currentHorde / 800;
+			APP.accelGame += this.currentHorde / 500;
 		}
 		var max = this.enemyProbs.length;
 

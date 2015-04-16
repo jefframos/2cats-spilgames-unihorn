@@ -72,9 +72,24 @@ var GameScreen = AbstractScreen.extend({
             var angle = Math.atan2(touchData.global.y - self.hornPos.y, (touchData.global.x) - self.hornPos.x);
             
             var tempCompare = angle* 180 / Math.PI;
-            // console.log(tempCompare);
-            if((tempCompare) < -45 && (tempCompare) > -125)
+            var change = false;
+            if(tempCompare > -45){
+                change = true;
+            }
+            if(tempCompare < -125){
+                change = true;
+            }
+            if(change){
+                if(touchData.global.x < windowWidth / 2){
+                    tempCompare = -125;
+                }else{
+                    tempCompare = -45;
+                }
+            }
+            console.log(tempCompare);
+            if((tempCompare) <= -45 && (tempCompare) >= -125)
             {
+                angle = degreesToRadians(tempCompare);
                 self.mouseAngle = angle;
 
                 angle = angle * 180 / Math.PI;
@@ -92,6 +107,8 @@ var GameScreen = AbstractScreen.extend({
             };
             this.hitTouch.mousedown = function(mouseData){
                 self.touchDown = true;
+                self.fireAcum = 0;
+                console.log('mousedown');
                 updateVel(mouseData);
             };
 
@@ -105,6 +122,8 @@ var GameScreen = AbstractScreen.extend({
         };
         this.hitTouch.touchstart = function(touchData){
             self.touchDown = true;
+            self.fireAcum = 0;
+            console.log('mousedown');
             updateVel(touchData);
         };
         this.hitTouch.touchend = function(touchData){
@@ -288,7 +307,7 @@ var GameScreen = AbstractScreen.extend({
                 var acc = windowWidth / this.maxClouds * this.badClouds.length;
                 // console.log(maxL, acc);
                 var targetX = thumbEnemy.width / 4 + acc + (maxL) - ((maxL) * (tempEnemy.getContent().position.y / windowHeight));
-                TweenLite.to(thumbEnemy.position, 0.3, {x : targetX});
+                TweenLite.to(thumbEnemy.position, 0.3, {x : windowWidth - targetX});
                 //fazer aqui a curvatura
                 var center = Math.atan2(this.thumbContainer.position.y - windowHeight / 2, thumbEnemy.position.x - windowWidth / 2);
                 TweenLite.to(thumbEnemy.position, 0.3, {y : Math.sin(center) * windowHeight / 2 + windowHeight / 2 + thumbEnemy.height / 2});
