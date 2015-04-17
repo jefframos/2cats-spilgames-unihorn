@@ -305,11 +305,11 @@ var AppModel = Class.extend({
 					label:'Nuvem'
 				},
 				{
-					vel: 1,
-					toNext: 100,
+					vel: 2,
+					toNext: 75,
 					behaviour:new BirdBehaviourSinoid({sinAcc:0.05}),
 					money:5,
-					hp:3,
+					hp:1,
 					resistance: 1.2
 				}
 			),
@@ -322,11 +322,11 @@ var AppModel = Class.extend({
 					label:'Nuvem'
 				},
 				{
-					vel: 1.2,
-					toNext: 80,
+					vel: 1.5,
+					toNext: 55,
 					behaviour: new BirdBehaviourSinoid({sinAcc:0.05}),
 					money:5,
-					hp:3,
+					hp:2,
 					resistance: 1.5
 				}
 			),
@@ -339,8 +339,8 @@ var AppModel = Class.extend({
 					label:'Nuvem'
 				},
 				{
-					vel: 1.3,
-					toNext: 110,
+					vel: 1.8,
+					toNext: 85,
 					behaviour: new BirdBehaviourSinoid({sinAcc:0.05}),
 					money:5,
 					hp:2,
@@ -357,11 +357,11 @@ var AppModel = Class.extend({
 					label:'Nuvem'
 				},
 				{
-					vel: 0.5,
-					toNext: 180,
+					vel: 1,
+					toNext: 155,
 					behaviour: new BirdBehaviourSinoid({sinAcc:0.03}),
 					money:5,
-					hp:9,
+					hp:3,
 					resistance: 0.6
 				}
 			),

@@ -1,4 +1,4 @@
-/*! jefframos 16-04-2015 */
+/*! jefframos 17-04-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -658,7 +658,7 @@ var Application = AbstractApplication.extend({
     init: function(model, screen) {
         this._super(!0), this.updateable = !1, this.screen = screen, this.range = .05 * windowWidth, 
         this.width = 1, this.height = 1, this.type = "enemy", this.model = model, this.velocity.y = this.model.vel * (APP.accelGame / 2), 
-        this.vel = this.model.vel, this.hp = this.model.hp + Math.floor(APP.accelGame - 1), 
+        this.vel = this.model.vel, this.hp = this.model.hp > 1 ? this.model.hp + Math.floor(APP.accelGame - 1) : 1, 
         console.log(this.model.hp, APP.accelGame), this.behaviour = this.model.behaviour ? this.model.behaviour.clone() : null, 
         this.resistance = this.model.resistance, this.subdivide = this.model.subdivide;
     },
@@ -1342,13 +1342,13 @@ var Application = AbstractApplication.extend({
             sizePercent: .2,
             label: "Nuvem"
         }, {
-            vel: 1,
-            toNext: 100,
+            vel: 2,
+            toNext: 75,
             behaviour: new BirdBehaviourSinoid({
                 sinAcc: .05
             }),
             money: 5,
-            hp: 3,
+            hp: 1,
             resistance: 1.2
         }), new EnemyModel({
             cover: "cloud3a.png",
@@ -1357,13 +1357,13 @@ var Application = AbstractApplication.extend({
             sizePercent: .18,
             label: "Nuvem"
         }, {
-            vel: 1.2,
-            toNext: 80,
+            vel: 1.5,
+            toNext: 55,
             behaviour: new BirdBehaviourSinoid({
                 sinAcc: .05
             }),
             money: 5,
-            hp: 3,
+            hp: 2,
             resistance: 1.5
         }), new EnemyModel({
             cover: "cloud3a.png",
@@ -1372,8 +1372,8 @@ var Application = AbstractApplication.extend({
             sizePercent: .15,
             label: "Nuvem"
         }, {
-            vel: 1.3,
-            toNext: 110,
+            vel: 1.8,
+            toNext: 85,
             behaviour: new BirdBehaviourSinoid({
                 sinAcc: .05
             }),
@@ -1388,13 +1388,13 @@ var Application = AbstractApplication.extend({
             sizePercent: .25,
             label: "Nuvem"
         }, {
-            vel: .5,
-            toNext: 180,
+            vel: 1,
+            toNext: 155,
             behaviour: new BirdBehaviourSinoid({
                 sinAcc: .03
             }),
             money: 5,
-            hp: 9,
+            hp: 3,
             resistance: .6
         }) ], this.smallEnemyModel = new EnemyModel({
             cover: "cloud3a.png",
@@ -1731,7 +1731,7 @@ var Application = AbstractApplication.extend({
                 testMobile() && fullscreen();
                 var angle = Math.atan2(touchData.global.y - self.hornPos.y, touchData.global.x - self.hornPos.x), tempCompare = 180 * angle / Math.PI, change = !1;
                 tempCompare > -45 && (change = !0), -125 > tempCompare && (change = !0), change && (tempCompare = touchData.global.x < windowWidth / 2 ? -125 : -45), 
-                console.log(tempCompare), -45 >= tempCompare && tempCompare >= -125 && (angle = degreesToRadians(tempCompare), 
+                -45 >= tempCompare && tempCompare >= -125 && (angle = degreesToRadians(tempCompare), 
                 self.mouseAngle = angle, angle = 180 * angle / Math.PI, angle += 90, angle = angle / 180 * Math.PI, 
                 self.unihorn.head.rotation = angle);
             }
@@ -2557,7 +2557,7 @@ var Application = AbstractApplication.extend({
     update: function() {
         if (this.accum < 0) {
             var enemy = APP.appModel.getNewEnemy(null, this.screen);
-            enemy.build(), this.accum = enemy.model.toNext / APP.accelGame, this.accum < 70 && (this.accum = 70);
+            enemy.build(), this.accum = enemy.model.toNext / APP.accelGame, this.accum < 50 && (this.accum = 50);
             var part10 = .1 * windowWidth;
             enemy.setPosition(part10 + (windowWidth - 2 * part10) * Math.random(), 0), this.enemyList.push(enemy), 
             this.screen.addEnemyThumb(enemy), this.screen.layer.addChild(enemy);

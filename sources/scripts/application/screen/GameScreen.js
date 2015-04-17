@@ -86,7 +86,7 @@ var GameScreen = AbstractScreen.extend({
                     tempCompare = -45;
                 }
             }
-            console.log(tempCompare);
+            // console.log(tempCompare);
             if((tempCompare) <= -45 && (tempCompare) >= -125)
             {
                 angle = degreesToRadians(tempCompare);

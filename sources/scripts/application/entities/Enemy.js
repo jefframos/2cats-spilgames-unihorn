@@ -11,7 +11,11 @@ var Enemy = Entity.extend({
         this.model = model;
         this.velocity.y = this.model.vel * (APP.accelGame / 2);
         this.vel = this.model.vel;
-        this.hp = this.model.hp + Math.floor(APP.accelGame - 1);
+        if(this.model.hp > 1){
+            this.hp = this.model.hp + Math.floor(APP.accelGame - 1);
+        }else{
+            this.hp = 1;
+        }
         console.log(this.model.hp,APP.accelGame);
         this.behaviour = this.model.behaviour?this.model.behaviour.clone():null;
         this.resistance = this.model.resistance;
