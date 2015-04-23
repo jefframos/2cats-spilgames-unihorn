@@ -31,7 +31,7 @@ var AppModel = Class.extend({
 		this.envModels.push(new EnvironmentModel(
 			{
 				cover:'uni_horn1.png',
-				source:'fundo1.png',
+				source:'dist/img/fundo1.png',
 				label:'Normal'
 			},
 			{

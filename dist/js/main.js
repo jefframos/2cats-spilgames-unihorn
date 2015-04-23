@@ -1,4 +1,4 @@
-/*! jefframos 17-04-2015 */
+/*! jefframos 22-04-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -1162,7 +1162,7 @@ var Application = AbstractApplication.extend({
         this.highScore = high ? high : 0, this.totalPoints = points ? points : 5e4, this.currentPoints = 5e4, 
         this.playerModels = [], this.envModels = [], this.envModels.push(new EnvironmentModel({
             cover: "uni_horn1.png",
-            source: "fundo1.png",
+            source: "dist/img/fundo1.png",
             label: "Normal"
         }, {
             id: 750 * this.envModels.length,
@@ -1789,24 +1789,16 @@ var Application = AbstractApplication.extend({
         var scl = scaleConverter(this.unihorn.neck.height, windowHeight, .3, this.unihorn);
         this.unihorn.getContent().position.y = windowHeight - this.unihorn.neck.height * scl, 
         this.unihorn.getContent().position.x = windowWidth / 2 - (this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl, 
-        this.topD = new SimpleSprite("top_degrade.png"), this.addChild(this.topD.getContent()), 
-        this.topD.getContent().width = 1.5 * windowWidth, this.topD.getContent().position.x = .25 * -windowWidth, 
-        this.topD.getContent().blendModes = PIXI.blendModes.MULTIPLY, this.hornPos = {
+        this.hornPos = {
             x: this.unihorn.getContent().position.x + (this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl,
             y: this.unihorn.getContent().position.y + this.unihorn.head.position.y * scl
-        }, this.thumbContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.thumbContainer), 
-        this.back = new PIXI.Graphics(), this.back.beginFill(0), this.back.drawRect(0, 0, windowWidth, 40), 
-        this.thumbContainer.position.y = .05 * windowHeight, this.badClouds = [], this.maxClouds = 10, 
-        this.arcoiris = new SimpleSprite("arcoiris_redondo.png"), this.thumbContainer.addChild(this.arcoiris.getContent()), 
-        scaleConverter(this.arcoiris.getContent().width, windowWidth, 1.4, this.arcoiris), 
-        this.arcoiris.getContent().position.x = .2 * -windowWidth, this.pauseModal = new PauseModal(this), 
-        this.endModal = new EndModal(this), this.pauseButton = new DefaultButton("UI_button_pause_1.png", "UI_button_pause_1_over.png", "UI_button_pause_1_over.png"), 
+        }, this.pauseModal = new PauseModal(this), this.endModal = new EndModal(this), this.pauseButton = new DefaultButton("UI_button_pause_1.png", "UI_button_pause_1_over.png", "UI_button_pause_1_over.png"), 
         this.pauseButton.build(), scaleConverter(this.pauseButton.getContent().width, windowWidth, .1, this.pauseButton), 
         this.pauseButton.clickCallback = function() {
             self.updateable && self.pauseModal.show();
         }, this.HUDContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.HUDContainer), 
-        this.HUDback = new PIXI.Graphics(), this.HUDback.beginFill(0), this.HUDback.drawRect(0, 0, windowWidth, 1.2 * this.pauseButton.getContent().height), 
-        this.HUDback.alpha = .5, this.pauseButton.getContent().position.x = .1 * this.pauseButton.getContent().height, 
+        this.HUDback = new SimpleSprite("barra.png"), scaleConverter(this.HUDback.getContent().width, windowWidth, 1, this.HUDback), 
+        this.pauseButton.getContent().position.x = .1 * this.pauseButton.getContent().height, 
         this.pauseButton.getContent().position.y = .1 * this.pauseButton.getContent().height, 
         this.coinsLabel = new PIXI.Text(APP.appModel.totalPoints, {
             align: "center",
@@ -1816,9 +1808,15 @@ var Application = AbstractApplication.extend({
             wordWrapWidth: 500
         }), scaleConverter(this.coinsLabel.height, this.pauseButton.getContent().height, 1, this.coinsLabel), 
         this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - .1 * this.pauseButton.getContent().height, 
-        this.coinsLabel.position.y = .1 * this.pauseButton.getContent().height, this.HUDContainer.addChild(this.HUDback), 
+        this.coinsLabel.position.y = .1 * this.pauseButton.getContent().height, this.HUDContainer.addChild(this.HUDback.getContent()), 
         this.HUDContainer.addChild(this.pauseButton.getContent()), this.HUDContainer.addChild(this.coinsLabel), 
-        this.fromTween(), this.end = !1, this.startCoinMonitore = !1, this.blockPause = !1;
+        this.thumbContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.thumbContainer), 
+        this.back = new PIXI.Graphics(), this.back.beginFill(0), this.back.drawRect(0, 0, windowWidth, 40), 
+        this.thumbContainer.position.y = this.HUDContainer.height, this.badClouds = [], 
+        this.maxClouds = 10, this.arcoiris = new SimpleSprite("arcoiris_redondo.png"), this.thumbContainer.addChild(this.arcoiris.getContent()), 
+        scaleConverter(this.arcoiris.getContent().width, windowWidth, 1.4, this.arcoiris), 
+        this.arcoiris.getContent().position.x = .2 * -windowWidth, this.fromTween(), this.end = !1, 
+        this.startCoinMonitore = !1, this.blockPause = !1;
     },
     addEnemyThumb: function(enemy) {
         this.thumbContainer.addChild(enemy.thumb);
@@ -2123,7 +2121,7 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        var assetsToLoader = [ "dist/img/atlas.json" ];
+        var assetsToLoader = [ "dist/img/atlas.json", "dist/img/fundo1.png" ];
         assetsToLoader.length > 0 && !this.isLoaded ? (this.loader = new PIXI.AssetLoader(assetsToLoader), 
         this.initLoad()) : this.onAssetsLoaded();
     },

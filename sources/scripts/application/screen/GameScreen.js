@@ -199,11 +199,11 @@ var GameScreen = AbstractScreen.extend({
         // console.log(this.unihorn.head.position.x * scl);
 
 
-        this.topD = new SimpleSprite('top_degrade.png');
-        this.addChild(this.topD.getContent());
-        this.topD.getContent().width = windowWidth * 1.5;
-        this.topD.getContent().position.x = -windowWidth * 0.25;
-        this.topD.getContent().blendModes = PIXI.blendModes.MULTIPLY;
+        // this.topD = new SimpleSprite('top_degrade.png');
+        // this.addChild(this.topD.getContent());
+        // this.topD.getContent().width = windowWidth * 1.5;
+        // this.topD.getContent().position.x = -windowWidth * 0.25;
+        // this.topD.getContent().blendModes = PIXI.blendModes.MULTIPLY;
 
         // this.hornPos = {x:this.unihorn.head.position.x * scl, y:windowHeight - (this.unihorn.head.position.y * this.unihorn.head.anchor.y) * scl};// - this.unihorn.head.position.y * scl};
         // this.hornPos = {x:(this.unihorn.getContent().position.x * this.unihorn.getContent().anchor.x) + (this.unihorn.head.position.x * this.unihorn.head.anchor.x)+ (this.unihorn.horn.position.x * this.unihorn.horn.anchor.x),
@@ -216,21 +216,7 @@ var GameScreen = AbstractScreen.extend({
         // test.drawRect(this.hornPos.x - 5,this.hornPos.y - 5,10, 10);
         // this.addChild(test);
 
-        this.thumbContainer = new PIXI.DisplayObjectContainer();
-        this.addChild(this.thumbContainer);
-        this.back = new PIXI.Graphics();
-        this.back.beginFill(0);
-        this.back.drawRect(0,0,windowWidth, 40);
-        // this.thumbContainer.addChild(this.back);
-        this.thumbContainer.position.y = windowHeight * 0.05;
-        this.badClouds = [];
-        this.maxClouds = 10;
-
-        this.arcoiris = new SimpleSprite('arcoiris_redondo.png');
-        this.thumbContainer.addChild(this.arcoiris.getContent());
-        scaleConverter(this.arcoiris.getContent().width, windowWidth, 1.4, this.arcoiris);
-        this.arcoiris.getContent().position.x = -windowWidth * 0.2;
-        // this.arcoiris.getContent().position.y = windowHeight / 2 - this.arcoiris.getContent().height / 2;
+        
 
         
         //MODAIS
@@ -257,10 +243,15 @@ var GameScreen = AbstractScreen.extend({
         this.HUDContainer = new PIXI.DisplayObjectContainer();
         this.addChild(this.HUDContainer);
 
-        this.HUDback = new PIXI.Graphics();
-        this.HUDback.beginFill(0x000000);
-        this.HUDback.drawRect(0,0,windowWidth, this.pauseButton.getContent().height * 1.2);
-        this.HUDback.alpha = 0.5;
+
+        // this.HUDback = new PIXI.Graphics();
+        // this.HUDback.beginFill(0x000000);
+        // this.HUDback.drawRect(0,0,windowWidth, this.pauseButton.getContent().height * 1.2);
+        // this.HUDback.alpha = 0.5;
+
+        this.HUDback = new SimpleSprite('barra.png');
+        // scaleConverter(this.HUDback.getContent().height, this.pauseButton.getContent().height, 1.3, this.HUDback);
+        scaleConverter(this.HUDback.getContent().width, windowWidth, 1, this.HUDback);
 
         this.pauseButton.getContent().position.x = this.pauseButton.getContent().height * 0.1;
         this.pauseButton.getContent().position.y = this.pauseButton.getContent().height * 0.1;
@@ -271,10 +262,27 @@ var GameScreen = AbstractScreen.extend({
         this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - this.pauseButton.getContent().height * 0.1;
         this.coinsLabel.position.y = this.pauseButton.getContent().height * 0.1;
 
-        this.HUDContainer.addChild(this.HUDback);
+        this.HUDContainer.addChild(this.HUDback.getContent());
         this.HUDContainer.addChild(this.pauseButton.getContent());
         this.HUDContainer.addChild(this.coinsLabel);
         // this.HUDContainer.position.y = windowHeight - this.HUDContainer.height;
+
+        this.thumbContainer = new PIXI.DisplayObjectContainer();
+        this.addChild(this.thumbContainer);
+        this.back = new PIXI.Graphics();
+        this.back.beginFill(0);
+        this.back.drawRect(0,0,windowWidth, 40);
+        // this.thumbContainer.addChild(this.back);
+        this.thumbContainer.position.y = this.HUDContainer.height;
+        this.badClouds = [];
+        this.maxClouds = 10;
+
+        this.arcoiris = new SimpleSprite('arcoiris_redondo.png');
+        this.thumbContainer.addChild(this.arcoiris.getContent());
+        scaleConverter(this.arcoiris.getContent().width, windowWidth, 1.4, this.arcoiris);
+        this.arcoiris.getContent().position.x = -windowWidth * 0.2;
+        // this.arcoiris.getContent().position.y = this.HUDContainer.height;
+
 
         this.fromTween();
 
