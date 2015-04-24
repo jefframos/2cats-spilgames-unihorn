@@ -2,6 +2,7 @@
 var EnemyModel = Class.extend({
 	init:function(graphicsObject, statsObjec){
 
+		this.thumb = graphicsObject.thumb?graphicsObject.thumb:'belga.png';
 		this.cover = graphicsObject.cover?graphicsObject.cover:'belga.png';
 		this.imgSource = graphicsObject.source?graphicsObject.source:['belga.png'];
 		this.particles = graphicsObject.particles?graphicsObject.particles:['smoke.png'];
@@ -20,6 +21,7 @@ var EnemyModel = Class.extend({
 		this.money = statsObjec.money;
 		this.resistance = statsObjec.resistance?statsObjec.resistance:0;
 		this.subdivide = statsObjec.subdivide?statsObjec.subdivide:0;
+		this.special = statsObjec.special?statsObjec.special:false;
 	},
 	serialize:function(){
 		

@@ -1,4 +1,4 @@
-/*! jefframos 22-04-2015 */
+/*! jefframos 24-04-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -660,11 +660,12 @@ var Application = AbstractApplication.extend({
         this.width = 1, this.height = 1, this.type = "enemy", this.model = model, this.velocity.y = this.model.vel * (APP.accelGame / 2), 
         this.vel = this.model.vel, this.hp = this.model.hp > 1 ? this.model.hp + Math.floor(APP.accelGame - 1) : 1, 
         console.log(this.model.hp, APP.accelGame), this.behaviour = this.model.behaviour ? this.model.behaviour.clone() : null, 
-        this.resistance = this.model.resistance, this.subdivide = this.model.subdivide;
+        this.resistance = this.model.resistance, this.subdivide = this.model.subdivide, 
+        this.special = this.model.special;
     },
     build: function() {
-        this.thumb = new PIXI.Sprite(new PIXI.Texture.fromImage(this.model.imgSource[0])), 
-        this.thumb.anchor.x = .5, this.thumb.anchor.y = .5, scaleConverter(this.thumb.height, 50, 1, this.thumb), 
+        this.thumb = new PIXI.Sprite(new PIXI.Texture.fromImage(this.model.thumb)), this.thumb.anchor.x = .5, 
+        this.thumb.anchor.y = .5, scaleConverter(this.thumb.height, 50, 1, this.thumb), 
         this.thumb.position.x = -this.thumb.width, this.sprite = new PIXI.Sprite(), this.sprite.anchor.x = .5, 
         this.sprite.anchor.y = .5, this.updateable = !0, this.collidable = !0;
         var motionIdle = new SpritesheetAnimation();
@@ -688,7 +689,7 @@ var Application = AbstractApplication.extend({
     preKill: function() {
         if (this.collidable) {
             this.onList = !0, this.thumb.parent && this.thumb.parent.removeChild(this.thumb), 
-            this.screen.unihorn.killed();
+            this.screen.unihorn.killed(), this.special && this.screen.addSpecial();
             for (var i = this.subdivide - 1; i >= 0; i--) {
                 var enemy = new Enemy(APP.appModel.smallEnemyModel, this.screen);
                 enemy.build(), enemy.setPosition(this.getPosition().x, this.getPosition().y);
@@ -1338,6 +1339,7 @@ var Application = AbstractApplication.extend({
         })), this.enemyModels = [ new EnemyModel({
             cover: "cloud1a.png",
             source: [ "cloud1a.png" ],
+            thumb: "barra_bolita_white.png",
             particles: [ "bullet.png" ],
             sizePercent: .2,
             label: "Nuvem"
@@ -1351,8 +1353,9 @@ var Application = AbstractApplication.extend({
             hp: 1,
             resistance: 1.2
         }), new EnemyModel({
-            cover: "cloud3a.png",
-            source: [ "cloud3a.png" ],
+            cover: "nuvem_blue.png",
+            source: [ "nuvem_blue.png" ],
+            thumb: "barra_bolita_blue.png",
             particles: [ "bullet.png" ],
             sizePercent: .18,
             label: "Nuvem"
@@ -1368,6 +1371,7 @@ var Application = AbstractApplication.extend({
         }), new EnemyModel({
             cover: "cloud3a.png",
             source: [ "cloud3a.png" ],
+            thumb: "barra_bolita_gray.png",
             particles: [ "bullet.png" ],
             sizePercent: .15,
             label: "Nuvem"
@@ -1384,6 +1388,7 @@ var Application = AbstractApplication.extend({
         }), new EnemyModel({
             cover: "cloud2a.png",
             source: [ "cloud2a.png" ],
+            thumb: "barra_bolita_black.png",
             particles: [ "bullet.png" ],
             sizePercent: .25,
             label: "Nuvem"
@@ -1399,6 +1404,7 @@ var Application = AbstractApplication.extend({
         }) ], this.smallEnemyModel = new EnemyModel({
             cover: "cloud3a.png",
             source: [ "cloud3a.png" ],
+            thumb: "barra_bolita_gray.png",
             particles: [ "bullet.png" ],
             sizePercent: .12,
             label: "Nuvem"
@@ -1409,10 +1415,36 @@ var Application = AbstractApplication.extend({
             money: 1,
             hp: 1,
             resistance: 4.5
+        }), this.luckyCloud = new EnemyModel({
+            cover: "nuvem_dourada.png",
+            source: [ "nuvem_dourada.png" ],
+            thumb: "barra_bolita_gold.png",
+            particles: [ "bullet.png" ],
+            sizePercent: .18,
+            label: "Nuvem"
+        }, {
+            vel: 1,
+            toNext: 80,
+            behaviour: null,
+            money: 1,
+            hp: 1,
+            resistance: 4.5,
+            special: !0
         }), this.setModel(0), this.totalPlayers = 0;
         for (var i = this.playerModels.length - 1; i >= 0; i--) this.playerModels[i].toAble <= this.totalPoints && (this.playerModels[i].able = !0, 
         this.totalPlayers++);
         this.enemyProbs = [ 0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 3 ], this.currentHorde = 0, this.totalEnemy = 4;
+    },
+    addRandonBehaviour: function() {
+        this.removeBehaviour();
+        var rnd = Math.random();
+        return .2 > rnd ? (APP.currentHornModel.fireAcumMax = 18, "SPEED HORN") : .4 > rnd ? (APP.currentHornModel.hasMultiple = 3, 
+        "MANY SHOOTS") : .6 > rnd ? (APP.currentHornModel.hasBounce = !0, "BOUNCE BALLS") : .8 > rnd ? (APP.currentHornModel.piercing = !0, 
+        "PIERCING SHOOT") : (APP.currentHornModel.sinoid = .5, "CRAZY BULLET");
+    },
+    removeBehaviour: function() {
+        APP.currentHornModel.fireAcumMax = 25, APP.currentHornModel.hasMultiple = 1, APP.currentHornModel.hasBounce = !1, 
+        APP.currentHornModel.piercing = !1, APP.currentHornModel.sinoid = 0;
     },
     setModel: function(id) {
         this.currentID = id, this.currentPlayerModel = this.playerModels[id];
@@ -1436,7 +1468,7 @@ var Application = AbstractApplication.extend({
         var max = this.enemyProbs.length;
         this.currentHorde < max && (max = this.currentHorde);
         for (var id = 99999; id > this.totalEnemy - 1; ) id = this.enemyProbs[Math.floor(max * Math.random())];
-        var enemy = new Enemy(this.enemyModels[id], screen);
+        var enemy = new Enemy(this.currentHorde % 10 === 0 ? this.luckyCloud : this.enemyModels[id], screen);
         return enemy.id = id, this.lastID = id, enemy;
     },
     ableNewBird: function(birdModel) {
@@ -1506,14 +1538,15 @@ var Application = AbstractApplication.extend({
     }
 }), EnemyModel = Class.extend({
     init: function(graphicsObject, statsObjec) {
-        this.cover = graphicsObject.cover ? graphicsObject.cover : "belga.png", this.imgSource = graphicsObject.source ? graphicsObject.source : [ "belga.png" ], 
+        this.thumb = graphicsObject.thumb ? graphicsObject.thumb : "belga.png", this.cover = graphicsObject.cover ? graphicsObject.cover : "belga.png", 
+        this.imgSource = graphicsObject.source ? graphicsObject.source : [ "belga.png" ], 
         this.particles = graphicsObject.particles ? graphicsObject.particles : [ "smoke.png" ], 
         this.egg = graphicsObject.egg ? graphicsObject.egg : [ "smoke.png" ], this.sizePercent = graphicsObject.sizePercent ? graphicsObject.sizePercent : .2, 
         this.label = graphicsObject.label ? graphicsObject.label : "", this.sizePercent = graphicsObject.sizePercent ? graphicsObject.sizePercent : .1, 
         this.demage = statsObjec.demage, this.vel = statsObjec.vel, this.hp = statsObjec.hp, 
         this.target = statsObjec.target, this.timeLive = 999, this.toNext = statsObjec.toNext ? statsObjec.toNext : 150, 
         this.behaviour = statsObjec.behaviour, this.money = statsObjec.money, this.resistance = statsObjec.resistance ? statsObjec.resistance : 0, 
-        this.subdivide = statsObjec.subdivide ? statsObjec.subdivide : 0;
+        this.subdivide = statsObjec.subdivide ? statsObjec.subdivide : 0, this.special = statsObjec.special ? statsObjec.special : !1;
     },
     serialize: function() {}
 }), EnvironmentModel = Class.extend({
@@ -1816,15 +1849,27 @@ var Application = AbstractApplication.extend({
         this.maxClouds = 10, this.arcoiris = new SimpleSprite("arcoiris_redondo.png"), this.thumbContainer.addChild(this.arcoiris.getContent()), 
         scaleConverter(this.arcoiris.getContent().width, windowWidth, 1.4, this.arcoiris), 
         this.arcoiris.getContent().position.x = .2 * -windowWidth, this.fromTween(), this.end = !1, 
-        this.startCoinMonitore = !1, this.blockPause = !1;
+        this.startCoinMonitore = !1, this.blockPause = !1, this.specAccMax = 350, this.specAcc = 0;
     },
     addEnemyThumb: function(enemy) {
         this.thumbContainer.addChild(enemy.thumb);
     },
     updateBadClouds: function() {
         for (var i = 0; i < this.badClouds.length; i++) TweenLite.to(this.badClouds[i].position, .3, {
-            x: this.badClouds[i].width / 4 + i * windowWidth / this.maxClouds
+            x: windowWidth - this.badClouds[i].width / 4 - i * windowWidth / this.maxClouds
         });
+    },
+    addSpecial: function() {
+        this.specAcc = this.specAccMax, this.specialLabel && this.specialLabel.parent && this.specialLabel.parent.removeChild(this.specialLabel);
+        var type = APP.appModel.addRandonBehaviour();
+        this.specialLabel = new PIXI.Text(type, {
+            font: "40px Vagron",
+            fill: "#ffe63e",
+            stroke: "#665c18",
+            strokeThickness: 3
+        }), this.specialLabel.position.x = windowWidth / 2 - this.specialLabel.width / 2, 
+        this.specialLabel.position.y = windowHeight / 2 - this.specialLabel.height / 2, 
+        this.addChild(this.specialLabel);
     },
     updateCloudList: function() {
         for (var hasbad = !1, i = 0; i < this.spawner.enemyList.length; i++) if (this.spawner.enemyList[i].kill) this.thumbContainer.removeChild(this.spawner.enemyList[i].thumb), 
@@ -1875,7 +1920,8 @@ var Application = AbstractApplication.extend({
                     for (var i = this.arrayCoins.length - 1; i >= 0; i--) this.arrayCoins[i].kill && this.arrayCoins.splice(i, 1);
                     this.arrayCoins.length <= 0 && this.endModal.show();
                 }
-            } else this.unihorn.update(), this.spawner.update(), this.updateCloudList();
+            } else this.unihorn.update(), this.spawner.update(), this.updateCloudList(), this.specialLabel && this.specialLabel.parent && (this.specialLabel.alpha = this.specAcc / this.specAccMax), 
+            this.specAcc > 0 ? this.specAcc-- : APP.appModel.removeBehaviour();
             this.fireAcum > 0 ? this.fireAcum-- : this.touchDown && (this.shoot(this.mouseAngle), 
             this.fireAcum = this.fireAcumMax), this.coinsLabel.setText(APP.appModel.totalPoints), 
             this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - .1 * this.pauseButton.getContent().height;

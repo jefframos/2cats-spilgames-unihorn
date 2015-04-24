@@ -290,7 +290,8 @@ var GameScreen = AbstractScreen.extend({
         this.startCoinMonitore = false;
         this.blockPause = false;
 
-        
+        this.specAccMax = 350;
+        this.specAcc = 0;
     },
     addEnemyThumb:function(enemy){
         this.thumbContainer.addChild(enemy.thumb);
@@ -298,8 +299,19 @@ var GameScreen = AbstractScreen.extend({
     updateBadClouds:function(){
         for (var i = 0; i < this.badClouds.length; i++) {
             // this.badClouds[i].position.x = i * windowWidth / this.maxClouds;
-            TweenLite.to(this.badClouds[i].position, 0.3, {x :this.badClouds[i].width / 4 +  i * windowWidth / this.maxClouds});
+            TweenLite.to(this.badClouds[i].position, 0.3, {x : windowWidth - this.badClouds[i].width / 4 -  i * windowWidth / this.maxClouds});
         }
+    },
+    addSpecial:function(){
+        this.specAcc = this.specAccMax;
+        if(this.specialLabel && this.specialLabel.parent){
+            this.specialLabel.parent.removeChild(this.specialLabel);
+        }
+        var type = APP.appModel.addRandonBehaviour();
+        this.specialLabel  = new PIXI.Text(type, {font:'40px Vagron', fill:'#ffe63e', stroke:'#665c18', strokeThickness:3});
+        this.specialLabel.position.x = windowWidth / 2 - this.specialLabel.width / 2;
+        this.specialLabel.position.y = windowHeight / 2 - this.specialLabel.height / 2;
+        this.addChild(this.specialLabel);
     },
     updateCloudList:function(){
         var hasbad = false;
@@ -374,6 +386,14 @@ var GameScreen = AbstractScreen.extend({
             this.unihorn.update();
             this.spawner.update();
             this.updateCloudList();
+            if(this.specialLabel && this.specialLabel.parent){
+                this.specialLabel.alpha = this.specAcc / this.specAccMax;
+            }
+            if(this.specAcc > 0){
+                this.specAcc --;
+            }else{
+                APP.appModel.removeBehaviour();
+            }
         }else{
             if(this.startCoinMonitore){
                 for (var i = this.arrayCoins.length - 1; i >= 0; i--) {

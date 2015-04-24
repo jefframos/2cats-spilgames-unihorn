@@ -300,6 +300,7 @@ var AppModel = Class.extend({
 				{
 					cover:'cloud1a.png',
 					source:['cloud1a.png'],
+					thumb:'barra_bolita_white.png',
 					particles:['bullet.png'],
 					sizePercent: 0.2,
 					label:'Nuvem'
@@ -315,8 +316,9 @@ var AppModel = Class.extend({
 			),
 				new EnemyModel(
 				{
-					cover:'cloud3a.png',
-					source:['cloud3a.png'],
+					cover:'nuvem_blue.png',
+					source:['nuvem_blue.png'],
+					thumb:'barra_bolita_blue.png',
 					particles:['bullet.png'],
 					sizePercent: 0.18,
 					label:'Nuvem'
@@ -334,6 +336,7 @@ var AppModel = Class.extend({
 				{
 					cover:'cloud3a.png',
 					source:['cloud3a.png'],
+					thumb:'barra_bolita_gray.png',
 					particles:['bullet.png'],
 					sizePercent: 0.15,
 					label:'Nuvem'
@@ -352,6 +355,7 @@ var AppModel = Class.extend({
 				{
 					cover:'cloud2a.png',
 					source:['cloud2a.png'],
+					thumb:'barra_bolita_black.png',
 					particles:['bullet.png'],
 					sizePercent: 0.25,
 					label:'Nuvem'
@@ -372,6 +376,7 @@ var AppModel = Class.extend({
 			{
 				cover:'cloud3a.png',
 				source:['cloud3a.png'],
+				thumb:'barra_bolita_gray.png',
 				particles:['bullet.png'],
 				sizePercent: 0.12,
 				label:'Nuvem'
@@ -383,6 +388,26 @@ var AppModel = Class.extend({
 				money:1,
 				hp:1,
 				resistance: 4.5
+			}
+		);
+
+		this.luckyCloud = new EnemyModel(
+			{
+				cover:'nuvem_dourada.png',
+				source:['nuvem_dourada.png'],
+				thumb:'barra_bolita_gold.png',
+				particles:['bullet.png'],
+				sizePercent: 0.18,
+				label:'Nuvem'
+			},
+			{
+				vel: 1,
+				toNext: 80,
+				behaviour: null,
+				money:1,
+				hp:1,
+				resistance: 4.5,
+				special: true
 			}
 		);
 
@@ -401,7 +426,37 @@ var AppModel = Class.extend({
 
 		this.totalEnemy = 4;
 	},
-	
+	addRandonBehaviour:function(){
+		this.removeBehaviour();
+		var rnd = Math.random();
+		if(rnd < 1/5){
+			APP.currentHornModel.fireAcumMax=18;
+			return 'SPEED HORN';
+		}
+		else if(rnd < 2/5){
+			APP.currentHornModel.hasMultiple=3;
+			return 'MANY SHOOTS';
+		}
+		else if(rnd < 3/5){
+			APP.currentHornModel.hasBounce=true;
+			return 'BOUNCE BALLS';
+		}
+		else if(rnd < 4/5){
+			APP.currentHornModel.piercing=true;
+			return 'PIERCING SHOOT';
+		}
+		else{
+			APP.currentHornModel.sinoid=0.5;
+			return 'CRAZY BULLET';
+		}
+	},
+	removeBehaviour:function(){
+		APP.currentHornModel.fireAcumMax=25;
+		APP.currentHornModel.hasMultiple=1;
+		APP.currentHornModel.hasBounce=false;
+		APP.currentHornModel.piercing=false;
+		APP.currentHornModel.sinoid=0;
+	},
 	setModel:function(id){
 		this.currentID = id;
 		this.currentPlayerModel = this.playerModels[id];
@@ -460,7 +515,7 @@ var AppModel = Class.extend({
 		}
 		// this.enemyModels[id].target = player;
 		// console.log(this.enemyModels);
-		var enemy = new Enemy(this.enemyModels[id], screen);
+		var enemy = new Enemy((this.currentHorde % 10 === 0)? this.luckyCloud:this.enemyModels[id], screen);
 		enemy.id = id;
 		// console.log(enemy.id);
 		this.lastID = id;

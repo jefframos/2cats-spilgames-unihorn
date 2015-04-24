@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.6.0</string>
+        <string>3.7.1</string>
         <key>fileName</key>
         <string>C:/xampp/htdocs/2cats-spilgames-unihorn/sources/textures/atlas.tps</string>
         <key>autoSDSettings</key>
@@ -211,7 +211,6 @@
             <filename>retina/UI_button_play_1_retina.png</filename>
             <filename>retina/UI_button_play_1_over_retina.png</filename>
             <filename>bullet.png</filename>
-            <filename>fundo1.png</filename>
             <filename>cloud1a.png</filename>
             <filename>cloud2a.png</filename>
             <filename>cloud3a.png</filename>
@@ -234,6 +233,7 @@
             <filename>uni_head2_triste.png</filename>
             <filename>uni_corpo_super.png</filename>
             <filename>uni_horn2.png</filename>
+            <filename>barra.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
@@ -245,5 +245,15 @@
         <uint>1</uint>
         <key>commonDivisorY</key>
         <uint>1</uint>
+        <key>packNormalMaps</key>
+        <false/>
+        <key>autodetectNormalMaps</key>
+        <true/>
+        <key>normalMapFilter</key>
+        <string></string>
+        <key>normalMapSuffix</key>
+        <string></string>
+        <key>normalMapSheetFileName</key>
+        <filename></filename>
     </struct>
 </data>

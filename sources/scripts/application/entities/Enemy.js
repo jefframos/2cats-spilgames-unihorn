@@ -20,10 +20,11 @@ var Enemy = Entity.extend({
         this.behaviour = this.model.behaviour?this.model.behaviour.clone():null;
         this.resistance = this.model.resistance;
         this.subdivide = this.model.subdivide;
+        this.special = this.model.special;
     },
     build: function(){
-
-        this.thumb = new PIXI.Sprite(new PIXI.Texture.fromImage(this.model.imgSource[0]));
+        // console.log(this.model);
+        this.thumb = new PIXI.Sprite(new PIXI.Texture.fromImage(this.model.thumb));
         this.thumb.anchor.x = 0.5;
         this.thumb.anchor.y = 0.5;
         scaleConverter(this.thumb.height, 50, 1, this.thumb);
@@ -99,6 +100,12 @@ var Enemy = Entity.extend({
 
         this.screen.unihorn.killed();
 
+        if(this.special){
+            
+
+            this.screen.addSpecial();
+
+        }
 
         for (var i = this.subdivide - 1; i >= 0; i--) {
             // console.log(APP.appModel.smallEnemyModel);
