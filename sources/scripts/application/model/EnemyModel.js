@@ -11,6 +11,7 @@ var EnemyModel = Class.extend({
 		this.label = graphicsObject.label?graphicsObject.label:'';
 		this.sizePercent = graphicsObject.sizePercent?graphicsObject.sizePercent:0.1;
 		
+		this.bounce = statsObjec.bounce?statsObjec.bounce:false;
 		this.demage = statsObjec.demage;
 		this.vel = statsObjec.vel;
 		this.hp = statsObjec.hp;
@@ -22,6 +23,8 @@ var EnemyModel = Class.extend({
 		this.resistance = statsObjec.resistance?statsObjec.resistance:0;
 		this.subdivide = statsObjec.subdivide?statsObjec.subdivide:0;
 		this.special = statsObjec.special?statsObjec.special:false;
+
+		// console.log(this.bounce);
 	},
 	serialize:function(){
 		

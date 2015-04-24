@@ -329,7 +329,8 @@ var AppModel = Class.extend({
 					behaviour: new BirdBehaviourSinoid({sinAcc:0.05}),
 					money:5,
 					hp:2,
-					resistance: 1.5
+					resistance: 1.5,
+					bounce: true
 				}
 			),
 				new EnemyModel(

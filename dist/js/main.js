@@ -956,8 +956,8 @@ var Application = AbstractApplication.extend({
     collide: function(arrayCollide) {
         if (this.collidable) for (var pass = !0, i = arrayCollide.length - 1; i >= 0; i--) if ("enemy" === arrayCollide[i].type) {
             if (this.hasCollideEntity.length > 0) for (var j = this.hasCollideEntity.length - 1; j >= 0; j--) this.hasCollideEntity[j] === arrayCollide[i] && (pass = !1);
-            pass && (this.piercing || this.preKill(), this.hasCollideEntity.push(arrayCollide[i]), 
-            arrayCollide[i].hurt(this.demage));
+            pass && (this.piercing || arrayCollide[i].model.bounce || this.preKill(), arrayCollide[i].model.bounce && (this.velocity.x *= -1), 
+            this.hasCollideEntity.push(arrayCollide[i]), arrayCollide[i].hurt(this.demage));
         } else "coin" === arrayCollide[i].type && (this.preKill(), arrayCollide[i].preKill());
     },
     preKill: function() {
@@ -1367,7 +1367,8 @@ var Application = AbstractApplication.extend({
             }),
             money: 5,
             hp: 2,
-            resistance: 1.5
+            resistance: 1.5,
+            bounce: !0
         }), new EnemyModel({
             cover: "cloud3a.png",
             source: [ "cloud3a.png" ],
@@ -1543,8 +1544,9 @@ var Application = AbstractApplication.extend({
         this.particles = graphicsObject.particles ? graphicsObject.particles : [ "smoke.png" ], 
         this.egg = graphicsObject.egg ? graphicsObject.egg : [ "smoke.png" ], this.sizePercent = graphicsObject.sizePercent ? graphicsObject.sizePercent : .2, 
         this.label = graphicsObject.label ? graphicsObject.label : "", this.sizePercent = graphicsObject.sizePercent ? graphicsObject.sizePercent : .1, 
-        this.demage = statsObjec.demage, this.vel = statsObjec.vel, this.hp = statsObjec.hp, 
-        this.target = statsObjec.target, this.timeLive = 999, this.toNext = statsObjec.toNext ? statsObjec.toNext : 150, 
+        this.bounce = statsObjec.bounce ? statsObjec.bounce : !1, this.demage = statsObjec.demage, 
+        this.vel = statsObjec.vel, this.hp = statsObjec.hp, this.target = statsObjec.target, 
+        this.timeLive = 999, this.toNext = statsObjec.toNext ? statsObjec.toNext : 150, 
         this.behaviour = statsObjec.behaviour, this.money = statsObjec.money, this.resistance = statsObjec.resistance ? statsObjec.resistance : 0, 
         this.subdivide = statsObjec.subdivide ? statsObjec.subdivide : 0, this.special = statsObjec.special ? statsObjec.special : !1;
     },

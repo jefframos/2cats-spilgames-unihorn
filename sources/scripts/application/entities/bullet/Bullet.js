@@ -188,8 +188,12 @@ var Bullet = Entity.extend({
                         }
                     }
                     if(pass){
-                        if(!this.piercing){
+                        // console.log(arrayCollide[i].bounce);
+                        if(!this.piercing && !arrayCollide[i].model.bounce){
                             this.preKill();
+                        }
+                        if(arrayCollide[i].model.bounce){
+                            this.velocity.x *= -1;
                         }
                         this.hasCollideEntity.push(arrayCollide[i]);
                         arrayCollide[i].hurt(this.demage);
