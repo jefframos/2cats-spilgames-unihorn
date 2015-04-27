@@ -720,7 +720,7 @@ var Application = AbstractApplication.extend({
             }, 120, tempLAbel, 0);
             mascadasLabel.build(), mascadasLabel.setPosition(this.getPosition().x, this.getPosition().y - 50 * Math.random()), 
             mascadasLabel.alphadecress = .01, this.screen.addChild(mascadasLabel);
-            for (var j = 4; j >= 0; j--) {
+            for (var j = 2; j >= 0; j--) {
                 var particle = new Particles({
                     x: 4 * Math.random() - 2,
                     y: -(Math.random() + .5)
@@ -769,12 +769,12 @@ var Application = AbstractApplication.extend({
         this.felling < 10 && this.lastKillCounter % 3 === 0 && this.felling++;
     },
     deaded: function() {
-        this.fellingMaster--;
+        this.fellingMaster -= 1.5;
     },
     build: function() {
         this.sprite = new PIXI.Sprite(), this.sprite.anchor.x = .5, this.sprite.anchor.y = .5, 
         this.sprite.addChild(this.neck), this.neck.addChild(this.head), this.head.anchor.x = .51, 
-        this.head.anchor.y = .7, this.head.position.x = 283, this.head.position.y = 205, 
+        this.head.anchor.y = .7, this.head.position.x = 368, this.head.position.y = 203, 
         this.head.addChild(this.horn), this.horn.anchor.x = .5, this.horn.anchor.y = 1, 
         this.horn.position.y = -70, this.horn.position.x = -20;
     },
@@ -961,7 +961,7 @@ var Application = AbstractApplication.extend({
                 y: 0
             }, 120, this.imgSource, .05 * Math.random());
             particle.maxScale = this.getContent().scale.x, particle.maxInitScale = particle.maxScale, 
-            particle.build(), particle.gravity = 0, particle.alphadecress = .08, particle.scaledecress = -.04, 
+            particle.build(), particle.gravity = 0, particle.alphadecress = .15, particle.scaledecress = -.04, 
             particle.setPosition(this.getPosition().x - (Math.random() + .1 * this.getContent().width) / 2, this.getPosition().y), 
             this.layer.addChild(particle);
         }
@@ -1211,17 +1211,9 @@ var Application = AbstractApplication.extend({
             enabled: !0,
             coast: getBalanceCoast(this.clothModels.length)
         })), this.clothModels.push(new ClothModel({
-            cover: "uni_corpo_vestido.png",
-            source: "uni_corpo_vestido.png",
+            cover: "uni_corpo_bruxa.png",
+            source: "uni_corpo_bruxa.png",
             label: "+Coins"
-        }, {
-            id: 10 * this.clothModels.length,
-            enabled: !1,
-            coast: getBalanceCoast(this.clothModels.length)
-        })), this.clothModels.push(new ClothModel({
-            cover: "uni_corpo_rambo.png",
-            source: "uni_corpo_rambo.png",
-            label: "Size"
         }, {
             id: 10 * this.clothModels.length,
             enabled: !1,
@@ -1229,15 +1221,7 @@ var Application = AbstractApplication.extend({
         })), this.clothModels.push(new ClothModel({
             cover: "uni_corpo_cowboy.png",
             source: "uni_corpo_cowboy.png",
-            label: "Demage"
-        }, {
-            id: 10 * this.clothModels.length,
-            enabled: !1,
-            coast: getBalanceCoast(this.clothModels.length)
-        })), this.clothModels.push(new ClothModel({
-            cover: "uni_corpo_super.png",
-            source: "uni_corpo_super.png",
-            label: "Freq."
+            label: "Size"
         }, {
             id: 10 * this.clothModels.length,
             enabled: !1,
@@ -1245,6 +1229,30 @@ var Application = AbstractApplication.extend({
         })), this.clothModels.push(new ClothModel({
             cover: "uni_corpo_elvis.png",
             source: "uni_corpo_elvis.png",
+            label: "Demage"
+        }, {
+            id: 10 * this.clothModels.length,
+            enabled: !1,
+            coast: getBalanceCoast(this.clothModels.length)
+        })), this.clothModels.push(new ClothModel({
+            cover: "uni_corpo_ironman.png",
+            source: "uni_corpo_ironman.png",
+            label: "Freq."
+        }, {
+            id: 10 * this.clothModels.length,
+            enabled: !1,
+            coast: getBalanceCoast(this.clothModels.length)
+        })), this.clothModels.push(new ClothModel({
+            cover: "uni_corpo_katyperry.png",
+            source: "uni_corpo_katyperry.png",
+            label: "All Stats"
+        }, {
+            id: 10 * this.clothModels.length,
+            enabled: !1,
+            coast: getBalanceCoast(this.clothModels.length)
+        })), this.clothModels.push(new ClothModel({
+            cover: "uni_corpo_super.png",
+            source: "uni_corpo_super.png",
             label: "All Stats"
         }, {
             id: 10 * this.clothModels.length,
@@ -1426,7 +1434,7 @@ var Application = AbstractApplication.extend({
     addRandonBehaviour: function() {
         this.removeBehaviour();
         var rnd = Math.random();
-        return .25 > rnd ? (APP.currentHornModel.hasMultiple = 3, "MANY SHOOTS") : .5 > rnd ? (APP.currentHornModel.hasBounce = !0, 
+        return .25 > rnd ? (APP.currentHornModel.hasMultiple = 2, "MANY SHOOTS") : .5 > rnd ? (APP.currentHornModel.hasBounce = !0, 
         "BOUNCE BALLS") : .75 > rnd ? (APP.currentHornModel.piercing = !0, "PIERCING SHOOT") : (APP.currentHornModel.sinoid = .5, 
         "CRAZY BULLET");
     },
@@ -1814,7 +1822,9 @@ var Application = AbstractApplication.extend({
         this.hornPos = {
             x: this.unihorn.getContent().position.x + (this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl,
             y: this.unihorn.getContent().position.y + this.unihorn.head.position.y * scl
-        }, this.pauseButton = new DefaultButton("UI_button_pause_1.png", "UI_button_pause_1_over.png", "UI_button_pause_1_over.png"), 
+        }, TweenLite.from(this.unihorn.getContent().position, .3, {
+            y: this.unihorn.getContent().position.y + this.unihorn.neck.height * scl
+        }), this.pauseButton = new DefaultButton("UI_button_pause_1.png", "UI_button_pause_1_over.png", "UI_button_pause_1_over.png"), 
         this.pauseButton.build(), scaleConverter(this.pauseButton.getContent().width, windowWidth, .1, this.pauseButton), 
         this.pauseButton.clickCallback = function() {
             self.updateable && self.pauseModal.show();
@@ -1837,14 +1847,19 @@ var Application = AbstractApplication.extend({
         this.star.getContent().position.y = this.coinsLabel.position.y + this.coinsLabel.height / 2 - this.star.getContent().height / 2, 
         this.HUDContainer.addChild(this.HUDback.getContent()), this.HUDContainer.addChild(this.pauseButton.getContent()), 
         this.HUDContainer.addChild(this.coinsLabel), this.HUDContainer.addChild(this.star.getContent()), 
-        this.thumbContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.thumbContainer), 
+        TweenLite.from(this.HUDContainer.position, .3, {
+            y: -50
+        }), this.thumbContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.thumbContainer), 
         this.back = new PIXI.Graphics(), this.back.beginFill(0), this.back.drawRect(0, 0, windowWidth, 40), 
         this.thumbContainer.position.y = this.HUDContainer.height, this.badClouds = [], 
         this.maxClouds = 10, this.arcoiris = new SimpleSprite("arcoiris_redondo.png"), this.thumbContainer.addChild(this.arcoiris.getContent()), 
         scaleConverter(this.arcoiris.getContent().width, windowWidth, 1.4, this.arcoiris), 
-        this.arcoiris.getContent().position.x = .2 * -windowWidth, this.fromTween(), this.end = !1, 
-        this.startCoinMonitore = !1, this.blockPause = !1, this.specAccMax = 350, this.specAcc = 0, 
-        this.pauseModal = new PauseModal(this), this.endModal = new EndModal(this);
+        this.arcoiris.getContent().position.x = .2 * -windowWidth, TweenLite.from(this.arcoiris.getContent().position, .3, {
+            delay: .2,
+            y: -50
+        }), this.fromTween(), this.end = !1, this.startCoinMonitore = !1, this.blockPause = !1, 
+        this.specAccMax = 350, this.specAcc = 0, this.pauseModal = new PauseModal(this), 
+        this.endModal = new EndModal(this);
     },
     addEnemyThumb: function(enemy) {
         this.thumbContainer.addChild(enemy.thumb);
@@ -1926,7 +1941,7 @@ var Application = AbstractApplication.extend({
     shoot: function(angle) {
         if (!this.blockPause) {
             var timeLive = 100, vel = APP.currentHornModel.fireSpeed + APP.currentClothModel.fireSpeed, angleOpen = .3, totalFires = APP.currentHornModel.hasMultiple;
-            this.unihorn.shoot();
+            this.unihorn.shoot(), console.log(totalFires);
             for (var i = 0; totalFires > i; i++) {
                 var tempAngle = angle + angleOpen * (i - totalFires / 2);
                 1 === totalFires && (tempAngle = angle);
@@ -2196,8 +2211,18 @@ var Application = AbstractApplication.extend({
     },
     initApplication: function() {
         this.isLoaded = !0;
+        var self = this;
         APP.currentHornModel = APP.appModel.hornModels[0], APP.currentClothModel = APP.appModel.clothModels[0], 
-        APP.currentEnvModel = APP.appModel.envModels[0], this.screenManager.change("Game");
+        APP.currentEnvModel = APP.appModel.envModels[0], this.playButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
+        this.playButton.build(), this.playButton.addLabel(new PIXI.Text("PLAY", {
+            font: "50px Vagron",
+            fill: "#FFFFFF"
+        }), 45, 2), scaleConverter(this.playButton.getContent().width, windowWidth, .4, this.playButton), 
+        this.playButton.setPosition(windowWidth / 2 - this.playButton.getContent().width / 2, windowHeight - 2.5 * this.playButton.getContent().height), 
+        this.addChild(this.playButton), this.playButton.clickCallback = function() {
+            possibleFullscreen() && !isfull && testMobile() && fullscreen(), self.updateable = !1, 
+            self.screenManager.change("Game");
+        };
     },
     transitionIn: function() {
         return this.isLoaded ? void this.build() : void this.build();
@@ -2261,7 +2286,7 @@ var Application = AbstractApplication.extend({
             });
         }, this.barraTop = new SimpleSprite("barra.png"), this.topHUD.addChild(this.barraTop.getContent()), 
         this.topHUD.addChild(this.closeButton.getContent()), scaleConverter(this.closeButton.getContent().width, windowWidth, .1, this.closeButton), 
-        this.closeButton.getContent().position.x = .1 * this.closeButton.getContent().height, 
+        this.closeButton.getContent().position.x = this.topHUD.width - this.closeButton.getContent().width - .1 * this.closeButton.getContent().height, 
         this.closeButton.getContent().position.y = .1 * this.closeButton.getContent().height;
         this.backScroll.width / 3;
         this.textScreen = new PIXI.Text(APP.appModel.totalPoints, {
@@ -2308,8 +2333,9 @@ var Application = AbstractApplication.extend({
         this.baseHUD.position.y = windowHeight - this.baseHUD.height;
     },
     updateCoins: function() {
-        this.textScreen.setText(APP.appModel.totalPoints), this.textScreen.position.x = this.topHUD.width - this.textScreen.width - .1 * this.closeButton.getContent().height, 
-        this.textScreen.position.y = this.closeButton.getContent().position.y;
+        this.textScreen.setText(APP.appModel.totalPoints), this.textScreen.position.x = this.topHUD.width / 2 - this.textScreen.width / 2, 
+        this.textScreen.position.y = this.closeButton.getContent().position.y, this.star.getContent().position.x = this.textScreen.position.x - 1.1 * this.star.getContent().width, 
+        this.star.getContent().position.y = this.textScreen.position.y + this.textScreen.height / 2 - this.star.getContent().height / 2;
     },
     addShopList: function() {
         var _s = 0;
@@ -2624,7 +2650,7 @@ var Application = AbstractApplication.extend({
     }
 }), Spawner = Class.extend({
     init: function(screen) {
-        this.maxAccum = 20, this.accum = this.maxAccum, this.screen = screen, this.enemyList = [];
+        this.maxAccum = 20, this.accum = 120, this.screen = screen, this.enemyList = [];
     },
     killAll: function() {
         for (var i = this.enemyList.length - 1; i >= 0; i--) this.enemyList[i].preKill();

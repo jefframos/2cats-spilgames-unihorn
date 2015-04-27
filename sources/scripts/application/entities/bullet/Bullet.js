@@ -162,7 +162,7 @@ var Bullet = Entity.extend({
             // particle.growType = -1;
             particle.build();
             particle.gravity = 0.0;
-            particle.alphadecress = 0.08;
+            particle.alphadecress = 0.15;
             particle.scaledecress = -0.04;
             particle.setPosition(this.getPosition().x - (Math.random() + this.getContent().width * 0.1) / 2,
                 this.getPosition().y);

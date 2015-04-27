@@ -164,7 +164,7 @@ var Enemy = Entity.extend({
         // mascadasLabel.maxScale = tempLAbel.scale.x * 4;
         this.screen.addChild(mascadasLabel);
 
-        for (var j = 5 - 1; j >= 0; j--) {
+        for (var j = 3 - 1; j >= 0; j--) {
             var particle = new Particles({x: Math.random() * 4 - 2, y:-(Math.random() + 0.5)}, 220, 'star_shine.png', Math.random() * 0.1);
             particle.build();
             particle.gravity = 0.2 * Math.random();

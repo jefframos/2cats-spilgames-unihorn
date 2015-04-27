@@ -87,8 +87,8 @@ var AppModel = Class.extend({
 		));
 		this.clothModels.push(new ClothModel(
 			{
-				cover:'uni_corpo_vestido.png',
-				source:'uni_corpo_vestido.png',
+				cover:'uni_corpo_bruxa.png',
+				source:'uni_corpo_bruxa.png',
 				label:'+Coins'
 			},
 			{
@@ -104,8 +104,8 @@ var AppModel = Class.extend({
 		));
 		this.clothModels.push(new ClothModel(
 			{
-				cover:'uni_corpo_rambo.png',
-				source:'uni_corpo_rambo.png',
+				cover:'uni_corpo_cowboy.png',
+				source:'uni_corpo_cowboy.png',
 				label:'Size'
 			},
 			{
@@ -121,8 +121,8 @@ var AppModel = Class.extend({
 		));
 		this.clothModels.push(new ClothModel(
 			{
-				cover:'uni_corpo_cowboy.png',
-				source:'uni_corpo_cowboy.png',
+				cover:'uni_corpo_elvis.png',
+				source:'uni_corpo_elvis.png',
 				label:'Demage'
 			},
 			{
@@ -138,8 +138,8 @@ var AppModel = Class.extend({
 		));
 		this.clothModels.push(new ClothModel(
 			{
-				cover:'uni_corpo_super.png',
-				source:'uni_corpo_super.png',
+				cover:'uni_corpo_ironman.png',
+				source:'uni_corpo_ironman.png',
 				label:'Freq.'
 			},
 			{
@@ -155,8 +155,26 @@ var AppModel = Class.extend({
 		));
 		this.clothModels.push(new ClothModel(
 			{
-				cover:'uni_corpo_elvis.png',
-				source:'uni_corpo_elvis.png',
+				cover:'uni_corpo_katyperry.png',
+				source:'uni_corpo_katyperry.png',
+				label:'All Stats'
+			},
+			{
+				id:this.clothModels.length * 10,
+				// sizePercent: 0.03,
+				// demage: 1,
+				// fireAcumMax:10,
+				// extraCoins:2,
+				// fireSpeed:3,
+				enabled: false,
+				coast: getBalanceCoast(this.clothModels.length)
+			}
+		));
+
+		this.clothModels.push(new ClothModel(
+			{
+				cover:'uni_corpo_super.png',
+				source:'uni_corpo_super.png',
 				label:'All Stats'
 			},
 			{
@@ -431,7 +449,7 @@ var AppModel = Class.extend({
 		this.removeBehaviour();
 		var rnd = Math.random();
 		if(rnd < 1/4){
-			APP.currentHornModel.hasMultiple=3;
+			APP.currentHornModel.hasMultiple=2;
 			return 'MANY SHOOTS';
 		}
 		else if(rnd < 2/4){

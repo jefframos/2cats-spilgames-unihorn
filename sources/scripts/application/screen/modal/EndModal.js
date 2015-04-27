@@ -44,7 +44,7 @@ var EndModal = Class.extend({
 
         scaleConverter(this.closeButton.getContent().width, windowWidth, 0.1, this.closeButton);
 
-        this.closeButton.getContent().position.x = this.closeButton.getContent().height * 0.1;
+        this.closeButton.getContent().position.x = this.topHUD.width - this.closeButton.getContent().width - this.closeButton.getContent().height * 0.1;
         this.closeButton.getContent().position.y = this.closeButton.getContent().height * 0.1;
 
 
@@ -153,8 +153,11 @@ var EndModal = Class.extend({
     },
     updateCoins:function(){
         this.textScreen.setText(APP.appModel.totalPoints);
-        this.textScreen.position.x = this.topHUD.width - this.textScreen.width - this.closeButton.getContent().height * 0.1;
+        this.textScreen.position.x = this.topHUD.width / 2 - this.textScreen.width / 2;// - this.closeButton.getContent().height * 0.1;
         this.textScreen.position.y = this.closeButton.getContent().position.y;
+
+        this.star.getContent().position.x = this.textScreen.position.x -this.star.getContent().width * 1.1;
+        this.star.getContent().position.y = this.textScreen.position.y + this.textScreen.height / 2 -this.star.getContent().height / 2;
     },
     addShopList:function(){
 

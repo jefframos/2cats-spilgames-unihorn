@@ -197,7 +197,7 @@ var GameScreen = AbstractScreen.extend({
         this.unihorn.getContent().position.y = windowHeight - this.unihorn.neck.height * scl;//this.unihorn.getContent().height;
         this.unihorn.getContent().position.x = windowWidth / 2 - (this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl ;//this.unihorn.getContent().height;
         // console.log(this.unihorn.head.position.x * scl);
-
+        // this.unihorn.getContent().position.y = windowHeight - this.unihorn.neck.height * scl;//this.unihorn.getContent().height;
 
         // this.topD = new SimpleSprite('top_degrade.png');
         // this.addChild(this.topD.getContent());
@@ -211,6 +211,7 @@ var GameScreen = AbstractScreen.extend({
         y:(this.unihorn.getContent().position.y)+ (this.unihorn.head.position.y * scl)};// - this.unihorn.head.position.y * scl};
         // y:windowHeight - (this.unihorn.head.position.y * this.unihorn.head.anchor.y) * scl};// - this.unihorn.head.position.y * scl};
         
+        TweenLite.from(this.unihorn.getContent().position, 0.3, {y:this.unihorn.getContent().position.y + (this.unihorn.neck.height * scl)});
         // test = new PIXI.Graphics();
         // test.beginFill(0);
         // test.drawRect(this.hornPos.x - 5,this.hornPos.y - 5,10, 10);
@@ -266,6 +267,9 @@ var GameScreen = AbstractScreen.extend({
         this.HUDContainer.addChild(this.pauseButton.getContent());
         this.HUDContainer.addChild(this.coinsLabel);
         this.HUDContainer.addChild(this.star.getContent());
+
+        TweenLite.from(this.HUDContainer.position, 0.3, {y:-50});
+
         // this.HUDContainer.position.y = windowHeight - this.HUDContainer.height;
 
         this.thumbContainer = new PIXI.DisplayObjectContainer();
@@ -282,6 +286,8 @@ var GameScreen = AbstractScreen.extend({
         this.thumbContainer.addChild(this.arcoiris.getContent());
         scaleConverter(this.arcoiris.getContent().width, windowWidth, 1.4, this.arcoiris);
         this.arcoiris.getContent().position.x = -windowWidth * 0.2;
+
+        TweenLite.from(this.arcoiris.getContent().position, 0.3, {delay:0.2, y:-50});
         // this.arcoiris.getContent().position.y = this.HUDContainer.height;
 
 
@@ -298,6 +304,8 @@ var GameScreen = AbstractScreen.extend({
         //MODAIS
         this.pauseModal = new PauseModal(this);
         this.endModal = new EndModal(this);
+
+        // this.updateable = false;
         // this.endModal.show();
         // this.thumbContainer.scale.x = 0.5;
         // this.thumbContainer.scale.y = 0.5;
@@ -450,7 +458,7 @@ var GameScreen = AbstractScreen.extend({
         var angleOpen = 0.3;
         var totalFires = APP.currentHornModel.hasMultiple;
         this.unihorn.shoot();
-        // console.log(totalFires);
+        console.log(totalFires);
         for (var i = 0; i < totalFires; i++) {
             var tempAngle = angle + angleOpen * (i - totalFires / 2);
             if(totalFires === 1){

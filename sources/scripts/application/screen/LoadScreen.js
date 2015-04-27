@@ -54,7 +54,27 @@ var LoadScreen = AbstractScreen.extend({
         APP.currentHornModel = APP.appModel.hornModels[0];
         APP.currentClothModel = APP.appModel.clothModels[0];
         APP.currentEnvModel = APP.appModel.envModels[0];
-        this.screenManager.change('Game');
+        // this.screenManager.change('Game');
+
+        this.playButton = new DefaultButton('UI_button_default_1.png', 'UI_button_default_1.png');
+        this.playButton.build();
+        this.playButton.addLabel(new PIXI.Text('PLAY', {font:'50px Vagron', fill:'#FFFFFF'}), 45,2);
+        scaleConverter(this.playButton.getContent().width, windowWidth, 0.4, this.playButton);
+        this.playButton.setPosition(windowWidth / 2 - this.playButton.getContent().width/2,
+            windowHeight - this.playButton.getContent().height * 2.5);
+        this.addChild(this.playButton);
+      
+        this.playButton.clickCallback = function(){
+            if(possibleFullscreen() && !isfull && testMobile()){
+                fullscreen();
+            }
+            self.updateable = false;
+            // self.toTween(function(){
+            self.screenManager.change('Game');
+
+            // });
+        };
+
         // this.screenManager.change('Init');
     },
     transitionIn:function()

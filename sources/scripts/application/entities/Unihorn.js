@@ -55,7 +55,7 @@ var Unihorn = Entity.extend({
         }
     },
     deaded: function(){
-        this.fellingMaster --;
+        this.fellingMaster -= 1.5;
         // this.felling --;
         // this.lastKillCounter = 0;
     },
@@ -71,8 +71,8 @@ var Unihorn = Entity.extend({
 
         this.head.anchor.x = 0.51;
         this.head.anchor.y = 0.7;
-        this.head.position.x = 215 + 68;
-        this.head.position.y = 120 + 85;
+        this.head.position.x = 215 + 68 + 85;
+        this.head.position.y = 120 + 83;
 
         this.head.addChild(this.horn);
         this.horn.anchor.x = 0.5;
