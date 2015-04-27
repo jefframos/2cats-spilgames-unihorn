@@ -156,7 +156,7 @@ var Bullet = Entity.extend({
 
 
             //efeito 3
-            var particle = new Particles({x: 0, y:0}, 120, this.particleSource, Math.random() * 0.05);
+            var particle = new Particles({x: 0, y:0}, 120, this.imgSource, Math.random() * 0.05);
             particle.maxScale = this.getContent().scale.x;
             particle.maxInitScale = particle.maxScale;
             // particle.growType = -1;
@@ -189,7 +189,11 @@ var Bullet = Entity.extend({
                     }
                     if(pass){
                         // console.log(arrayCollide[i].bounce);
-                        if(!this.piercing && !arrayCollide[i].model.bounce){
+                        if(this.hasBounce){
+                            this.velocity.x *= -1;
+                            this.startVel.x *= -1;
+                        }
+                        if(!this.piercing && !arrayCollide[i].model.bounce&& !this.hasBounce){
                             this.preKill();
                         }
                         if(arrayCollide[i].model.bounce){
@@ -214,7 +218,7 @@ var Bullet = Entity.extend({
             particle.build();
             particle.maxScale = 0.5;
             particle.gravity = 0.1 * Math.random() + 0.2;
-            particle.alphadecres = 0.1;
+            // particle.alphadecres = 0.1;
             particle.scaledecress = 0.02;
             particle.setPosition(this.getPosition().x - (Math.random() + this.getContent().width * 0.1) / 2,
                 this.getPosition().y);

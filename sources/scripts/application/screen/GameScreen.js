@@ -219,12 +219,7 @@ var GameScreen = AbstractScreen.extend({
         
 
         
-        //MODAIS
-        this.pauseModal = new PauseModal(this);
-        this.endModal = new EndModal(this);
-        // this.endModal.show();
-        // this.thumbContainer.scale.x = 0.5;
-        // this.thumbContainer.scale.y = 0.5;
+        
 
 
         this.pauseButton = new DefaultButton('UI_button_pause_1.png', 'UI_button_pause_1_over.png', 'UI_button_pause_1_over.png');
@@ -262,9 +257,15 @@ var GameScreen = AbstractScreen.extend({
         this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - this.pauseButton.getContent().height * 0.1;
         this.coinsLabel.position.y = this.pauseButton.getContent().height * 0.1;
 
+        this.star = new SimpleSprite('star_coin.png');
+
+        this.star.getContent().position.x = this.coinsLabel.position.x -this.star.getContent().width * 1.1;
+        this.star.getContent().position.y = this.coinsLabel.position.y + this.coinsLabel.height / 2 -this.star.getContent().height / 2;
+
         this.HUDContainer.addChild(this.HUDback.getContent());
         this.HUDContainer.addChild(this.pauseButton.getContent());
         this.HUDContainer.addChild(this.coinsLabel);
+        this.HUDContainer.addChild(this.star.getContent());
         // this.HUDContainer.position.y = windowHeight - this.HUDContainer.height;
 
         this.thumbContainer = new PIXI.DisplayObjectContainer();
@@ -292,6 +293,14 @@ var GameScreen = AbstractScreen.extend({
 
         this.specAccMax = 350;
         this.specAcc = 0;
+
+
+        //MODAIS
+        this.pauseModal = new PauseModal(this);
+        this.endModal = new EndModal(this);
+        // this.endModal.show();
+        // this.thumbContainer.scale.x = 0.5;
+        // this.thumbContainer.scale.y = 0.5;
     },
     addEnemyThumb:function(enemy){
         this.thumbContainer.addChild(enemy.thumb);
@@ -417,6 +426,7 @@ var GameScreen = AbstractScreen.extend({
         }
         this.coinsLabel.setText(APP.appModel.totalPoints);
         this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - this.pauseButton.getContent().height * 0.1;
+        this.star.getContent().position.x = this.coinsLabel.position.x -this.star.getContent().width * 1.1;
     },
     shoot:function(angle) {
         if(this.blockPause){

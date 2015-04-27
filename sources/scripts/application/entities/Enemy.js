@@ -40,10 +40,17 @@ var Enemy = Entity.extend({
 
         var self = this;
         var motionIdle = new SpritesheetAnimation();
-        motionIdle.build('idle', this.model.imgSource, 5, true, null);
+        motionIdle.build('idle', [this.model.imgSource[0]], 5, true, null);
+
         this.spritesheet = new Spritesheet();
         this.spritesheet.addAnimation(motionIdle);
         this.spritesheet.play('idle');
+
+        if(this.model.bounce){
+            var motionState2 = new SpritesheetAnimation();
+            motionState2.build('state2', [this.model.imgSource[1]], 5, true, null);
+            this.spritesheet.addAnimation(motionState2);
+        }
         this.getContent().addChild(this.spritesheet.container);
         this.spritesheet.setPosition(0,0);
 
@@ -75,6 +82,24 @@ var Enemy = Entity.extend({
     },
     hurt:function(demage){
         this.hp -= demage;
+        // console.log(this.spritesheet.currentAnimation.label);
+        if(this.model.bounce && this.spritesheet.currentAnimation.label !== 'state2'){
+
+            this.spritesheet.play('state2');
+
+            for (var i = 0; i >= 0; i--) {
+                var particle = new Particles({x: Math.random() * 4 - 2, y:-(Math.random() * 2 + 1)}, 120, 'bolha.png', Math.random() * 0.05);
+                particle.build();
+                particle.maxScale = 0.5;
+                particle.gravity = 0.1 * Math.random() + 0.2;
+                particle.alphadecres = 0.1;
+                particle.scaledecress = 0.02;
+                particle.setPosition(this.getPosition().x - (Math.random() + this.getContent().width * 0.1) / 2,
+                    this.getPosition().y);
+                this.layer.addChild(particle);
+            }
+
+        }
         this.velocity.y -= this.resistance;
         if(this.hp <= 0){
             this.preKill();
@@ -139,15 +164,15 @@ var Enemy = Entity.extend({
         // mascadasLabel.maxScale = tempLAbel.scale.x * 4;
         this.screen.addChild(mascadasLabel);
 
-        // for (var i = this.model.particles.length - 1; i >= 0; i--) {
-        //     var particle = new Particles({x: Math.random() * 4 - 2, y:-(Math.random() * 2 + 1)}, 120, this.model.particles[i], Math.random() * 0.1);
-        //     particle.build();
-        //     particle.gravity = 0.1 * Math.random();
-        //     particle.alphadecres = 0.08;
-        //     particle.setPosition(this.getPosition().x - (Math.random() + this.getContent().width * 0.1) / 2,
-        //         this.getPosition().y);
-        //     this.layer.addChild(particle);
-        // }
+        for (var j = 5 - 1; j >= 0; j--) {
+            var particle = new Particles({x: Math.random() * 4 - 2, y:-(Math.random() + 0.5)}, 220, 'star_shine.png', Math.random() * 0.1);
+            particle.build();
+            particle.gravity = 0.2 * Math.random();
+            // particle.alphadecres = 0.08;
+            particle.setPosition(this.getPosition().x,
+                this.getPosition().y);
+            this.layer.addChild(particle);
+        }
         var self = this;
         TweenLite.to(this.getContent(), 0.3, {alpha:0, onCOmplete:function(){
             self.kill = true;

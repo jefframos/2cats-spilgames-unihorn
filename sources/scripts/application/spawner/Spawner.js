@@ -25,7 +25,7 @@ var Spawner = Class.extend({
             // scaleConverter(enemy.getContent().height,windowHeight, 0.08, enemy);
             //UTILIZAR O ANGULO PARA CALCULAR A POSIÇÃO CORRETA DO TIRO
             var part10 = windowWidth * 0.1;
-            enemy.setPosition(part10 + (windowWidth - part10*2) * Math.random(),0);
+            enemy.setPosition(part10 + (windowWidth - part10*2) * Math.random(),windowHeight * 0.05);
             this.enemyList.push(enemy);
             this.screen.addEnemyThumb(enemy);
             this.screen.layer.addChild(enemy);

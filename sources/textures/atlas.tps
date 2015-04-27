@@ -234,6 +234,13 @@
             <filename>uni_corpo_super.png</filename>
             <filename>uni_horn2.png</filename>
             <filename>barra.png</filename>
+            <filename>nuvem_blue.png</filename>
+            <filename>nuvem_dourada.png</filename>
+            <filename>barra_bolita_black.png</filename>
+            <filename>barra_bolita_blue.png</filename>
+            <filename>barra_bolita_gray.png</filename>
+            <filename>barra_bolita_white.png</filename>
+            <filename>barra_bolita_gold.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

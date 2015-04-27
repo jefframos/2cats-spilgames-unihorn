@@ -76,11 +76,11 @@ var AppModel = Class.extend({
 			},
 			{
 				id:this.clothModels.length * 10,
-				sizePercent: 0,
-				demage: 0,
-				fireAcumMax:0,
-				extraCoins:0,
-				fireSpeed:0,
+				// sizePercent: 0,
+				// demage: 0,
+				// fireAcumMax:0,
+				// extraCoins:0,
+				// fireSpeed:0,
 				enabled: true,
 				coast: getBalanceCoast(this.clothModels.length)
 			}
@@ -93,11 +93,11 @@ var AppModel = Class.extend({
 			},
 			{
 				id:this.clothModels.length * 10,
-				sizePercent: 0,
-				demage: 0,
-				fireAcumMax:0,
-				extraCoins:2,
-				fireSpeed:0,
+				// sizePercent: 0,
+				// demage: 0,
+				// fireAcumMax:0,
+				// extraCoins:2,
+				// fireSpeed:0,
 				enabled: false,
 				coast: getBalanceCoast(this.clothModels.length)
 			}
@@ -110,11 +110,11 @@ var AppModel = Class.extend({
 			},
 			{
 				id:this.clothModels.length * 10,
-				sizePercent: 0.03,
-				demage: 0,
-				fireAcumMax:0,
-				extraCoins:0,
-				fireSpeed:0,
+				// sizePercent: 0.03,
+				// demage: 0,
+				// fireAcumMax:0,
+				// extraCoins:0,
+				// fireSpeed:0,
 				enabled: false,
 				coast: getBalanceCoast(this.clothModels.length)
 			}
@@ -127,11 +127,11 @@ var AppModel = Class.extend({
 			},
 			{
 				id:this.clothModels.length * 10,
-				sizePercent: 0,
-				demage: 3,
-				fireAcumMax:0,
-				extraCoins:0,
-				fireSpeed:0,
+				// sizePercent: 0,
+				// demage: 3,
+				// fireAcumMax:0,
+				// extraCoins:0,
+				// fireSpeed:0,
 				enabled: false,
 				coast: getBalanceCoast(this.clothModels.length)
 			}
@@ -144,11 +144,11 @@ var AppModel = Class.extend({
 			},
 			{
 				id:this.clothModels.length * 10,
-				sizePercent: 0,
-				demage: 0,
-				fireAcumMax:10,
-				extraCoins:0,
-				fireSpeed:0,
+				// sizePercent: 0,
+				// demage: 0,
+				// fireAcumMax:10,
+				// extraCoins:0,
+				// fireSpeed:0,
 				enabled: false,
 				coast: getBalanceCoast(this.clothModels.length)
 			}
@@ -161,11 +161,11 @@ var AppModel = Class.extend({
 			},
 			{
 				id:this.clothModels.length * 10,
-				sizePercent: 0.03,
-				demage: 1,
-				fireAcumMax:10,
-				extraCoins:2,
-				fireSpeed:3,
+				// sizePercent: 0.03,
+				// demage: 1,
+				// fireAcumMax:10,
+				// extraCoins:2,
+				// fireSpeed:3,
 				enabled: false,
 				coast: getBalanceCoast(this.clothModels.length)
 			}
@@ -317,7 +317,7 @@ var AppModel = Class.extend({
 				new EnemyModel(
 				{
 					cover:'nuvem_blue.png',
-					source:['nuvem_blue.png'],
+					source:['nuvem_blue_bolha.png' , 'nuvem_blue.png'],
 					thumb:'barra_bolita_blue.png',
 					particles:['bullet.png'],
 					sizePercent: 0.18,
@@ -430,19 +430,15 @@ var AppModel = Class.extend({
 	addRandonBehaviour:function(){
 		this.removeBehaviour();
 		var rnd = Math.random();
-		if(rnd < 1/5){
-			APP.currentHornModel.fireAcumMax=18;
-			return 'SPEED HORN';
-		}
-		else if(rnd < 2/5){
+		if(rnd < 1/4){
 			APP.currentHornModel.hasMultiple=3;
 			return 'MANY SHOOTS';
 		}
-		else if(rnd < 3/5){
+		else if(rnd < 2/4){
 			APP.currentHornModel.hasBounce=true;
 			return 'BOUNCE BALLS';
 		}
-		else if(rnd < 4/5){
+		else if(rnd < 3/4){
 			APP.currentHornModel.piercing=true;
 			return 'PIERCING SHOOT';
 		}
