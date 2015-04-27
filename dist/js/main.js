@@ -528,7 +528,7 @@ var Application = AbstractApplication.extend({
     },
     build: function(model) {
         this.model = model, this.backShopItem = new SimpleSprite("balao_nope.png"), this.backScroll = new PIXI.Graphics(), 
-        this.backScroll.lineStyle(2, 16777215), this.backScroll.beginFill(7490940), this.backScroll.drawRoundedRect(0, 0, .9 * windowWidth, 1.4 * this.backShopItem.getContent().height, .2 * this.backShopItem.getContent().height), 
+        this.backScroll.lineStyle(2, 16777215), this.backScroll.beginFill(7490940), this.backScroll.drawRoundedRect(0, 0, .9 * windowWidth, 1.4 * this.backShopItem.getContent().height, .25 * this.backShopItem.getContent().height), 
         this.backScroll.alpha = 1, this.container.addChild(this.backScroll), this.container.addChild(this.backShopItem.getContent()), 
         this.backShopItem.getContent().position.x = .1 * this.backShopItem.getContent().width, 
         this.backShopItem.getContent().position.y = .2 * this.backShopItem.getContent().height, 
@@ -543,11 +543,11 @@ var Application = AbstractApplication.extend({
             wordWrap: !0,
             wordWrapWidth: 500
         }), scaleConverter(this.labelName.height, this.backShopItem.getContent().height, .3, this.labelName), 
-        this.labelName.position.x = this.backScroll.width - this.labelName.width - .1 * this.backShopItem.getContent().height, 
+        this.labelName.position.x = this.backScroll.width - this.labelName.width - .15 * this.backShopItem.getContent().width, 
         this.labelName.position.y = this.backShopItem.getContent().position.y, this.container.addChild(this.labelName);
         var self = this;
         this.equipButton = new DefaultButton("botao_equip.png", "botao_equip.png"), this.equipButton.build(), 
-        this.equipButton.setPosition(this.backScroll.width - this.equipButton.getContent().width - .1 * this.backShopItem.getContent().height, this.backShopItem.getContent().height - this.equipButton.getContent().height + this.backShopItem.getContent().position.y), 
+        this.equipButton.setPosition(this.backScroll.width - this.equipButton.getContent().width - .15 * this.backShopItem.getContent().width, this.backShopItem.getContent().height - this.equipButton.getContent().height + this.backShopItem.getContent().position.y), 
         this.equipButton.clickCallback = this.equipButton.mouseDownCallback = function() {
             var targetArray = [];
             "horn" === self.type ? (APP.currentHornModel = self.model, targetArray = self.screen.hornList) : "cloth" === self.type ? (APP.currentClothModel = self.model, 
@@ -556,7 +556,7 @@ var Application = AbstractApplication.extend({
             for (var i = targetArray.length - 1; i >= 0; i--) targetArray[i].updateStats();
             self.updateStats();
         }, this.equipped = new SimpleSprite("botao_equipped.png"), scaleConverter(this.equipped.getContent().height, this.equipButton.getContent().height, 1, this.equipped.getContent()), 
-        this.equipped.getContent().position.x = this.backScroll.width - this.equipped.getContent().width - .1 * this.backShopItem.getContent().height, 
+        this.equipped.getContent().position.x = this.backScroll.width - this.equipped.getContent().width - .15 * this.backShopItem.getContent().width, 
         this.equipped.getContent().position.y = this.backShopItem.getContent().height - this.equipped.getContent().height + this.backShopItem.getContent().position.y, 
         this.buyButton = new DefaultButton("botao_buy.png", "botao_buy.png"), this.buyButton.build(), 
         this.buyButton.addLabel(new PIXI.Text(this.model.coast, {
@@ -564,7 +564,7 @@ var Application = AbstractApplication.extend({
             fill: "#FFFFFF",
             stroke: "#006f00",
             strokeThickness: 4
-        }), 50, 4), this.buyButton.setPosition(this.backScroll.width - this.buyButton.getContent().width - .1 * this.backShopItem.getContent().height, this.backShopItem.getContent().height - this.buyButton.getContent().height + this.backShopItem.getContent().position.y), 
+        }), 50, 4), this.buyButton.setPosition(this.backScroll.width - this.buyButton.getContent().width - .15 * this.backShopItem.getContent().width, this.backShopItem.getContent().height - this.buyButton.getContent().height + this.backShopItem.getContent().position.y), 
         this.buyButton.clickCallback = this.buyButton.mouseDownCallback = function() {
             if (!(self.model.coast > APP.appModel.totalPoints)) {
                 APP.appModel.totalPoints -= self.model.coast, self.screen.updateCoins();
@@ -668,7 +668,7 @@ var Application = AbstractApplication.extend({
         this.vel = this.model.vel, this.hp = this.model.hp > 1 ? this.model.hp + Math.floor(APP.accelGame - 1) : 1, 
         console.log(this.model.hp, APP.accelGame), this.behaviour = this.model.behaviour ? this.model.behaviour.clone() : null, 
         this.resistance = this.model.resistance, this.subdivide = this.model.subdivide, 
-        this.special = this.model.special;
+        this.special = this.model.special, this.bounce = this.model.bounce;
     },
     build: function() {
         this.thumb = new PIXI.Sprite(new PIXI.Texture.fromImage(this.model.thumb)), this.thumb.anchor.x = .5, 
@@ -677,7 +677,7 @@ var Application = AbstractApplication.extend({
         this.sprite.anchor.y = .5, this.updateable = !0, this.collidable = !0;
         var motionIdle = new SpritesheetAnimation();
         if (motionIdle.build("idle", [ this.model.imgSource[0] ], 5, !0, null), this.spritesheet = new Spritesheet(), 
-        this.spritesheet.addAnimation(motionIdle), this.spritesheet.play("idle"), this.model.bounce) {
+        this.spritesheet.addAnimation(motionIdle), this.spritesheet.play("idle"), this.bounce) {
             var motionState2 = new SpritesheetAnimation();
             motionState2.build("state2", [ this.model.imgSource[1] ], 5, !0, null), this.spritesheet.addAnimation(motionState2);
         }
@@ -691,7 +691,7 @@ var Application = AbstractApplication.extend({
         this.kill = !0), this.collideArea.contains(this.getPosition().x, this.getPosition().y) || (this.kill = !0);
     },
     hurt: function(demage) {
-        if (this.hp -= demage, this.model.bounce && "state2" !== this.spritesheet.currentAnimation.label) {
+        if (this.hp -= demage, this.bounce && "state2" !== this.spritesheet.currentAnimation.label) {
             this.spritesheet.play("state2");
             for (var i = 0; i >= 0; i--) {
                 var particle = new Particles({
@@ -702,6 +702,7 @@ var Application = AbstractApplication.extend({
                 particle.alphadecres = .1, particle.scaledecress = .02, particle.setPosition(this.getPosition().x - (Math.random() + .1 * this.getContent().width) / 2, this.getPosition().y), 
                 this.layer.addChild(particle);
             }
+            this.bounce = !1;
         }
         this.velocity.y -= this.resistance, this.hp <= 0 && this.preKill();
     },
@@ -990,10 +991,11 @@ var Application = AbstractApplication.extend({
         this.homingStart = timetostart, this.targetEntity = entity, this.getContent().rotation = angle;
     },
     collide: function(arrayCollide) {
+        if (this.getPosition().y < .15 * windowHeight) return void (this.kill = !0);
         if (this.collidable) for (var pass = !0, i = arrayCollide.length - 1; i >= 0; i--) if ("enemy" === arrayCollide[i].type) {
             if (this.hasCollideEntity.length > 0) for (var j = this.hasCollideEntity.length - 1; j >= 0; j--) this.hasCollideEntity[j] === arrayCollide[i] && (pass = !1);
-            pass && (this.hasBounce && (this.velocity.x *= -1, this.startVel.x *= -1), this.piercing || arrayCollide[i].model.bounce || this.hasBounce || this.preKill(), 
-            arrayCollide[i].model.bounce && (this.velocity.x *= -1), this.hasCollideEntity.push(arrayCollide[i]), 
+            pass && (this.hasBounce && (this.velocity.x *= -1, this.startVel.x *= -1), this.piercing || arrayCollide[i].bounce || this.hasBounce || this.preKill(), 
+            arrayCollide[i].bounce && (this.velocity.x *= -1), this.hasCollideEntity.push(arrayCollide[i]), 
             arrayCollide[i].hurt(this.demage));
         } else "coin" === arrayCollide[i].type && (this.preKill(), arrayCollide[i].preKill());
     },
@@ -1482,7 +1484,7 @@ var Application = AbstractApplication.extend({
         return obs;
     },
     getNewEnemy: function(player, screen) {
-        this.currentHorde++, APP.accelGame < 5 && (APP.accelGame += this.currentHorde / 500);
+        this.currentHorde++, APP.accelGame < 5.5 && (APP.accelGame += this.currentHorde / 500);
         var max = this.enemyProbs.length;
         this.currentHorde < max && (max = this.currentHorde);
         for (var id = 99999; id > this.totalEnemy - 1; ) id = this.enemyProbs[Math.floor(max * Math.random())];
@@ -1795,9 +1797,8 @@ var Application = AbstractApplication.extend({
         this.darkShape = new PIXI.DisplayObjectContainer(), this.addChild(this.darkShape);
         var dark = new PIXI.Graphics();
         dark.beginFill(0), dark.drawRect(0, 0, windowWidth, windowHeight), this.darkShape.addChild(dark), 
-        this.darkShape.alpha = 0, this.darkShape.blendModes = PIXI.blendModes.OVERLAY, APP.accelGame = 1, 
-        this.renderLevel(), this.hitTouch = new PIXI.Graphics(), this.hitTouch.interactive = !0, 
-        this.hitTouch.beginFill(0), this.hitTouch.drawRect(0, 0, windowWidth, windowHeight), 
+        this.darkShape.alpha = 0, APP.accelGame = 1, this.renderLevel(), this.hitTouch = new PIXI.Graphics(), 
+        this.hitTouch.interactive = !0, this.hitTouch.beginFill(0), this.hitTouch.drawRect(0, 0, windowWidth, windowHeight), 
         this.addChild(this.hitTouch), this.hitTouch.alpha = 0, this.hitTouch.hitArea = new PIXI.Rectangle(0, 0, windowWidth, windowHeight), 
         this.mouseAngle = 0, testMobile() || (this.hitTouch.mousemove = function(touchData) {
             updateVel(touchData);
@@ -1846,7 +1847,9 @@ var Application = AbstractApplication.extend({
             y: this.unihorn.getContent().position.y + this.unihorn.head.position.y * scl
         }, TweenLite.from(this.unihorn.getContent().position, .3, {
             delay: .3,
-            y: this.unihorn.getContent().position.y + this.unihorn.neck.height * scl
+            x: windowWidth / 2 - 2 * (this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl,
+            y: this.unihorn.getContent().position.y + this.unihorn.neck.height * scl,
+            ease: "easeOutCubic"
         }), this.HUDback = new SimpleSprite("barra.png"), this.pauseButton = new DefaultButton("UI_button_pause_1.png", "UI_button_pause_1_over.png", "UI_button_pause_1_over.png"), 
         this.pauseButton.build(), scaleConverter(this.pauseButton.getContent().height, this.HUDback.getContent().height, .8, this.pauseButton), 
         this.pauseButton.clickCallback = function() {
@@ -1870,15 +1873,18 @@ var Application = AbstractApplication.extend({
         this.HUDContainer.addChild(this.HUDback.getContent()), this.HUDContainer.addChild(this.pauseButton.getContent()), 
         this.HUDContainer.addChild(this.coinsLabel), this.HUDContainer.addChild(this.star.getContent()), 
         TweenLite.from(this.HUDContainer.position, .3, {
-            delay: .7,
+            delay: 1,
             y: -50
         }), this.thumbContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.thumbContainer), 
         this.back = new PIXI.Graphics(), this.back.beginFill(0), this.back.drawRect(0, 0, windowWidth, 40), 
         this.thumbContainer.position.y = this.HUDContainer.height, this.badClouds = [], 
         this.maxClouds = 10, this.arcoiris = new SimpleSprite("arcoiris_redondo.png"), this.thumbContainer.addChild(this.arcoiris.getContent()), 
         scaleConverter(this.arcoiris.getContent().width, windowWidth, 1.4, this.arcoiris), 
-        this.arcoiris.getContent().position.x = .2 * -windowWidth, TweenLite.from(this.arcoiris.getContent(), .3, {
-            delay: 1,
+        this.arcoiris.getContent().position.x = .2 * -windowWidth, TweenLite.from(this.arcoiris.getContent().position, .3, {
+            delay: .7,
+            y: -20
+        }), TweenLite.from(this.arcoiris.getContent(), .3, {
+            delay: .7,
             alpha: 0
         }), this.fromTween(), this.end = !1, this.startCoinMonitore = !1, this.blockPause = !1, 
         this.specAccMax = 350, this.specAcc = 0, this.pauseModal = new PauseModal(this), 
@@ -1931,7 +1937,9 @@ var Application = AbstractApplication.extend({
         }
         this.end = !0, this.spawner.killAll(), this.specialLabel.alpha = 0, APP.appModel.removeBehaviour();
         var self = this;
-        self.arrayCoins = [], this.unihorn.sad();
+        self.arrayCoins = [], this.unihorn.sad(), TweenLite.to(this.darkShape, .5, {
+            alpha: 0
+        });
         for (var times = [], j = this.badClouds.length - 1; j >= 0; j--) times.push(j);
         times = shuffle(times);
         for (var i = this.badClouds.length - 1; i >= 0; i--) TweenLite.to(this.badClouds[i], .3, {
@@ -2302,7 +2310,7 @@ var Application = AbstractApplication.extend({
         this.container.addChild(this.scrollContainer), this.applyScroll(this.scrollContainer);
         var self = this;
         this.backScroll = new PIXI.Graphics(), this.backScroll.beginFill(1383495), this.backScroll.drawRect(0, 0, windowWidth, 2 * windowHeight), 
-        this.backScroll.alpha = 0, this.scrollContainer.addChild(this.backScroll), this.closeButton = new DefaultButton("play.png", "play.png"), 
+        this.backScroll.alpha = 0, this.scrollContainer.addChild(this.backScroll), this.closeButton = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
         this.closeButton.build(), this.closeButton.setPosition(20, 20), this.closeButton.clickCallback = function() {
             self.hide(function() {
                 self.screen.updateable = !0, self.screen.reset();
@@ -2406,17 +2414,7 @@ var Application = AbstractApplication.extend({
         });
     },
     hide: function(callback) {
-        var self = this;
-        this.screen.blockPause = !1, this.screen.updateable = !0, TweenLite.to(this.bg, .5, {
-            delay: .1,
-            alpha: 0,
-            onComplete: function() {
-                self.container.parent && self.container.parent.removeChild(self.container), callback && callback(), 
-                self.kill = !0;
-            }
-        }), TweenLite.to(this.getContent(), .5, {
-            alpha: 0
-        });
+        callback();
     },
     getContent: function() {
         return this.container;

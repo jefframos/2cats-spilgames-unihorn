@@ -515,7 +515,7 @@ var AppModel = Class.extend({
 	},
 	getNewEnemy:function(player, screen){
 		this.currentHorde ++;
-		if(APP.accelGame < 5){
+		if(APP.accelGame < 5.5){
 			APP.accelGame += this.currentHorde / 500;
 		}
 		var max = this.enemyProbs.length;

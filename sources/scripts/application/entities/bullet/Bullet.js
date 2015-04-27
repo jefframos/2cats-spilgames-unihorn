@@ -176,6 +176,10 @@ var Bullet = Entity.extend({
     },
     collide:function(arrayCollide){
         // console.log('fireCollide', arrayCollide[0]);
+        if(this.getPosition().y < windowHeight * 0.15){
+            this.kill = true;
+            return;
+        }
         if(this.collidable){
             var pass = true;
             for (var i = arrayCollide.length - 1; i >= 0; i--) {
@@ -193,10 +197,10 @@ var Bullet = Entity.extend({
                             this.velocity.x *= -1;
                             this.startVel.x *= -1;
                         }
-                        if(!this.piercing && !arrayCollide[i].model.bounce&& !this.hasBounce){
+                        if(!this.piercing && !arrayCollide[i].bounce&& !this.hasBounce){
                             this.preKill();
                         }
-                        if(arrayCollide[i].model.bounce){
+                        if(arrayCollide[i].bounce){
                             this.velocity.x *= -1;
                         }
                         this.hasCollideEntity.push(arrayCollide[i]);

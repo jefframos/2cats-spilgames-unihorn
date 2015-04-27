@@ -24,7 +24,7 @@ var EndModal = Class.extend({
         this.backScroll.alpha = 0;
         this.scrollContainer.addChild(this.backScroll);
 
-        this.closeButton = new DefaultButton('play.png', 'play.png');
+        this.closeButton = new DefaultButton('UI_button_play_1.png', 'UI_button_play_1.png');
         this.closeButton.build();
         this.closeButton.setPosition(20,20);//this.backBars.getContent().height - 20 - this.rankingButton.height / 2 - 10);
         this.closeButton.clickCallback = function(){
@@ -294,21 +294,23 @@ var EndModal = Class.extend({
         // TweenLite.from(this.scrollContainer, 0.5, {y:-this.scrollContainer.height});
     },
     hide:function(callback){
-        var self = this;
-        this.screen.blockPause = false;
-        this.screen.updateable = true;
-        TweenLite.to(this.bg, 0.5, {delay:0.1, alpha:0, onComplete:function(){
-            if(self.container.parent){
-                self.container.parent.removeChild(self.container);
-            }
-            if(callback){
-                callback();
-            }
-            self.kill = true;
-        }});
-        // TweenLite.to(this.scrollContainer.position, 0.5, {y:-this.scrollContainer.height, ease:'easeInBack'});
-        TweenLite.to(this.getContent(), 0.5, {alpha:0});
-        // TweenLite.to(this.bg, 0.5, {alpha:0});
+        callback();
+        return;
+        // var self = this;
+        // this.screen.blockPause = false;
+        // this.screen.updateable = true;
+        // TweenLite.to(this.bg, 0.5, {delay:0.1, alpha:0, onComplete:function(){
+        //     if(self.container.parent){
+        //         self.container.parent.removeChild(self.container);
+        //     }
+        //     if(callback){
+        //         callback();
+        //     }
+        //     self.kill = true;
+        // }});
+        // // TweenLite.to(this.scrollContainer.position, 0.5, {y:-this.scrollContainer.height, ease:'easeInBack'});
+        // TweenLite.to(this.getContent(), 0.5, {alpha:0});
+        // // TweenLite.to(this.bg, 0.5, {alpha:0});
     },
     getContent:function(){
         return this.container;

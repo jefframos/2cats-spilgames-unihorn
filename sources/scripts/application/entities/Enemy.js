@@ -21,6 +21,7 @@ var Enemy = Entity.extend({
         this.resistance = this.model.resistance;
         this.subdivide = this.model.subdivide;
         this.special = this.model.special;
+        this.bounce = this.model.bounce;
     },
     build: function(){
         // console.log(this.model);
@@ -46,7 +47,7 @@ var Enemy = Entity.extend({
         this.spritesheet.addAnimation(motionIdle);
         this.spritesheet.play('idle');
 
-        if(this.model.bounce){
+        if(this.bounce){
             var motionState2 = new SpritesheetAnimation();
             motionState2.build('state2', [this.model.imgSource[1]], 5, true, null);
             this.spritesheet.addAnimation(motionState2);
@@ -83,10 +84,9 @@ var Enemy = Entity.extend({
     hurt:function(demage){
         this.hp -= demage;
         // console.log(this.spritesheet.currentAnimation.label);
-        if(this.model.bounce && this.spritesheet.currentAnimation.label !== 'state2'){
+        if(this.bounce && this.spritesheet.currentAnimation.label !== 'state2'){
 
             this.spritesheet.play('state2');
-
             for (var i = 0; i >= 0; i--) {
                 var particle = new Particles({x: Math.random() * 4 - 2, y:-(Math.random() * 2 + 1)}, 120, 'bolha.png', Math.random() * 0.05);
                 particle.build();
@@ -99,6 +99,7 @@ var Enemy = Entity.extend({
                 this.layer.addChild(particle);
             }
 
+            this.bounce = false;
         }
         this.velocity.y -= this.resistance;
         if(this.hp <= 0){

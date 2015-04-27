@@ -44,7 +44,7 @@ var GameScreen = AbstractScreen.extend({
         dark.drawRect(0,0,windowWidth, windowHeight);
         this.darkShape.addChild(dark);
         this.darkShape.alpha = 0;
-        this.darkShape.blendModes = PIXI.blendModes.OVERLAY;
+        // this.darkShape.blendModes = PIXI.blendModes.OVERLAY;
 
 
 
@@ -211,7 +211,7 @@ var GameScreen = AbstractScreen.extend({
         y:(this.unihorn.getContent().position.y)+ (this.unihorn.head.position.y * scl)};// - this.unihorn.head.position.y * scl};
         // y:windowHeight - (this.unihorn.head.position.y * this.unihorn.head.anchor.y) * scl};// - this.unihorn.head.position.y * scl};
         
-        TweenLite.from(this.unihorn.getContent().position, 0.3, {delay: 0.3, y:this.unihorn.getContent().position.y + (this.unihorn.neck.height * scl)});
+        TweenLite.from(this.unihorn.getContent().position, 0.3, {delay: 0.3, x: windowWidth / 2 - 2 * ((this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl),y:this.unihorn.getContent().position.y + (this.unihorn.neck.height * scl), ease:'easeOutCubic'});
         // test = new PIXI.Graphics();
         // test.beginFill(0);
         // test.drawRect(this.hornPos.x - 5,this.hornPos.y - 5,10, 10);
@@ -270,7 +270,7 @@ var GameScreen = AbstractScreen.extend({
         this.HUDContainer.addChild(this.coinsLabel);
         this.HUDContainer.addChild(this.star.getContent());
 
-        TweenLite.from(this.HUDContainer.position, 0.3, {delay:0.7, y:-50});
+        TweenLite.from(this.HUDContainer.position, 0.3, {delay:1, y:-50});
 
         // this.HUDContainer.position.y = windowHeight - this.HUDContainer.height;
 
@@ -289,7 +289,8 @@ var GameScreen = AbstractScreen.extend({
         scaleConverter(this.arcoiris.getContent().width, windowWidth, 1.4, this.arcoiris);
         this.arcoiris.getContent().position.x = -windowWidth * 0.2;
 
-        TweenLite.from(this.arcoiris.getContent(), 0.3, {delay:1, alpha:0});
+        TweenLite.from(this.arcoiris.getContent().position, 0.3, {delay:0.7, y:-20});
+        TweenLite.from(this.arcoiris.getContent(), 0.3, {delay:0.7, alpha:0});
         // this.arcoiris.getContent().position.y = this.HUDContainer.height;
 
 
@@ -374,6 +375,7 @@ var GameScreen = AbstractScreen.extend({
         var self = this;
         self.arrayCoins = [];
         this.unihorn.sad();
+        TweenLite.to(this.darkShape, 0.5, {alpha:0});
         function onComplete(target){
             if(target && target.parent){
                 target.parent.removeChild(target);
