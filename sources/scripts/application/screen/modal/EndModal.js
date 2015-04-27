@@ -42,16 +42,17 @@ var EndModal = Class.extend({
         this.topHUD.addChild(this.closeButton.getContent());
         // scaleConverter(this.closeButton.getContent().height, windowHeight, 0.06, this.closeButton);
 
-        scaleConverter(this.closeButton.getContent().width, windowWidth, 0.1, this.closeButton);
+        // scaleConverter(this.barraTop.getContent().width, windowHeight, 0.1, this.barraTop);
+        scaleConverter(this.closeButton.getContent().height, this.barraTop.getContent().height, 0.8, this.closeButton);
 
-        this.closeButton.getContent().position.x = this.topHUD.width - this.closeButton.getContent().width - this.closeButton.getContent().height * 0.1;
-        this.closeButton.getContent().position.y = this.closeButton.getContent().height * 0.1;
+        this.closeButton.getContent().position.x = this.topHUD.width - this.closeButton.getContent().width - this.barraTop.getContent().height * 0.1;
+        this.closeButton.getContent().position.y = this.barraTop.getContent().height * 0.1;
 
 
         var thirdPart = this.backScroll.width / 3;
-        this.textScreen = new PIXI.Text(APP.appModel.totalPoints, {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500, stroke:'#352745', strokeThickness:5});
+        this.textScreen = new PIXI.Text(APP.appModel.totalPoints, {align:'center',font:'32px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500, stroke:'#352745', strokeThickness:5});
         scaleConverter(this.textScreen.height, this.closeButton.getContent().height, 1, this.textScreen);
-        this.textScreen.position.x = this.topHUD.width - this.textScreen.width - this.closeButton.getContent().height * 0.1;
+        this.textScreen.position.x = this.topHUD.width - this.textScreen.width - this.barraTop.getContent().height * 0.1;
         this.textScreen.position.y = this.closeButton.getContent().position.y;
 
         this.topHUD.addChild(this.textScreen);
@@ -119,7 +120,7 @@ var EndModal = Class.extend({
 
         this.toWear.clickCallback = function(){
             // self.scrollContainer.position.y = -self.clothesLabel.position.y + self.marginTopBottom;
-            TweenLite.to(self.scrollContainer.position, 0.5, {y:-self.clothesLabel.position.y + self.marginTopBottom});
+            TweenLite.to(self.scrollContainer.position, 0.5, {y:-self.clothTitle.getContent().position.y + self.marginTopBottom});
         };
 
 
@@ -129,7 +130,7 @@ var EndModal = Class.extend({
 
         this.toLand.clickCallback = function(){
             // self.scrollContainer.position.y = -self.envLabel.position.y + self.marginTopBottom;
-            TweenLite.to(self.scrollContainer.position, 0.5, {y:-self.envLabel.position.y + self.marginTopBottom});
+            TweenLite.to(self.scrollContainer.position, 0.5, {y:-self.envTitle.getContent().position.y + self.marginTopBottom});
 
         };
 
@@ -153,7 +154,7 @@ var EndModal = Class.extend({
     },
     updateCoins:function(){
         this.textScreen.setText(APP.appModel.totalPoints);
-        this.textScreen.position.x = this.topHUD.width / 2 - this.textScreen.width / 2;// - this.closeButton.getContent().height * 0.1;
+        this.textScreen.position.x = this.topHUD.width / 2 - this.textScreen.width / 2;// - this.barraTop.getContent().height * 0.1;
         this.textScreen.position.y = this.closeButton.getContent().position.y;
 
         this.star.getContent().position.x = this.textScreen.position.x -this.star.getContent().width * 1.1;
@@ -170,20 +171,22 @@ var EndModal = Class.extend({
         this.hornList = [];
         var i = 0;
 
+        this.hornTitle = new SimpleSprite('titulo_magichorns.png');
+        scaleConverter(this.hornTitle.getContent().width, windowWidth, 1, this.hornTitle);
         
-        this.hornLabel = new PIXI.Text('HORNS', {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500});//, stroke:'#800012'});//, strokeThickness:5});
-        scaleConverter(this.hornLabel.height, this.closeButton.getContent().height, 1.2, this.hornLabel);
-        this.hornLabel.position.x = windowWidth / 2 - this.hornLabel.width / 2 ;
-        this.hornLabel.position.y = this.marginTopBottom;// * 2;
+        // this.hornLabel = new PIXI.Text('HORNS', {align:'center',font:'50px Vagron', fill:'#c34c99', wordWrap:true, wordWrapWidth:500, stroke:'#FFFFFF', strokeThickness:3});
+        // scaleConverter(this.hornLabel.height, this.closeButton.getContent().height, 1.2, this.hornLabel);
+        this.hornTitle.getContent().position.x = windowWidth / 2 - this.hornTitle.getContent().width / 2 ;
+        this.hornTitle.getContent().position.y = this.marginTopBottom;// * 2;
         
-        this.backHorn = new PIXI.Graphics();
-        this.backHorn.beginFill(0x000000);
-        this.backHorn.drawRect(0,0,windowWidth, this.hornLabel.height * 1.4);
-        this.backHorn.alpha = 0.5;
-        this.backHorn.position.y = this.hornLabel.position.y - this.hornLabel.height * 0.2;
-        this.scrollContainer.addChild(this.backHorn);
+        // this.backHorn = new PIXI.Graphics();
+        // this.backHorn.beginFill(0x000000);
+        // this.backHorn.drawRect(0,0,windowWidth, this.hornLabel.height * 1.4);
+        // this.backHorn.alpha = 0.5;
+        // this.backHorn.position.y = this.hornLabel.position.y - this.hornLabel.height * 0.2;
+        // this.scrollContainer.addChild(this.backHorn);
 
-        this.scrollContainer.addChild(this.hornLabel);
+        this.scrollContainer.addChild(this.hornTitle.getContent());
 
         for (i = 0; i < APP.appModel.hornModels.length; i++) {
             tempShopItem = new ShopItem(this, 'horn', APP.appModel.hornModels, this.hornList);
@@ -193,25 +196,34 @@ var EndModal = Class.extend({
             scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, 0.3, tempShopItem);
             _s = (tempShopItem.getContent().height + marginItens);
             tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2;
-            tempShopItem.getContent().position.y = i * _s + (this.marginTopBottom * 1.5) + this.hornLabel.height;
+            tempShopItem.getContent().position.y = i * _s + (this.marginTopBottom * 1.5) + this.hornTitle.getContent().height;
         }
 
         var lastHorn = tempShopItem.getContent().position.y + tempShopItem.getContent().height;
 
-        this.clothesLabel = new PIXI.Text('CLOTHES', {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500});//, stroke:'#352745'});//, strokeThickness:5});
-        scaleConverter(this.clothesLabel.height, this.closeButton.getContent().height, 1.2, this.clothesLabel);
-        this.clothesLabel.position.x = windowWidth / 2 - this.clothesLabel.width / 2 ;
-        this.clothesLabel.position.y = this.marginTopBottom / 2 + lastHorn;
+        // this.clothesLabel = new PIXI.Text('CLOTHES', {align:'center',font:'50px Vagron', fill:'#8a64a5', wordWrap:true, wordWrapWidth:500, stroke:'#FFFFFF', strokeThickness:3});
+        // scaleConverter(this.clothesLabel.height, this.closeButton.getContent().height, 1.2, this.clothesLabel);
+        // this.clothesLabel.position.x = windowWidth / 2 - this.clothesLabel.width / 2 ;
+        // this.clothesLabel.position.y = this.marginTopBottom / 2 + lastHorn;
 
-        this.backCloth = new PIXI.Graphics();
-        this.backCloth.beginFill(0x000000);
-        this.backCloth.drawRect(0,0,windowWidth, this.clothesLabel.height * 1.4);
-        this.backCloth.alpha = 0.5;
-        this.backCloth.position.y = this.clothesLabel.position.y - this.clothesLabel.height * 0.2;
-        this.scrollContainer.addChild(this.backCloth);
+        // this.backCloth = new PIXI.Graphics();
+        // this.backCloth.beginFill(0x000000);
+        // this.backCloth.drawRect(0,0,windowWidth, this.clothesLabel.height * 1.4);
+        // this.backCloth.alpha = 0.5;
+        // this.backCloth.position.y = this.clothesLabel.position.y - this.clothesLabel.height * 0.2;
+        // this.scrollContainer.addChild(this.backCloth);
 
-        this.scrollContainer.addChild(this.clothesLabel);
+        // this.scrollContainer.addChild(this.clothesLabel);
 
+        this.clothTitle = new SimpleSprite('titulo_coolclothes.png');
+        scaleConverter(this.clothTitle.getContent().width, windowWidth, 1, this.clothTitle);
+        
+        // this.hornLabel = new PIXI.Text('HORNS', {align:'center',font:'50px Vagron', fill:'#c34c99', wordWrap:true, wordWrapWidth:500, stroke:'#FFFFFF', strokeThickness:3});
+        // scaleConverter(this.hornLabel.height, this.closeButton.getContent().height, 1.2, this.hornLabel);
+        this.clothTitle.getContent().position.x = windowWidth / 2 - this.clothTitle.getContent().width / 2 ;
+        this.clothTitle.getContent().position.y = this.marginTopBottom / 2 + lastHorn;// * 2;
+
+        this.scrollContainer.addChild(this.clothTitle.getContent());
 
         this.clothList = [];
         for (i = 0; i < APP.appModel.clothModels.length; i++) {
@@ -222,25 +234,34 @@ var EndModal = Class.extend({
             scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, 0.3, tempShopItem);
             _s = (tempShopItem.getContent().height + marginItens);
             tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2;
-            tempShopItem.getContent().position.y = i * _s + this.marginTopBottom + lastHorn + this.clothesLabel.height;
+            tempShopItem.getContent().position.y = i * _s + this.marginTopBottom + lastHorn + this.clothTitle.getContent().height;
         }
 
         var lastCloath = tempShopItem.getContent().position.y + tempShopItem.getContent().height;
 
-        this.envLabel = new PIXI.Text('LANDS', {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500});//, stroke:'#002a00'});//, strokeThickness:5});
-        scaleConverter(this.envLabel.height, this.closeButton.getContent().height, 1.2, this.envLabel);
-        this.envLabel.position.x = windowWidth / 2 - this.envLabel.width / 2 ;
-        this.envLabel.position.y = this.marginTopBottom / 2 + lastCloath;
+        // this.envLabel = new PIXI.Text('LANDS', {align:'center',font:'50px Vagron', fill:'#5ea28e', wordWrap:true, wordWrapWidth:500, stroke:'#FFFFFF', strokeThickness:3});
+        // scaleConverter(this.envLabel.height, this.closeButton.getContent().height, 1.2, this.envLabel);
+        // this.envLabel.position.x = windowWidth / 2 - this.envLabel.width / 2 ;
+        // this.envLabel.position.y = this.marginTopBottom / 2 + lastCloath;
 
-        this.backEnv = new PIXI.Graphics();
-        this.backEnv.beginFill(0x000000);
-        this.backEnv.drawRect(0,0,windowWidth, this.envLabel.height * 1.4);
-        this.backEnv.alpha = 0.5;
-        this.backEnv.position.y = this.envLabel.position.y - this.envLabel.height * 0.2;
-        this.scrollContainer.addChild(this.backEnv);
+        // this.backEnv = new PIXI.Graphics();
+        // this.backEnv.beginFill(0x000000);
+        // this.backEnv.drawRect(0,0,windowWidth, this.envLabel.height * 1.4);
+        // this.backEnv.alpha = 0.5;
+        // this.backEnv.position.y = this.envLabel.position.y - this.envLabel.height * 0.2;
+        // this.scrollContainer.addChild(this.backEnv);
 
-        this.scrollContainer.addChild(this.envLabel);
+        // this.scrollContainer.addChild(this.envLabel);
 
+        this.envTitle = new SimpleSprite('titulo_greatlands.png');
+        scaleConverter(this.envTitle.getContent().width, windowWidth, 1, this.envTitle);
+        
+        // this.hornLabel = new PIXI.Text('HORNS', {align:'center',font:'50px Vagron', fill:'#c34c99', wordWrap:true, wordWrapWidth:500, stroke:'#FFFFFF', strokeThickness:3});
+        // scaleConverter(this.hornLabel.height, this.closeButton.getContent().height, 1.2, this.hornLabel);
+        this.envTitle.getContent().position.x = windowWidth / 2 - this.envTitle.getContent().width / 2 ;
+        this.envTitle.getContent().position.y = this.marginTopBottom / 2 + lastCloath;// * 2;
+
+        this.scrollContainer.addChild(this.envTitle.getContent());
 
         this.envList = [];
         for (i = 0; i < APP.appModel.envModels.length; i++) {
@@ -251,7 +272,7 @@ var EndModal = Class.extend({
             scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, 0.3, tempShopItem);
             _s = (tempShopItem.getContent().height + marginItens);
             tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2;
-            tempShopItem.getContent().position.y = i * _s + this.marginTopBottom + lastCloath + this.envLabel.height;
+            tempShopItem.getContent().position.y = i * _s + this.marginTopBottom + lastCloath + this.envTitle.getContent().height;
         }
 
         this.backScroll.height = this.scrollContainer.height + 100;//totItens * _s + this.marginTopBottom * 4 + 100;

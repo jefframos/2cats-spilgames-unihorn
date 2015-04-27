@@ -561,8 +561,10 @@ var Application = AbstractApplication.extend({
         this.buyButton = new DefaultButton("botao_buy.png", "botao_buy.png"), this.buyButton.build(), 
         this.buyButton.addLabel(new PIXI.Text(this.model.coast, {
             font: "30px Vagron",
-            fill: "#FFFFFF"
-        }), 50, 5), this.buyButton.setPosition(this.backScroll.width - this.buyButton.getContent().width - .1 * this.backShopItem.getContent().height, this.backShopItem.getContent().height - this.buyButton.getContent().height + this.backShopItem.getContent().position.y), 
+            fill: "#FFFFFF",
+            stroke: "#006f00",
+            strokeThickness: 4
+        }), 50, 4), this.buyButton.setPosition(this.backScroll.width - this.buyButton.getContent().width - .1 * this.backShopItem.getContent().height, this.backShopItem.getContent().height - this.buyButton.getContent().height + this.backShopItem.getContent().position.y), 
         this.buyButton.clickCallback = this.buyButton.mouseDownCallback = function() {
             if (!(self.model.coast > APP.appModel.totalPoints)) {
                 APP.appModel.totalPoints -= self.model.coast, self.screen.updateCoins();
@@ -610,14 +612,27 @@ var Application = AbstractApplication.extend({
 }), Coin = Entity.extend({
     init: function(screen) {
         this._super(!0), this.updateable = !1, this.screen = screen, this.range = .05 * windowWidth, 
-        this.width = 1, this.height = 1, this.type = "coin", this.velocity.y = 3;
+        this.width = 1, this.height = 1, this.type = "coin", this.velocity.y = 3, this.particlesCounter = this.particlesCounterMax = 10;
     },
     build: function() {
         this.sprite = new PIXI.Sprite(new PIXI.Texture.fromImage("moeda.png")), this.sprite.anchor.x = .5, 
         this.sprite.anchor.y = .5, this.updateable = !0, this.collidable = !0;
     },
+    updateableParticles: function() {
+        if (this.particlesCounter--, this.particlesCounter <= 0) {
+            this.particlesCounter = this.particlesCounterMax;
+            var particle = new Particles({
+                x: 0,
+                y: 0
+            }, 180, "moeda.png", 0);
+            particle.maxScale = this.getContent().scale.x, particle.maxInitScale = particle.maxScale, 
+            particle.build(), particle.gravity = 0, particle.alphadecress = .04, particle.scaledecress = -.01, 
+            particle.setPosition(this.getPosition().x, this.getPosition().y), this.layer.addChild(particle), 
+            particle.getContent().parent.setChildIndex(particle.getContent(), 0);
+        }
+    },
     update: function() {
-        this._super(), this.getContent().position.y > windowHeight + 100 && (this.onList = !0, 
+        this._super(), this.updateableParticles(), this.getContent().position.y > windowHeight + 100 && (this.onList = !0, 
         this.kill = !0);
     },
     preKill: function() {
@@ -747,7 +762,7 @@ var Application = AbstractApplication.extend({
         this.horn = new PIXI.Sprite(new PIXI.Texture.fromImage(APP.currentHornModel.imgSource)), 
         this.felling = 1, this.fellingMaster = 10, this.lastKillAccum = 0, this.lastKillAccumMax = 150, 
         this.lastKillCounter = 0, this.nonKillOnusMax = 200, this.nonKillOnus = this.nonKillOnusMax, 
-        this.vecExpressions = [], this.sadArray = [ "uni_head_normal.png", "uni_head2_triste.png" ], 
+        this.vecExpressions = [], this.justSad = [ "uni_head2_triste.png" ], this.sadArray = [ "uni_head_normal.png", "uni_head2_triste.png" ], 
         this.happyArray = [ "uni_head_normal.png", "uni_head2_feliz.png" ], this.normalArray = [ "uni_head_normal.png" ], 
         this.head = new PIXI.Sprite(new PIXI.Texture.fromImage(this.normalArray[0])), this.vecExpressions = this.normalArray, 
         this.acumChangeExpressions = 5;
@@ -770,6 +785,11 @@ var Application = AbstractApplication.extend({
     },
     deaded: function() {
         this.fellingMaster -= 1.5;
+    },
+    sad: function() {
+        this.vecExpressions = this.justSad;
+        var texture = new PIXI.Texture.fromImage(this.vecExpressions[Math.floor(this.vecExpressions.length * Math.random())]);
+        this.head.setTexture(texture);
     },
     build: function() {
         this.sprite = new PIXI.Sprite(), this.sprite.anchor.x = .5, this.sprite.anchor.y = .5, 
@@ -1213,7 +1233,7 @@ var Application = AbstractApplication.extend({
         })), this.clothModels.push(new ClothModel({
             cover: "uni_corpo_bruxa.png",
             source: "uni_corpo_bruxa.png",
-            label: "+Coins"
+            label: "Witch"
         }, {
             id: 10 * this.clothModels.length,
             enabled: !1,
@@ -1221,7 +1241,7 @@ var Application = AbstractApplication.extend({
         })), this.clothModels.push(new ClothModel({
             cover: "uni_corpo_cowboy.png",
             source: "uni_corpo_cowboy.png",
-            label: "Size"
+            label: "Cowboy"
         }, {
             id: 10 * this.clothModels.length,
             enabled: !1,
@@ -1229,7 +1249,7 @@ var Application = AbstractApplication.extend({
         })), this.clothModels.push(new ClothModel({
             cover: "uni_corpo_elvis.png",
             source: "uni_corpo_elvis.png",
-            label: "Demage"
+            label: "Elvis"
         }, {
             id: 10 * this.clothModels.length,
             enabled: !1,
@@ -1237,7 +1257,7 @@ var Application = AbstractApplication.extend({
         })), this.clothModels.push(new ClothModel({
             cover: "uni_corpo_ironman.png",
             source: "uni_corpo_ironman.png",
-            label: "Freq."
+            label: "Iron"
         }, {
             id: 10 * this.clothModels.length,
             enabled: !1,
@@ -1245,7 +1265,7 @@ var Application = AbstractApplication.extend({
         })), this.clothModels.push(new ClothModel({
             cover: "uni_corpo_katyperry.png",
             source: "uni_corpo_katyperry.png",
-            label: "All Stats"
+            label: "Katy"
         }, {
             id: 10 * this.clothModels.length,
             enabled: !1,
@@ -1253,7 +1273,7 @@ var Application = AbstractApplication.extend({
         })), this.clothModels.push(new ClothModel({
             cover: "uni_corpo_super.png",
             source: "uni_corpo_super.png",
-            label: "All Stats"
+            label: "Sayajin"
         }, {
             id: 10 * this.clothModels.length,
             enabled: !1,
@@ -1419,9 +1439,11 @@ var Application = AbstractApplication.extend({
             sizePercent: .18,
             label: "Nuvem"
         }, {
-            vel: 1,
+            vel: 1.8,
             toNext: 80,
-            behaviour: null,
+            behaviour: new BirdBehaviourSinoid({
+                sinAcc: .05
+            }),
             money: 1,
             hp: 1,
             resistance: 4.5,
@@ -1434,7 +1456,7 @@ var Application = AbstractApplication.extend({
     addRandonBehaviour: function() {
         this.removeBehaviour();
         var rnd = Math.random();
-        return .25 > rnd ? (APP.currentHornModel.hasMultiple = 2, "MANY SHOOTS") : .5 > rnd ? (APP.currentHornModel.hasBounce = !0, 
+        return .25 > rnd ? (APP.currentHornModel.hasMultiple = 2, "DOUBLE SHOOTS") : .5 > rnd ? (APP.currentHornModel.hasBounce = !0, 
         "BOUNCE BALLS") : .75 > rnd ? (APP.currentHornModel.piercing = !0, "PIERCING SHOOT") : (APP.currentHornModel.sinoid = .5, 
         "CRAZY BULLET");
     },
@@ -1823,40 +1845,41 @@ var Application = AbstractApplication.extend({
             x: this.unihorn.getContent().position.x + (this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl,
             y: this.unihorn.getContent().position.y + this.unihorn.head.position.y * scl
         }, TweenLite.from(this.unihorn.getContent().position, .3, {
+            delay: .3,
             y: this.unihorn.getContent().position.y + this.unihorn.neck.height * scl
-        }), this.pauseButton = new DefaultButton("UI_button_pause_1.png", "UI_button_pause_1_over.png", "UI_button_pause_1_over.png"), 
-        this.pauseButton.build(), scaleConverter(this.pauseButton.getContent().width, windowWidth, .1, this.pauseButton), 
+        }), this.HUDback = new SimpleSprite("barra.png"), this.pauseButton = new DefaultButton("UI_button_pause_1.png", "UI_button_pause_1_over.png", "UI_button_pause_1_over.png"), 
+        this.pauseButton.build(), scaleConverter(this.pauseButton.getContent().height, this.HUDback.getContent().height, .8, this.pauseButton), 
         this.pauseButton.clickCallback = function() {
             self.updateable && self.pauseModal.show();
         }, this.HUDContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.HUDContainer), 
-        this.HUDback = new SimpleSprite("barra.png"), scaleConverter(this.HUDback.getContent().width, windowWidth, 1, this.HUDback), 
-        this.pauseButton.getContent().position.x = .1 * this.pauseButton.getContent().height, 
-        this.pauseButton.getContent().position.y = .1 * this.pauseButton.getContent().height, 
+        scaleConverter(this.HUDback.getContent().width, windowWidth, 1, this.HUDback), this.pauseButton.getContent().position.x = .1 * this.HUDback.getContent().height, 
+        this.pauseButton.getContent().position.y = .1 * this.HUDback.getContent().height, 
         this.coinsLabel = new PIXI.Text(APP.appModel.totalPoints, {
             align: "center",
-            font: "50px Vagron",
+            font: "32px Vagron",
             fill: "#FFF",
             wordWrap: !0,
             wordWrapWidth: 500,
             stroke: "#352745",
             strokeThickness: 5
         }), scaleConverter(this.coinsLabel.height, this.pauseButton.getContent().height, 1, this.coinsLabel), 
-        this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - .1 * this.pauseButton.getContent().height, 
-        this.coinsLabel.position.y = .1 * this.pauseButton.getContent().height, this.star = new SimpleSprite("star_coin.png"), 
+        this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - .1 * this.HUDback.getContent().height, 
+        this.coinsLabel.position.y = .1 * this.HUDback.getContent().height, this.star = new SimpleSprite("star_coin.png"), 
         this.star.getContent().position.x = this.coinsLabel.position.x - 1.1 * this.star.getContent().width, 
         this.star.getContent().position.y = this.coinsLabel.position.y + this.coinsLabel.height / 2 - this.star.getContent().height / 2, 
         this.HUDContainer.addChild(this.HUDback.getContent()), this.HUDContainer.addChild(this.pauseButton.getContent()), 
         this.HUDContainer.addChild(this.coinsLabel), this.HUDContainer.addChild(this.star.getContent()), 
         TweenLite.from(this.HUDContainer.position, .3, {
+            delay: .7,
             y: -50
         }), this.thumbContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.thumbContainer), 
         this.back = new PIXI.Graphics(), this.back.beginFill(0), this.back.drawRect(0, 0, windowWidth, 40), 
         this.thumbContainer.position.y = this.HUDContainer.height, this.badClouds = [], 
         this.maxClouds = 10, this.arcoiris = new SimpleSprite("arcoiris_redondo.png"), this.thumbContainer.addChild(this.arcoiris.getContent()), 
         scaleConverter(this.arcoiris.getContent().width, windowWidth, 1.4, this.arcoiris), 
-        this.arcoiris.getContent().position.x = .2 * -windowWidth, TweenLite.from(this.arcoiris.getContent().position, .3, {
-            delay: .2,
-            y: -50
+        this.arcoiris.getContent().position.x = .2 * -windowWidth, TweenLite.from(this.arcoiris.getContent(), .3, {
+            delay: 1,
+            alpha: 0
         }), this.fromTween(), this.end = !1, this.startCoinMonitore = !1, this.blockPause = !1, 
         this.specAccMax = 350, this.specAcc = 0, this.pauseModal = new PauseModal(this), 
         this.endModal = new EndModal(this);
@@ -1906,9 +1929,9 @@ var Application = AbstractApplication.extend({
             tempCoin.getContent().position.x = target.position.x, tempCoin.getContent().position.y = target.position.y, 
             self.layer.addChild(tempCoin), self.arrayCoins.push(tempCoin), self.startCoinMonitore = !0;
         }
-        this.end = !0, this.spawner.killAll();
+        this.end = !0, this.spawner.killAll(), this.specialLabel.alpha = 0, APP.appModel.removeBehaviour();
         var self = this;
-        self.arrayCoins = [];
+        self.arrayCoins = [], this.unihorn.sad();
         for (var times = [], j = this.badClouds.length - 1; j >= 0; j--) times.push(j);
         times = shuffle(times);
         for (var i = this.badClouds.length - 1; i >= 0; i--) TweenLite.to(this.badClouds[i], .3, {
@@ -1934,7 +1957,7 @@ var Application = AbstractApplication.extend({
             this.specAcc > 0 ? this.specAcc-- : APP.appModel.removeBehaviour();
             this.fireAcum > 0 ? this.fireAcum-- : this.touchDown && (this.shoot(this.mouseAngle), 
             this.fireAcum = this.fireAcumMax), this.coinsLabel.setText(APP.appModel.totalPoints), 
-            this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - .1 * this.pauseButton.getContent().height, 
+            this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - .1 * this.HUDback.getContent().height, 
             this.star.getContent().position.x = this.coinsLabel.position.x - 1.1 * this.star.getContent().width;
         }
     },
@@ -2285,20 +2308,20 @@ var Application = AbstractApplication.extend({
                 self.screen.updateable = !0, self.screen.reset();
             });
         }, this.barraTop = new SimpleSprite("barra.png"), this.topHUD.addChild(this.barraTop.getContent()), 
-        this.topHUD.addChild(this.closeButton.getContent()), scaleConverter(this.closeButton.getContent().width, windowWidth, .1, this.closeButton), 
-        this.closeButton.getContent().position.x = this.topHUD.width - this.closeButton.getContent().width - .1 * this.closeButton.getContent().height, 
-        this.closeButton.getContent().position.y = .1 * this.closeButton.getContent().height;
+        this.topHUD.addChild(this.closeButton.getContent()), scaleConverter(this.closeButton.getContent().height, this.barraTop.getContent().height, .8, this.closeButton), 
+        this.closeButton.getContent().position.x = this.topHUD.width - this.closeButton.getContent().width - .1 * this.barraTop.getContent().height, 
+        this.closeButton.getContent().position.y = .1 * this.barraTop.getContent().height;
         this.backScroll.width / 3;
         this.textScreen = new PIXI.Text(APP.appModel.totalPoints, {
             align: "center",
-            font: "50px Vagron",
+            font: "32px Vagron",
             fill: "#FFF",
             wordWrap: !0,
             wordWrapWidth: 500,
             stroke: "#352745",
             strokeThickness: 5
         }), scaleConverter(this.textScreen.height, this.closeButton.getContent().height, 1, this.textScreen), 
-        this.textScreen.position.x = this.topHUD.width - this.textScreen.width - .1 * this.closeButton.getContent().height, 
+        this.textScreen.position.x = this.topHUD.width - this.textScreen.width - .1 * this.barraTop.getContent().height, 
         this.textScreen.position.y = this.closeButton.getContent().position.y, this.topHUD.addChild(this.textScreen), 
         this.star = new SimpleSprite("star_coin.png"), this.topHUD.addChild(this.star.getContent()), 
         this.star.getContent().position.x = this.textScreen.position.x - 1.1 * this.star.getContent().width, 
@@ -2313,12 +2336,12 @@ var Application = AbstractApplication.extend({
         }, this.toWear = new DefaultButton("aba_clothes_off.png", "aba_clothes_off.png"), 
         this.toWear.build(), this.toWear.clickCallback = function() {
             TweenLite.to(self.scrollContainer.position, .5, {
-                y: -self.clothesLabel.position.y + self.marginTopBottom
+                y: -self.clothTitle.getContent().position.y + self.marginTopBottom
             });
         }, this.toLand = new DefaultButton("aba_lands_off.png", "aba_lands_off.png"), this.toLand.build(), 
         this.toLand.clickCallback = function() {
             TweenLite.to(self.scrollContainer.position, .5, {
-                y: -self.envLabel.position.y + self.marginTopBottom
+                y: -self.envTitle.getContent().position.y + self.marginTopBottom
             });
         }, this.baseHUD.addChild(this.toHorn.getContent()), this.baseHUD.addChild(this.toWear.getContent()), 
         this.baseHUD.addChild(this.toLand.getContent());
@@ -2344,56 +2367,32 @@ var Application = AbstractApplication.extend({
         10), tempShopItem = null;
         this.hornList = [];
         var i = 0;
-        for (this.hornLabel = new PIXI.Text("HORNS", {
-            align: "center",
-            font: "50px Vagron",
-            fill: "#FFF",
-            wordWrap: !0,
-            wordWrapWidth: 500
-        }), scaleConverter(this.hornLabel.height, this.closeButton.getContent().height, 1.2, this.hornLabel), 
-        this.hornLabel.position.x = windowWidth / 2 - this.hornLabel.width / 2, this.hornLabel.position.y = this.marginTopBottom, 
-        this.backHorn = new PIXI.Graphics(), this.backHorn.beginFill(0), this.backHorn.drawRect(0, 0, windowWidth, 1.4 * this.hornLabel.height), 
-        this.backHorn.alpha = .5, this.backHorn.position.y = this.hornLabel.position.y - .2 * this.hornLabel.height, 
-        this.scrollContainer.addChild(this.backHorn), this.scrollContainer.addChild(this.hornLabel), 
+        for (this.hornTitle = new SimpleSprite("titulo_magichorns.png"), scaleConverter(this.hornTitle.getContent().width, windowWidth, 1, this.hornTitle), 
+        this.hornTitle.getContent().position.x = windowWidth / 2 - this.hornTitle.getContent().width / 2, 
+        this.hornTitle.getContent().position.y = this.marginTopBottom, this.scrollContainer.addChild(this.hornTitle.getContent()), 
         i = 0; i < APP.appModel.hornModels.length; i++) tempShopItem = new ShopItem(this, "horn", APP.appModel.hornModels, this.hornList), 
         tempShopItem.build(APP.appModel.hornModels[i]), this.hornList.push(tempShopItem), 
         this.scrollContainer.addChild(tempShopItem.getContent()), scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, .3, tempShopItem), 
         _s = tempShopItem.getContent().height + marginItens, tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2, 
-        tempShopItem.getContent().position.y = i * _s + 1.5 * this.marginTopBottom + this.hornLabel.height;
+        tempShopItem.getContent().position.y = i * _s + 1.5 * this.marginTopBottom + this.hornTitle.getContent().height;
         var lastHorn = tempShopItem.getContent().position.y + tempShopItem.getContent().height;
-        for (this.clothesLabel = new PIXI.Text("CLOTHES", {
-            align: "center",
-            font: "50px Vagron",
-            fill: "#FFF",
-            wordWrap: !0,
-            wordWrapWidth: 500
-        }), scaleConverter(this.clothesLabel.height, this.closeButton.getContent().height, 1.2, this.clothesLabel), 
-        this.clothesLabel.position.x = windowWidth / 2 - this.clothesLabel.width / 2, this.clothesLabel.position.y = this.marginTopBottom / 2 + lastHorn, 
-        this.backCloth = new PIXI.Graphics(), this.backCloth.beginFill(0), this.backCloth.drawRect(0, 0, windowWidth, 1.4 * this.clothesLabel.height), 
-        this.backCloth.alpha = .5, this.backCloth.position.y = this.clothesLabel.position.y - .2 * this.clothesLabel.height, 
-        this.scrollContainer.addChild(this.backCloth), this.scrollContainer.addChild(this.clothesLabel), 
+        for (this.clothTitle = new SimpleSprite("titulo_coolclothes.png"), scaleConverter(this.clothTitle.getContent().width, windowWidth, 1, this.clothTitle), 
+        this.clothTitle.getContent().position.x = windowWidth / 2 - this.clothTitle.getContent().width / 2, 
+        this.clothTitle.getContent().position.y = this.marginTopBottom / 2 + lastHorn, this.scrollContainer.addChild(this.clothTitle.getContent()), 
         this.clothList = [], i = 0; i < APP.appModel.clothModels.length; i++) tempShopItem = new ShopItem(this, "cloth", APP.appModel.clothModels, this.clothList), 
         tempShopItem.build(APP.appModel.clothModels[i]), this.clothList.push(tempShopItem), 
         this.scrollContainer.addChild(tempShopItem.getContent()), scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, .3, tempShopItem), 
         _s = tempShopItem.getContent().height + marginItens, tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2, 
-        tempShopItem.getContent().position.y = i * _s + this.marginTopBottom + lastHorn + this.clothesLabel.height;
+        tempShopItem.getContent().position.y = i * _s + this.marginTopBottom + lastHorn + this.clothTitle.getContent().height;
         var lastCloath = tempShopItem.getContent().position.y + tempShopItem.getContent().height;
-        for (this.envLabel = new PIXI.Text("LANDS", {
-            align: "center",
-            font: "50px Vagron",
-            fill: "#FFF",
-            wordWrap: !0,
-            wordWrapWidth: 500
-        }), scaleConverter(this.envLabel.height, this.closeButton.getContent().height, 1.2, this.envLabel), 
-        this.envLabel.position.x = windowWidth / 2 - this.envLabel.width / 2, this.envLabel.position.y = this.marginTopBottom / 2 + lastCloath, 
-        this.backEnv = new PIXI.Graphics(), this.backEnv.beginFill(0), this.backEnv.drawRect(0, 0, windowWidth, 1.4 * this.envLabel.height), 
-        this.backEnv.alpha = .5, this.backEnv.position.y = this.envLabel.position.y - .2 * this.envLabel.height, 
-        this.scrollContainer.addChild(this.backEnv), this.scrollContainer.addChild(this.envLabel), 
+        for (this.envTitle = new SimpleSprite("titulo_greatlands.png"), scaleConverter(this.envTitle.getContent().width, windowWidth, 1, this.envTitle), 
+        this.envTitle.getContent().position.x = windowWidth / 2 - this.envTitle.getContent().width / 2, 
+        this.envTitle.getContent().position.y = this.marginTopBottom / 2 + lastCloath, this.scrollContainer.addChild(this.envTitle.getContent()), 
         this.envList = [], i = 0; i < APP.appModel.envModels.length; i++) tempShopItem = new ShopItem(this, "env", APP.appModel.envModels, this.envList), 
         tempShopItem.build(APP.appModel.envModels[i]), this.envList.push(tempShopItem), 
         this.scrollContainer.addChild(tempShopItem.getContent()), scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, .3, tempShopItem), 
         _s = tempShopItem.getContent().height + marginItens, tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2, 
-        tempShopItem.getContent().position.y = i * _s + this.marginTopBottom + lastCloath + this.envLabel.height;
+        tempShopItem.getContent().position.y = i * _s + this.marginTopBottom + lastCloath + this.envTitle.getContent().height;
         this.backScroll.height = this.scrollContainer.height + 100;
     },
     show: function() {

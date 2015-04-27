@@ -89,7 +89,7 @@ var AppModel = Class.extend({
 			{
 				cover:'uni_corpo_bruxa.png',
 				source:'uni_corpo_bruxa.png',
-				label:'+Coins'
+				label:'Witch'
 			},
 			{
 				id:this.clothModels.length * 10,
@@ -106,7 +106,7 @@ var AppModel = Class.extend({
 			{
 				cover:'uni_corpo_cowboy.png',
 				source:'uni_corpo_cowboy.png',
-				label:'Size'
+				label:'Cowboy'
 			},
 			{
 				id:this.clothModels.length * 10,
@@ -123,7 +123,7 @@ var AppModel = Class.extend({
 			{
 				cover:'uni_corpo_elvis.png',
 				source:'uni_corpo_elvis.png',
-				label:'Demage'
+				label:'Elvis'
 			},
 			{
 				id:this.clothModels.length * 10,
@@ -140,7 +140,7 @@ var AppModel = Class.extend({
 			{
 				cover:'uni_corpo_ironman.png',
 				source:'uni_corpo_ironman.png',
-				label:'Freq.'
+				label:'Iron'
 			},
 			{
 				id:this.clothModels.length * 10,
@@ -157,7 +157,7 @@ var AppModel = Class.extend({
 			{
 				cover:'uni_corpo_katyperry.png',
 				source:'uni_corpo_katyperry.png',
-				label:'All Stats'
+				label:'Katy'
 			},
 			{
 				id:this.clothModels.length * 10,
@@ -175,7 +175,7 @@ var AppModel = Class.extend({
 			{
 				cover:'uni_corpo_super.png',
 				source:'uni_corpo_super.png',
-				label:'All Stats'
+				label:'Sayajin'
 			},
 			{
 				id:this.clothModels.length * 10,
@@ -420,9 +420,9 @@ var AppModel = Class.extend({
 				label:'Nuvem'
 			},
 			{
-				vel: 1,
+				vel: 1.8,
 				toNext: 80,
-				behaviour: null,
+				behaviour: new BirdBehaviourSinoid({sinAcc:0.05}),
 				money:1,
 				hp:1,
 				resistance: 4.5,
@@ -450,7 +450,7 @@ var AppModel = Class.extend({
 		var rnd = Math.random();
 		if(rnd < 1/4){
 			APP.currentHornModel.hasMultiple=2;
-			return 'MANY SHOOTS';
+			return 'DOUBLE SHOOTS';
 		}
 		else if(rnd < 2/4){
 			APP.currentHornModel.hasBounce=true;

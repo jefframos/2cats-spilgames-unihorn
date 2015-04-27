@@ -211,7 +211,7 @@ var GameScreen = AbstractScreen.extend({
         y:(this.unihorn.getContent().position.y)+ (this.unihorn.head.position.y * scl)};// - this.unihorn.head.position.y * scl};
         // y:windowHeight - (this.unihorn.head.position.y * this.unihorn.head.anchor.y) * scl};// - this.unihorn.head.position.y * scl};
         
-        TweenLite.from(this.unihorn.getContent().position, 0.3, {y:this.unihorn.getContent().position.y + (this.unihorn.neck.height * scl)});
+        TweenLite.from(this.unihorn.getContent().position, 0.3, {delay: 0.3, y:this.unihorn.getContent().position.y + (this.unihorn.neck.height * scl)});
         // test = new PIXI.Graphics();
         // test.beginFill(0);
         // test.drawRect(this.hornPos.x - 5,this.hornPos.y - 5,10, 10);
@@ -219,13 +219,16 @@ var GameScreen = AbstractScreen.extend({
 
         
 
+        this.HUDback = new SimpleSprite('barra.png');
         
         
 
 
         this.pauseButton = new DefaultButton('UI_button_pause_1.png', 'UI_button_pause_1_over.png', 'UI_button_pause_1_over.png');
         this.pauseButton.build();
-        scaleConverter(this.pauseButton.getContent().width, windowWidth, 0.1, this.pauseButton);
+        // scaleConverter(this.pauseButton.getContent().width, windowWidth, 0.1, this.pauseButton);
+
+        scaleConverter(this.pauseButton.getContent().height, this.HUDback.getContent().height, 0.8, this.pauseButton);
         // this.pauseButton.setPosition(20,windowHeight - this.pauseButton.getContent().height - 20);
       
         this.pauseButton.clickCallback = function(){
@@ -245,18 +248,17 @@ var GameScreen = AbstractScreen.extend({
         // this.HUDback.drawRect(0,0,windowWidth, this.pauseButton.getContent().height * 1.2);
         // this.HUDback.alpha = 0.5;
 
-        this.HUDback = new SimpleSprite('barra.png');
         // scaleConverter(this.HUDback.getContent().height, this.pauseButton.getContent().height, 1.3, this.HUDback);
         scaleConverter(this.HUDback.getContent().width, windowWidth, 1, this.HUDback);
 
-        this.pauseButton.getContent().position.x = this.pauseButton.getContent().height * 0.1;
-        this.pauseButton.getContent().position.y = this.pauseButton.getContent().height * 0.1;
+        this.pauseButton.getContent().position.x = this.HUDback.getContent().height * 0.1;
+        this.pauseButton.getContent().position.y = this.HUDback.getContent().height * 0.1;
 
 
-        this.coinsLabel = new PIXI.Text(APP.appModel.totalPoints, {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500, stroke:'#352745', strokeThickness:5});
+        this.coinsLabel = new PIXI.Text(APP.appModel.totalPoints, {align:'center',font:'32px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500, stroke:'#352745', strokeThickness:5});
         scaleConverter(this.coinsLabel.height, this.pauseButton.getContent().height, 1, this.coinsLabel);
-        this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - this.pauseButton.getContent().height * 0.1;
-        this.coinsLabel.position.y = this.pauseButton.getContent().height * 0.1;
+        this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - this.HUDback.getContent().height * 0.1;
+        this.coinsLabel.position.y = this.HUDback.getContent().height * 0.1;
 
         this.star = new SimpleSprite('star_coin.png');
 
@@ -268,7 +270,7 @@ var GameScreen = AbstractScreen.extend({
         this.HUDContainer.addChild(this.coinsLabel);
         this.HUDContainer.addChild(this.star.getContent());
 
-        TweenLite.from(this.HUDContainer.position, 0.3, {y:-50});
+        TweenLite.from(this.HUDContainer.position, 0.3, {delay:0.7, y:-50});
 
         // this.HUDContainer.position.y = windowHeight - this.HUDContainer.height;
 
@@ -287,7 +289,7 @@ var GameScreen = AbstractScreen.extend({
         scaleConverter(this.arcoiris.getContent().width, windowWidth, 1.4, this.arcoiris);
         this.arcoiris.getContent().position.x = -windowWidth * 0.2;
 
-        TweenLite.from(this.arcoiris.getContent().position, 0.3, {delay:0.2, y:-50});
+        TweenLite.from(this.arcoiris.getContent(), 0.3, {delay:1, alpha:0});
         // this.arcoiris.getContent().position.y = this.HUDContainer.height;
 
 
@@ -367,8 +369,11 @@ var GameScreen = AbstractScreen.extend({
     endGame:function(){
         this.end = true;
         this.spawner.killAll();
+        this.specialLabel.alpha = 0;
+        APP.appModel.removeBehaviour();
         var self = this;
         self.arrayCoins = [];
+        this.unihorn.sad();
         function onComplete(target){
             if(target && target.parent){
                 target.parent.removeChild(target);
@@ -433,7 +438,7 @@ var GameScreen = AbstractScreen.extend({
             }
         }
         this.coinsLabel.setText(APP.appModel.totalPoints);
-        this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - this.pauseButton.getContent().height * 0.1;
+        this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - this.HUDback.getContent().height * 0.1;
         this.star.getContent().position.x = this.coinsLabel.position.x -this.star.getContent().width * 1.1;
     },
     shoot:function(angle) {

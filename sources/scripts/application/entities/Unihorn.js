@@ -21,6 +21,7 @@ var Unihorn = Entity.extend({
         this.nonKillOnus = this.nonKillOnusMax;
 
         this.vecExpressions = [];
+        this.justSad = ['uni_head2_triste.png'];
         this.sadArray = ['uni_head_normal.png', 'uni_head2_triste.png'];
         this.happyArray = ['uni_head_normal.png', 'uni_head2_feliz.png'];
         this.normalArray = ['uni_head_normal.png'];
@@ -58,6 +59,11 @@ var Unihorn = Entity.extend({
         this.fellingMaster -= 1.5;
         // this.felling --;
         // this.lastKillCounter = 0;
+    },
+    sad: function(){
+        this.vecExpressions = this.justSad;
+        var texture = new PIXI.Texture.fromImage(this.vecExpressions[Math.floor(this.vecExpressions.length * Math.random())]);
+        this.head.setTexture(texture);
     },
     build: function(){
         this.sprite = new PIXI.Sprite();

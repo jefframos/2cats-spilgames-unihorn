@@ -80,7 +80,7 @@ var ShopItem = Class.extend({
 
 		this.buyButton = new DefaultButton('botao_buy.png', 'botao_buy.png');
 		this.buyButton.build();
-		this.buyButton.addLabel(new PIXI.Text(this.model.coast, {font:'30px Vagron', fill:'#FFFFFF'}), 50,5);
+		this.buyButton.addLabel(new PIXI.Text(this.model.coast, {font:'30px Vagron', fill:'#FFFFFF', stroke:'#006f00', strokeThickness:4}), 50,4);
 		this.buyButton.setPosition(this.backScroll.width - this.buyButton.getContent().width - this.backShopItem.getContent().height * 0.1,this.backShopItem.getContent().height - this.buyButton.getContent().height + this.backShopItem.getContent().position.y);//this.backBars.getContent().height - 20 - this.continueButton.height / 2 - 10);
 		this.buyButton.clickCallback = this.buyButton.mouseDownCallback = function(){
 			// alert(self.model.coast);

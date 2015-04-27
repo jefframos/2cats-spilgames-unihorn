@@ -9,6 +9,8 @@ var Coin = Entity.extend({
         this.height = 1;
         this.type = 'coin';
         this.velocity.y = 3;
+
+        this.particlesCounter = this.particlesCounterMax = 10;
     },
     build: function(){
 
@@ -21,8 +23,30 @@ var Coin = Entity.extend({
         this.collidable = true;
 
     },
+    updateableParticles:function(){
+        this.particlesCounter --;
+        if(this.particlesCounter <= 0)
+        {
+            this.particlesCounter = this.particlesCounterMax;
+            //efeito 3
+            var particle = new Particles({x: 0, y:0}, 180, 'moeda.png', 0);
+            particle.maxScale = this.getContent().scale.x;
+            particle.maxInitScale = particle.maxScale;
+            // particle.growType = -1;
+            particle.build();
+            particle.gravity = 0.0;
+            particle.alphadecress = 0.04;
+            particle.scaledecress = -0.01;
+            particle.setPosition(this.getPosition().x,
+                this.getPosition().y);
+            this.layer.addChild(particle);
+            particle.getContent().parent.setChildIndex(particle.getContent(), 0);
+        }
+    },
     update: function(){
         this._super();
+
+        this.updateableParticles();
         // if(this.velocity.y < this.vel){
         //     this.velocity.y += 0.1;
         // }else{
