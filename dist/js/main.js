@@ -682,7 +682,7 @@ var Application = AbstractApplication.extend({
             motionState2.build("state2", [ this.model.imgSource[1] ], 5, !0, null), this.spritesheet.addAnimation(motionState2);
         }
         this.getContent().addChild(this.spritesheet.container), this.spritesheet.setPosition(0, 0), 
-        scaleConverter(this.spritesheet.container.width, windowWidth, this.model.sizePercent, this.getContent()), 
+        this.scaleMax = scaleConverter(this.spritesheet.container.width, windowWidth, this.model.sizePercent, this.getContent()), 
         this.collideArea = new PIXI.Rectangle(-50, -50, windowWidth + 100, windowHeight + 100);
     },
     update: function() {
@@ -704,7 +704,11 @@ var Application = AbstractApplication.extend({
             }
             this.bounce = !1;
         }
-        this.velocity.y -= this.resistance, this.hp <= 0 && this.preKill();
+        this.getContent().scale.x = this.getContent().scale.y = this.scaleMax / 1.2, TweenLite.to(this.getContent().scale, .8, {
+            x: this.scaleMax,
+            y: this.scaleMax,
+            ease: "easeOutElastic"
+        }), this.velocity.y -= this.resistance, this.hp <= 0 && this.preKill();
     },
     removeSprite: function() {
         this.updateable = !1, this.collidable = !1, this.removed = !0, this.onList = !0, 
@@ -994,9 +998,14 @@ var Application = AbstractApplication.extend({
         if (this.getPosition().y < .15 * windowHeight) return void (this.kill = !0);
         if (this.collidable) for (var pass = !0, i = arrayCollide.length - 1; i >= 0; i--) if ("enemy" === arrayCollide[i].type) {
             if (this.hasCollideEntity.length > 0) for (var j = this.hasCollideEntity.length - 1; j >= 0; j--) this.hasCollideEntity[j] === arrayCollide[i] && (pass = !1);
-            pass && (this.hasBounce && (this.velocity.x *= -1, this.startVel.x *= -1), this.piercing || arrayCollide[i].bounce || this.hasBounce || this.preKill(), 
-            arrayCollide[i].bounce && (this.velocity.x *= -1), this.hasCollideEntity.push(arrayCollide[i]), 
-            arrayCollide[i].hurt(this.demage));
+            if (pass) {
+                if (this.hasBounce && (this.velocity.x *= -1, this.startVel.x *= -1), this.piercing || arrayCollide[i].bounce || this.hasBounce || this.preKill(), 
+                arrayCollide[i].bounce) {
+                    var angle = degreesToRadians(45);
+                    this.velocity.x = 5 * (this.velocity.x < 0 ? angle : -angle);
+                }
+                this.hasCollideEntity.push(arrayCollide[i]), arrayCollide[i].hurt(this.demage);
+            }
         } else "coin" === arrayCollide[i].type && (this.preKill(), arrayCollide[i].preKill());
     },
     preKill: function() {
@@ -1488,7 +1497,7 @@ var Application = AbstractApplication.extend({
         var max = this.enemyProbs.length;
         this.currentHorde < max && (max = this.currentHorde);
         for (var id = 99999; id > this.totalEnemy - 1; ) id = this.enemyProbs[Math.floor(max * Math.random())];
-        var enemy = new Enemy(this.currentHorde % 10 === 0 ? this.luckyCloud : this.enemyModels[id], screen);
+        var enemy = new Enemy(this.currentHorde % 18 === 0 ? this.luckyCloud : this.enemyModels[id], screen);
         return enemy.id = id, this.lastID = id, enemy;
     },
     ableNewBird: function(birdModel) {

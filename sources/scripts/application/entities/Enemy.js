@@ -56,13 +56,14 @@ var Enemy = Entity.extend({
         this.spritesheet.setPosition(0,0);
 
         // console.log(this.model.sizePercent);
-        scaleConverter(this.spritesheet.container.width, windowWidth, this.model.sizePercent, this.getContent());
+        this.scaleMax = scaleConverter(this.spritesheet.container.width, windowWidth, this.model.sizePercent, this.getContent());
 
         this.collideArea = new PIXI.Rectangle(-50, -50, windowWidth + 100, windowHeight + 100);
 
     },
     update: function(){
         this.range = this.spritesheet.container.width / 2;
+        // this.spritesheet.container.tint = 0xFF0000;
         this._super();
         if(this.velocity.y < this.vel){
             this.velocity.y += 0.1;
@@ -101,6 +102,10 @@ var Enemy = Entity.extend({
 
             this.bounce = false;
         }
+        // this.sprite.tint = 0xFF0000;
+        // this.spritesheet.container.tint = 0xFF0000;
+        this.getContent().scale.x = this.getContent().scale.y = this.scaleMax / 1.2;
+        TweenLite.to(this.getContent().scale, 0.8 ,{x:this.scaleMax, y:this.scaleMax, ease:'easeOutElastic'});
         this.velocity.y -= this.resistance;
         if(this.hp <= 0){
             this.preKill();

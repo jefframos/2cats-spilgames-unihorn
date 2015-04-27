@@ -201,7 +201,8 @@ var Bullet = Entity.extend({
                             this.preKill();
                         }
                         if(arrayCollide[i].bounce){
-                            this.velocity.x *= -1;
+                            var angle = degreesToRadians(45);
+                            this.velocity.x = 5 * (this.velocity.x < 0?angle:-angle);
                         }
                         this.hasCollideEntity.push(arrayCollide[i]);
                         arrayCollide[i].hurt(this.demage);
