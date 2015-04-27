@@ -34,20 +34,26 @@ var EndModal = Class.extend({
             });
         };
 
-        this.barraTop = new SimpleSprite('barra_bottom.png');
+        this.barraTop = new SimpleSprite('barra.png');
         this.topHUD.addChild(this.barraTop.getContent());
-        this.barraTop.getContent().scale.y = -1;
-        this.barraTop.getContent().position.y = this.barraTop.getContent().height * -1;//this.barraTop.getContent().height;
+        // this.barraTop.getContent().scale.y = -1;
+        // this.barraTop.getContent().position.y = this.barraTop.getContent().height * -1;//this.barraTop.getContent().height;
 
         this.topHUD.addChild(this.closeButton.getContent());
-        scaleConverter(this.closeButton.getContent().height, windowHeight, 0.06, this.closeButton);
+        // scaleConverter(this.closeButton.getContent().height, windowHeight, 0.06, this.closeButton);
+
+        scaleConverter(this.closeButton.getContent().width, windowWidth, 0.1, this.closeButton);
+
+        this.closeButton.getContent().position.x = this.closeButton.getContent().height * 0.1;
+        this.closeButton.getContent().position.y = this.closeButton.getContent().height * 0.1;
 
 
         var thirdPart = this.backScroll.width / 3;
-        this.textScreen = new PIXI.Text(APP.appModel.totalPoints, {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500, stroke:'#352745', strokeTickness:3});
+        this.textScreen = new PIXI.Text(APP.appModel.totalPoints, {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500, stroke:'#352745', strokeThickness:5});
         scaleConverter(this.textScreen.height, this.closeButton.getContent().height, 1, this.textScreen);
-        this.textScreen.position.x = windowWidth - this.textScreen.width - 20;
-        this.textScreen.position.y = 20;
+        this.textScreen.position.x = this.topHUD.width - this.textScreen.width - this.closeButton.getContent().height * 0.1;
+        this.textScreen.position.y = this.closeButton.getContent().position.y;
+
         this.topHUD.addChild(this.textScreen);
         
         this.star = new SimpleSprite('star_coin.png');
@@ -58,37 +64,37 @@ var EndModal = Class.extend({
 
         this.addShopList();
 
-        this.fbButton = new DefaultButton('UI_button_facebook_1.png', 'UI_button_facebook_1.png');
-        this.fbButton.build();
-        this.fbButton.setPosition(thirdPart * 1 - thirdPart /2 - this.fbButton.getContent().width/2,this.backScroll.height - this.fbButton.getContent().height - 20);//this.backBars.getContent().height - 20 - this.rankingButton.height / 2 - 10);
-        this.fbButton.clickCallback = function(){
-            // self.hide(function(){
-            //  // self.screen.hideBars();
-            //  self.screen.screenManager.prevScreen();
-            // });
-        };
-        this.scrollContainer.addChild(this.fbButton.getContent());
+        // this.fbButton = new DefaultButton('UI_button_facebook_1.png', 'UI_button_facebook_1.png');
+        // this.fbButton.build();
+        // this.fbButton.setPosition(thirdPart * 1 - thirdPart /2 - this.fbButton.getContent().width/2,this.backScroll.height - this.fbButton.getContent().height - 20);//this.backBars.getContent().height - 20 - this.rankingButton.height / 2 - 10);
+        // this.fbButton.clickCallback = function(){
+        //     // self.hide(function(){
+        //     //  // self.screen.hideBars();
+        //     //  self.screen.screenManager.prevScreen();
+        //     // });
+        // };
+        // this.scrollContainer.addChild(this.fbButton.getContent());
 
-        this.rankingButton = new DefaultButton('UI_button_ranking_1.png', 'UI_button_ranking_1.png');
-        this.rankingButton.build();
-        scaleConverter(this.rankingButton.getContent().width, this.backScroll.width, 0.3, this.rankingButton);
-        this.rankingButton.setPosition(thirdPart * 2 - thirdPart /2 -  this.rankingButton.getContent().width/2,this.backScroll.height - this.rankingButton.getContent().height - 20);
-        this.rankingButton.clickCallback = function(){
-            // self.hide(function(){self.screen.updateable = true;});
-        };
-        // this.scrollContainer.addChild(this.rankingButton.getContent());
+        // this.rankingButton = new DefaultButton('UI_button_ranking_1.png', 'UI_button_ranking_1.png');
+        // this.rankingButton.build();
+        // scaleConverter(this.rankingButton.getContent().width, this.backScroll.width, 0.3, this.rankingButton);
+        // this.rankingButton.setPosition(thirdPart * 2 - thirdPart /2 -  this.rankingButton.getContent().width/2,this.backScroll.height - this.rankingButton.getContent().height - 20);
+        // this.rankingButton.clickCallback = function(){
+        //     // self.hide(function(){self.screen.updateable = true;});
+        // };
+        // // this.scrollContainer.addChild(this.rankingButton.getContent());
 
-        this.twitterButton = new DefaultButton('UI_button_twitter_1.png', 'UI_button_twitter_1.png');
-        this.twitterButton.build();
-        this.twitterButton.setPosition(thirdPart * 3 - thirdPart /2 -  this.twitterButton.getContent().width/2,this.backScroll.height - this.twitterButton.getContent().height - 20);//this.backBars.getContent().height / 2 - this.rankingButton.height / 2 - 10);
+        // this.twitterButton = new DefaultButton('UI_button_twitter_1.png', 'UI_button_twitter_1.png');
+        // this.twitterButton.build();
+        // this.twitterButton.setPosition(thirdPart * 3 - thirdPart /2 -  this.twitterButton.getContent().width/2,this.backScroll.height - this.twitterButton.getContent().height - 20);//this.backBars.getContent().height / 2 - this.rankingButton.height / 2 - 10);
 
-        this.twitterButton.clickCallback = function(){
-            // self.hide(function(){
-            //  self.screen.updateable = true;
-            //  self.screen.reset();
-            // });
-        };
-        this.scrollContainer.addChild(this.twitterButton.getContent());
+        // this.twitterButton.clickCallback = function(){
+        //     // self.hide(function(){
+        //     //  self.screen.updateable = true;
+        //     //  self.screen.reset();
+        //     // });
+        // };
+        // this.scrollContainer.addChild(this.twitterButton.getContent());
 
         this.baseHUD = new PIXI.DisplayObjectContainer();
         this.barraBottom = new SimpleSprite('barra_bottom.png');
@@ -147,24 +153,33 @@ var EndModal = Class.extend({
     },
     updateCoins:function(){
         this.textScreen.setText(APP.appModel.totalPoints);
-        this.textScreen.position.x = windowWidth - this.textScreen.width - 20;
-        this.textScreen.position.y = 20;
+        this.textScreen.position.x = this.topHUD.width - this.textScreen.width - this.closeButton.getContent().height * 0.1;
+        this.textScreen.position.y = this.closeButton.getContent().position.y;
     },
     addShopList:function(){
 
         // this.scrollContainer;
         var _s = 0;
-        this.marginTopBottom = windowHeight * 0.2;
+        this.marginTopBottom = windowHeight * 0.15;
         var totItens = APP.appModel.hornModels.length + APP.appModel.clothModels.length + APP.appModel.envModels.length;
         var marginItens = 10;//20;
         var tempShopItem = null;
         this.hornList = [];
         var i = 0;
 
-        this.hornLabel = new PIXI.Text('HORNS', {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500});
-        scaleConverter(this.hornLabel.height, this.closeButton.getContent().height, 1, this.hornLabel);
+        
+        this.hornLabel = new PIXI.Text('HORNS', {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500});//, stroke:'#800012'});//, strokeThickness:5});
+        scaleConverter(this.hornLabel.height, this.closeButton.getContent().height, 1.2, this.hornLabel);
         this.hornLabel.position.x = windowWidth / 2 - this.hornLabel.width / 2 ;
         this.hornLabel.position.y = this.marginTopBottom;// * 2;
+        
+        this.backHorn = new PIXI.Graphics();
+        this.backHorn.beginFill(0x000000);
+        this.backHorn.drawRect(0,0,windowWidth, this.hornLabel.height * 1.4);
+        this.backHorn.alpha = 0.5;
+        this.backHorn.position.y = this.hornLabel.position.y - this.hornLabel.height * 0.2;
+        this.scrollContainer.addChild(this.backHorn);
+
         this.scrollContainer.addChild(this.hornLabel);
 
         for (i = 0; i < APP.appModel.hornModels.length; i++) {
@@ -175,15 +190,23 @@ var EndModal = Class.extend({
             scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, 0.3, tempShopItem);
             _s = (tempShopItem.getContent().height + marginItens);
             tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2;
-            tempShopItem.getContent().position.y = i * _s + (this.marginTopBottom * 1.5);
+            tempShopItem.getContent().position.y = i * _s + (this.marginTopBottom * 1.5) + this.hornLabel.height;
         }
 
         var lastHorn = tempShopItem.getContent().position.y + tempShopItem.getContent().height;
 
-        this.clothesLabel = new PIXI.Text('CLOTHES', {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500});
-        scaleConverter(this.clothesLabel.height, this.closeButton.getContent().height, 1, this.clothesLabel);
+        this.clothesLabel = new PIXI.Text('CLOTHES', {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500});//, stroke:'#352745'});//, strokeThickness:5});
+        scaleConverter(this.clothesLabel.height, this.closeButton.getContent().height, 1.2, this.clothesLabel);
         this.clothesLabel.position.x = windowWidth / 2 - this.clothesLabel.width / 2 ;
         this.clothesLabel.position.y = this.marginTopBottom / 2 + lastHorn;
+
+        this.backCloth = new PIXI.Graphics();
+        this.backCloth.beginFill(0x000000);
+        this.backCloth.drawRect(0,0,windowWidth, this.clothesLabel.height * 1.4);
+        this.backCloth.alpha = 0.5;
+        this.backCloth.position.y = this.clothesLabel.position.y - this.clothesLabel.height * 0.2;
+        this.scrollContainer.addChild(this.backCloth);
+
         this.scrollContainer.addChild(this.clothesLabel);
 
 
@@ -196,15 +219,23 @@ var EndModal = Class.extend({
             scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, 0.3, tempShopItem);
             _s = (tempShopItem.getContent().height + marginItens);
             tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2;
-            tempShopItem.getContent().position.y = i * _s + this.marginTopBottom + lastHorn;
+            tempShopItem.getContent().position.y = i * _s + this.marginTopBottom + lastHorn + this.clothesLabel.height;
         }
 
         var lastCloath = tempShopItem.getContent().position.y + tempShopItem.getContent().height;
 
-        this.envLabel = new PIXI.Text('LANDS', {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500});
-        scaleConverter(this.envLabel.height, this.closeButton.getContent().height, 1, this.envLabel);
+        this.envLabel = new PIXI.Text('LANDS', {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500});//, stroke:'#002a00'});//, strokeThickness:5});
+        scaleConverter(this.envLabel.height, this.closeButton.getContent().height, 1.2, this.envLabel);
         this.envLabel.position.x = windowWidth / 2 - this.envLabel.width / 2 ;
         this.envLabel.position.y = this.marginTopBottom / 2 + lastCloath;
+
+        this.backEnv = new PIXI.Graphics();
+        this.backEnv.beginFill(0x000000);
+        this.backEnv.drawRect(0,0,windowWidth, this.envLabel.height * 1.4);
+        this.backEnv.alpha = 0.5;
+        this.backEnv.position.y = this.envLabel.position.y - this.envLabel.height * 0.2;
+        this.scrollContainer.addChild(this.backEnv);
+
         this.scrollContainer.addChild(this.envLabel);
 
 
@@ -217,7 +248,7 @@ var EndModal = Class.extend({
             scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, 0.3, tempShopItem);
             _s = (tempShopItem.getContent().height + marginItens);
             tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2;
-            tempShopItem.getContent().position.y = i * _s + this.marginTopBottom + lastCloath;
+            tempShopItem.getContent().position.y = i * _s + this.marginTopBottom + lastCloath + this.envLabel.height;
         }
 
         this.backScroll.height = this.scrollContainer.height + 100;//totItens * _s + this.marginTopBottom * 4 + 100;
@@ -231,7 +262,7 @@ var EndModal = Class.extend({
         this.screen.updateable = false;
 
         this.scrollContainer.position.x = windowWidth / 2 - this.scrollContainer.width / 2;
-        this.bg.alpha = 0.3;
+        this.bg.alpha = 0.5;
         this.scrollContainer.alpha = 1;
 
         TweenLite.from(this.bg, 0.5, {alpha:0});

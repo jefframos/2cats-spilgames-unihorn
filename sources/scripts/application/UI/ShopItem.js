@@ -15,8 +15,9 @@ var ShopItem = Class.extend({
 		this.backShopItem = new SimpleSprite('balao_nope.png');
 
 		this.backScroll = new PIXI.Graphics();
+        this.backScroll.lineStyle(2, 0xFFFFFF);
         this.backScroll.beginFill(0x724d7c);
-        this.backScroll.drawRect(0,0,windowWidth, this.backShopItem.getContent().height * 1.4);
+        this.backScroll.drawRoundedRect (0,0,windowWidth * 0.9, this.backShopItem.getContent().height * 1.4, this.backShopItem.getContent().height * 0.2);
         this.backScroll.alpha = 1;
         this.container.addChild(this.backScroll);
 

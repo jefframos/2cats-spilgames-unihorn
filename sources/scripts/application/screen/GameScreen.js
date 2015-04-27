@@ -252,7 +252,7 @@ var GameScreen = AbstractScreen.extend({
         this.pauseButton.getContent().position.y = this.pauseButton.getContent().height * 0.1;
 
 
-        this.coinsLabel = new PIXI.Text(APP.appModel.totalPoints, {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500});
+        this.coinsLabel = new PIXI.Text(APP.appModel.totalPoints, {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500, stroke:'#352745', strokeThickness:5});
         scaleConverter(this.coinsLabel.height, this.pauseButton.getContent().height, 1, this.coinsLabel);
         this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - this.pauseButton.getContent().height * 0.1;
         this.coinsLabel.position.y = this.pauseButton.getContent().height * 0.1;

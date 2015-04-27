@@ -219,7 +219,7 @@ var AppModel = Class.extend({
 				cover:'uni_horn2.png',
 				source:'uni_horn2.png',
 				bulletSource:'bullet.png',
-				label:'Hot Dog Bounce'
+				label:'Hot Dog'
 			},
 			{
 				size: 1,
