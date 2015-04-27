@@ -1484,7 +1484,7 @@ var Application = AbstractApplication.extend({
         return obs;
     },
     getNewEnemy: function(player, screen) {
-        this.currentHorde++, APP.accelGame < 5.5 && (APP.accelGame += this.currentHorde / 500);
+        this.currentHorde++, APP.accelGame < 6 && (APP.accelGame += this.currentHorde / 500);
         var max = this.enemyProbs.length;
         this.currentHorde < max && (max = this.currentHorde);
         for (var id = 99999; id > this.totalEnemy - 1; ) id = this.enemyProbs[Math.floor(max * Math.random())];

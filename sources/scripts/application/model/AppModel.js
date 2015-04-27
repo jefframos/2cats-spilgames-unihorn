@@ -515,7 +515,7 @@ var AppModel = Class.extend({
 	},
 	getNewEnemy:function(player, screen){
 		this.currentHorde ++;
-		if(APP.accelGame < 5.5){
+		if(APP.accelGame < 6){
 			APP.accelGame += this.currentHorde / 500;
 		}
 		var max = this.enemyProbs.length;
@@ -530,7 +530,7 @@ var AppModel = Class.extend({
 		}
 		// this.enemyModels[id].target = player;
 		// console.log(this.enemyModels);
-		var enemy = new Enemy((this.currentHorde % 10 === 0)? this.luckyCloud:this.enemyModels[id], screen);
+		var enemy = new Enemy((this.currentHorde % 18 === 0)? this.luckyCloud:this.enemyModels[id], screen);
 		enemy.id = id;
 		// console.log(enemy.id);
 		this.lastID = id;
