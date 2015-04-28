@@ -193,17 +193,19 @@ var Bullet = Entity.extend({
                     }
                     if(pass){
                         // console.log(arrayCollide[i].bounce);
-                        if(this.hasBounce){
-                            this.velocity.x *= -1;
-                            this.startVel.x *= -1;
+                        if(!this.piercing && this.hasBounce || arrayCollide[i].bounce){
+                            // this.velocity.x *= -1;
+                            // this.startVel.x *= -1;
+                            var angle2 = degreesToRadians(45);
+                            this.velocity.x = 5 * (this.velocity.x < 0 || arrayCollide[i].velocity.x > 0 ?angle2:-angle2);
                         }
                         if(!this.piercing && !arrayCollide[i].bounce&& !this.hasBounce){
                             this.preKill();
                         }
-                        if(arrayCollide[i].bounce){
-                            var angle = degreesToRadians(45);
-                            this.velocity.x = 5 * (this.velocity.x < 0?angle:-angle);
-                        }
+                        // if(!this.piercing && arrayCollide[i].bounce){
+                        //     var angle = degreesToRadians(45);
+                        //     this.velocity.x = 5 * (this.velocity.x < 0?angle:-angle);
+                        // }
                         this.hasCollideEntity.push(arrayCollide[i]);
                         arrayCollide[i].hurt(this.demage);
                     }

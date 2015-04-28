@@ -330,7 +330,7 @@ var GameScreen = AbstractScreen.extend({
         var type = APP.appModel.addRandonBehaviour();
         this.specialLabel  = new PIXI.Text(type, {font:'40px Vagron', fill:'#ffe63e', stroke:'#665c18', strokeThickness:3});
         this.specialLabel.position.x = windowWidth / 2 - this.specialLabel.width / 2;
-        this.specialLabel.position.y = windowHeight / 2 - this.specialLabel.height / 2;
+        this.specialLabel.position.y = this.specialLabel.height * 2;
         this.addChild(this.specialLabel);
     },
     updateCloudList:function(){

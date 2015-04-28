@@ -1,4 +1,4 @@
-/*! jefframos 27-04-2015 */
+/*! jefframos 28-04-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -687,8 +687,9 @@ var Application = AbstractApplication.extend({
     },
     update: function() {
         this.range = this.spritesheet.container.width / 2, this._super(), this.velocity.y < this.vel ? this.velocity.y += .1 : this.velocity.y = this.vel, 
-        this.behaviour && this.behaviour.update(this), this.spritesheet.update(), this.getContent().position.y > windowHeight + 100 && (this.onList = !0, 
-        this.kill = !0), this.collideArea.contains(this.getPosition().x, this.getPosition().y) || (this.kill = !0);
+        this.behaviour && this.behaviour.update(this), this.spritesheet.update(), this.spritesheet.container.tint = 16711935, 
+        this.getContent().position.y > windowHeight + 100 && (this.onList = !0, this.kill = !0), 
+        this.collideArea.contains(this.getPosition().x, this.getPosition().y) || (this.kill = !0);
     },
     hurt: function(demage) {
         if (this.hp -= demage, this.bounce && "state2" !== this.spritesheet.currentAnimation.label) {
@@ -999,12 +1000,12 @@ var Application = AbstractApplication.extend({
         if (this.collidable) for (var pass = !0, i = arrayCollide.length - 1; i >= 0; i--) if ("enemy" === arrayCollide[i].type) {
             if (this.hasCollideEntity.length > 0) for (var j = this.hasCollideEntity.length - 1; j >= 0; j--) this.hasCollideEntity[j] === arrayCollide[i] && (pass = !1);
             if (pass) {
-                if (this.hasBounce && (this.velocity.x *= -1, this.startVel.x *= -1), this.piercing || arrayCollide[i].bounce || this.hasBounce || this.preKill(), 
-                arrayCollide[i].bounce) {
-                    var angle = degreesToRadians(45);
-                    this.velocity.x = 5 * (this.velocity.x < 0 ? angle : -angle);
+                if (!this.piercing && this.hasBounce || arrayCollide[i].bounce) {
+                    var angle2 = degreesToRadians(45);
+                    this.velocity.x = 5 * (this.velocity.x < 0 || arrayCollide[i].velocity.x > 0 ? angle2 : -angle2);
                 }
-                this.hasCollideEntity.push(arrayCollide[i]), arrayCollide[i].hurt(this.demage);
+                this.piercing || arrayCollide[i].bounce || this.hasBounce || this.preKill(), this.hasCollideEntity.push(arrayCollide[i]), 
+                arrayCollide[i].hurt(this.demage);
             }
         } else "coin" === arrayCollide[i].type && (this.preKill(), arrayCollide[i].preKill());
     },
@@ -1916,8 +1917,7 @@ var Application = AbstractApplication.extend({
             stroke: "#665c18",
             strokeThickness: 3
         }), this.specialLabel.position.x = windowWidth / 2 - this.specialLabel.width / 2, 
-        this.specialLabel.position.y = windowHeight / 2 - this.specialLabel.height / 2, 
-        this.addChild(this.specialLabel);
+        this.specialLabel.position.y = 2 * this.specialLabel.height, this.addChild(this.specialLabel);
     },
     updateCloudList: function() {
         for (var hasbad = !1, i = 0; i < this.spawner.enemyList.length; i++) if (this.spawner.enemyList[i].kill) this.thumbContainer.removeChild(this.spawner.enemyList[i].thumb), 

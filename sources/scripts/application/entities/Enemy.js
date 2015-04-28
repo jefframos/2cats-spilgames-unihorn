@@ -74,6 +74,7 @@ var Enemy = Entity.extend({
             this.behaviour.update(this);
         }
         this.spritesheet.update();
+        this.spritesheet.container.tint = 0xFF00FF;
         if(this.getContent().position.y > windowHeight + 100){
             this.onList = true;
             this.kill = true;
