@@ -195,7 +195,7 @@ var AppModel = Class.extend({
 				cover:'uni_horn1.png',
 				source:'uni_horn1.png',
 				bulletSource:'bullet.png',
-				label:'Normal'
+				label:'Horn'
 			},
 			{
 				size: 1,
@@ -213,10 +213,10 @@ var AppModel = Class.extend({
 
 		this.hornModels.push(new HornModel(
 			{
-				cover:'uni_horn1.png',
-				source:'uni_horn1.png',
+				cover:'uni_horn2.png',
+				source:'uni_horn2.png',
 				bulletSource:'bullet.png',
-				label:'Sinoid'
+				label:'Hot Dog Horn'
 			},
 			{
 				size: 1,
@@ -234,10 +234,10 @@ var AppModel = Class.extend({
 		));
 		this.hornModels.push(new HornModel(
 			{
-				cover:'uni_horn2.png',
-				source:'uni_horn2.png',
+				cover:'uni_horn3.png',
+				source:'uni_horn3.png',
 				bulletSource:'bullet.png',
-				label:'Hot Dog'
+				label:'Cup Horn'
 			},
 			{
 				size: 1,
@@ -254,10 +254,10 @@ var AppModel = Class.extend({
 		));
 		this.hornModels.push(new HornModel(
 			{
-				cover:'uni_horn1.png',
-				source:'uni_horn1.png',
+				cover:'uni_horn4.png',
+				source:'uni_horn4.png',
 				bulletSource:'bullet.png',
-				label:'Piercing'
+				label:'Iron Horn'
 			},
 			{
 				size: 1,
@@ -272,46 +272,46 @@ var AppModel = Class.extend({
 				id:this.hornModels.length + 1000
 			}
 		));
-		this.hornModels.push(new HornModel(
-			{
-				cover:'uni_horn1.png',
-				source:'uni_horn1.png',
-				bulletSource:'bullet.png',
-				label:'x3'
-			},
-			{
-				size: 1,
-				demage: 0.9,
-				fireAcumMax:25,
-				// hasMultiple:3,
-				// hasBounce:false,
-				// // piercing:false,
-				// sinoid:0,
-				enabled: false,
-				coast: getBalanceCoast(this.hornModels.length),
-				id:this.hornModels.length + 1000
-			}
-		));
-		this.hornModels.push(new HornModel(
-			{
-				cover:'uni_horn1.png',
-				source:'uni_horn1.png',
-				bulletSource:'bullet.png',
-				label:'ALL STATS'
-			},
-			{
-				size: 1,
-				demage: 0.9,
-				fireAcumMax:25,
-				// hasMultiple:3,
-				// hasBounce:true,
-				// piercing:true,
-				// sinoid:0.5,
-				enabled: false,
-				coast: getBalanceCoast(this.hornModels.length),
-				id:this.hornModels.length + 1000
-			}
-		));
+		// this.hornModels.push(new HornModel(
+		// 	{
+		// 		cover:'uni_horn1.png',
+		// 		source:'uni_horn1.png',
+		// 		bulletSource:'bullet.png',
+		// 		label:'x3'
+		// 	},
+		// 	{
+		// 		size: 1,
+		// 		demage: 0.9,
+		// 		fireAcumMax:25,
+		// 		// hasMultiple:3,
+		// 		// hasBounce:false,
+		// 		// // piercing:false,
+		// 		// sinoid:0,
+		// 		enabled: false,
+		// 		coast: getBalanceCoast(this.hornModels.length),
+		// 		id:this.hornModels.length + 1000
+		// 	}
+		// ));
+		// this.hornModels.push(new HornModel(
+		// 	{
+		// 		cover:'uni_horn1.png',
+		// 		source:'uni_horn1.png',
+		// 		bulletSource:'bullet.png',
+		// 		label:'ALL STATS'
+		// 	},
+		// 	{
+		// 		size: 1,
+		// 		demage: 0.9,
+		// 		fireAcumMax:25,
+		// 		// hasMultiple:3,
+		// 		// hasBounce:true,
+		// 		// piercing:true,
+		// 		// sinoid:0.5,
+		// 		enabled: false,
+		// 		coast: getBalanceCoast(this.hornModels.length),
+		// 		id:this.hornModels.length + 1000
+		// 	}
+		// ));
 
 		this.enemyModels = [
 			new EnemyModel(

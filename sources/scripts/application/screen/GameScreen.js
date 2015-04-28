@@ -135,38 +135,6 @@ var GameScreen = AbstractScreen.extend({
         this.fireAcumMax = APP.currentHornModel.fireAcumMax - APP.currentClothModel.fireAcumMax;
         this.fireAcum = this.fireAcumMax;
 
-        this.backButton = new DefaultButton('UI_button_default_1.png', 'UI_button_default_1.png');
-        this.backButton.build();
-        this.backButton.addLabel(new PIXI.Text('BACK', {font:'50px Vagron', fill:'#FFFFFF'}), 40);
-        scaleConverter(this.backButton.getContent().width, windowWidth, 0.4, this.backButton);
-        this.backButton.setPosition(20,
-            windowHeight - this.backButton.getContent().height * 2.5);
-        // this.addChild(this.backButton);
-      
-        this.backButton.clickCallback = function(){
-            self.updateable = false;
-            self.toTween(function(){
-                self.screenManager.change('Init');
-            });
-        };
-
-        this.endGameButton = new DefaultButton('UI_button_default_1.png', 'UI_button_default_1.png');
-        this.endGameButton.build();
-        this.endGameButton.addLabel(new PIXI.Text('END', {font:'50px Vagron', fill:'#FFFFFF'}), 45);
-        scaleConverter(this.endGameButton.getContent().width, windowWidth, 0.4, this.endGameButton);
-        this.endGameButton.setPosition(windowWidth - 20 - this.endGameButton.getContent().width,
-            windowHeight - this.endGameButton.getContent().height * 2.5);
-        // this.addChild(this.endGameButton);
-      
-        this.endGameButton.clickCallback = function(){
-            self.updateable = false;
-            self.endModal.show();
-        };
-
-        // this.setAudioButtons();
-        
-        
-
 
         if(APP.withAPI){
             GameAPI.GameBreak.request(function(){
@@ -219,12 +187,12 @@ var GameScreen = AbstractScreen.extend({
 
         
 
-        this.HUDback = new SimpleSprite('barra.png');
+        this.HUDback = new SimpleSprite('barra_bottom2.png');
         
         
 
 
-        this.pauseButton = new DefaultButton('UI_button_pause_1.png', 'UI_button_pause_1_over.png', 'UI_button_pause_1_over.png');
+        this.pauseButton = new DefaultButton('pause.png', 'pause_over.png', 'pause_over.png');
         this.pauseButton.build();
         // scaleConverter(this.pauseButton.getContent().width, windowWidth, 0.1, this.pauseButton);
 
@@ -270,7 +238,7 @@ var GameScreen = AbstractScreen.extend({
         this.HUDContainer.addChild(this.coinsLabel);
         this.HUDContainer.addChild(this.star.getContent());
 
-        TweenLite.from(this.HUDContainer.position, 0.3, {delay:1, y:-50});
+        TweenLite.from(this.HUDContainer.position, 0.3, {delay:1, y:-this.HUDContainer.height});
 
         // this.HUDContainer.position.y = windowHeight - this.HUDContainer.height;
 
@@ -294,7 +262,7 @@ var GameScreen = AbstractScreen.extend({
         // this.arcoiris.getContent().position.y = this.HUDContainer.height;
 
 
-        this.fromTween();
+        // this.fromTween();
 
         this.end = false;
         this.startCoinMonitore = false;
@@ -312,6 +280,7 @@ var GameScreen = AbstractScreen.extend({
         // this.endModal.show();
         // this.thumbContainer.scale.x = 0.5;
         // this.thumbContainer.scale.y = 0.5;
+        this.setAudioButtons();
     },
     addEnemyThumb:function(enemy){
         this.thumbContainer.addChild(enemy.thumb);
@@ -370,7 +339,9 @@ var GameScreen = AbstractScreen.extend({
     endGame:function(){
         this.end = true;
         this.spawner.killAll();
-        this.specialLabel.alpha = 0;
+        if(this.specialLabel){
+            this.specialLabel.alpha = 0;
+        }
         APP.appModel.removeBehaviour();
         var self = this;
         self.arrayCoins = [];
@@ -440,7 +411,8 @@ var GameScreen = AbstractScreen.extend({
             }
         }
         this.coinsLabel.setText(APP.appModel.totalPoints);
-        this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - this.HUDback.getContent().height * 0.1;
+        //- this.textScreen.width - this.barraTop.getContent().height * 0.1;
+        this.coinsLabel.position.x = windowWidth / 2 - this.coinsLabel.width / 2 - this.HUDback.getContent().height * 0.1 + this.star.getContent().width / 2;
         this.star.getContent().position.x = this.coinsLabel.position.x -this.star.getContent().width * 1.1;
     },
     shoot:function(angle) {
@@ -500,25 +472,27 @@ var GameScreen = AbstractScreen.extend({
         APP.mute = true;
         Howler.mute();
 
-        this.audioOn = new DefaultButton('volumeButton_on.png', 'volumeButton_on_over.png');
+        this.audioOn = new DefaultButton('volume_on.png', 'volume_on_over.png');
         this.audioOn.build();
-        scaleConverter(this.audioOn.width, windowWidth, 0.15, this.audioOn);
-        this.audioOn.setPosition(windowWidth - this.audioOn.getContent().width - 20, 20);
+        scaleConverter(this.audioOn.height, this.pauseButton.getContent().height, 1, this.audioOn);
+
+
+        this.audioOn.setPosition(windowWidth - this.audioOn.getContent().width - this.pauseButton.getContent().height*0.1, this.pauseButton.getContent().height*0.1);
         // this.audioOn.setPosition( windowWidth - this.audioOn.getContent().width  - 20, 20);
 
-        this.audioOff = new DefaultButton('volumeButton_off.png', 'volumeButton_off_over.png');
+        this.audioOff = new DefaultButton('volume_off.png', 'volume_off_over.png');
         this.audioOff.build();
-        scaleConverter(this.audioOff.width, windowWidth, 0.15, this.audioOff);
-        this.audioOff.setPosition(windowWidth - this.audioOn.getContent().width - 20, 20);
+        scaleConverter(this.audioOff.height, this.pauseButton.getContent().height, 1, this.audioOff);
+        this.audioOff.setPosition(windowWidth - this.audioOn.getContent().width - this.pauseButton.getContent().height*0.1, this.pauseButton.getContent().height*0.1);
 
        
 
         if(!APP.mute){
-            this.addChild(this.audioOn);
+            this.HUDContainer.addChild(this.audioOn.getContent());
         }else{
-            this.addChild(this.audioOff);
+            this.HUDContainer.addChild(this.audioOff.getContent());
         }
-
+        // console.log('add');
         this.audioOn.clickCallback = function(){
             APP.mute = true;
             Howler.mute();
@@ -528,7 +502,7 @@ var GameScreen = AbstractScreen.extend({
             }
             if(self.audioOff.getContent())
             {
-                self.addChild(self.audioOff);
+                self.HUDContainer.addChild(self.audioOff.getContent());
             }
         };
         this.audioOff.clickCallback = function(){
@@ -540,46 +514,48 @@ var GameScreen = AbstractScreen.extend({
             }
             if(self.audioOn.getContent())
             {
-                self.addChild(self.audioOn);
+                self.HUDContainer.addChild(self.audioOn.getContent());
             }
         };
     },
     toTween:function(callback){
-        TweenLite.to(this.bg.getContent(), 0.5, {alpha:0});
+        callback();
+        // TweenLite.to(this.bg.getContent(), 0.5, {alpha:0});
 
-        // TweenLite.to(this.pauseButton.getContent(), 0.5, {delay:0.3,y:-this.pauseButton.getContent().height, ease:'easeOutBack'});
-        TweenLite.to(this.endGameButton.getContent(), 0.5, {delay:0.2,y:windowHeight, ease:'easeOutBack'});
-        TweenLite.to(this.backButton.getContent(), 0.5, {delay:0.1,y:windowHeight, ease:'easeOutBack', onComplete:function(){
-            if(callback){
-                callback();
-            }
-        }});
+        // // TweenLite.to(this.pauseButton.getContent(), 0.5, {delay:0.3,y:-this.pauseButton.getContent().height, ease:'easeOutBack'});
+        // TweenLite.to(this.endGameButton.getContent(), 0.5, {delay:0.2,y:windowHeight, ease:'easeOutBack'});
+        // TweenLite.to(this.backButton.getContent(), 0.5, {delay:0.1,y:windowHeight, ease:'easeOutBack', onComplete:function(){
+        //     if(callback){
+        //         callback();
+        //     }
+        // }});
        
-        if(this.audioOn){
-            TweenLite.to(this.audioOn.getContent(), 0.5, {delay:0.4,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
-        }
-        if(this.audioOff){
-            TweenLite.to(this.audioOff.getContent(), 0.5, {delay:0.4,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
-        }
+        // if(this.audioOn){
+        //     TweenLite.to(this.audioOn.getContent(), 0.5, {delay:0.4,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
+        // }
+        // if(this.audioOff){
+        //     TweenLite.to(this.audioOff.getContent(), 0.5, {delay:0.4,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
+        // }
     },
     fromTween:function(callback){
-        TweenLite.from(this.bg.getContent(), 0.5, {alpha:0});
+        callback();
+        // TweenLite.from(this.bg.getContent(), 0.5, {alpha:0});
 
-        // TweenLite.from(this.pauseButton.getContent(), 0.5, {delay:0.1,y:-this.pauseButton.getContent().height, ease:'easeOutBack'});
+        // // TweenLite.from(this.pauseButton.getContent(), 0.5, {delay:0.1,y:-this.pauseButton.getContent().height, ease:'easeOutBack'});
 
-        TweenLite.from(this.endGameButton.getContent(), 0.5, {delay:0.5,y:windowHeight, ease:'easeOutBack'});
-        TweenLite.from(this.backButton.getContent(), 0.5, {delay:0.4,y:windowHeight, ease:'easeOutBack', onComplete:function(){
-            if(callback){
-                callback();
-            }
-        }});
+        // TweenLite.from(this.endGameButton.getContent(), 0.5, {delay:0.5,y:windowHeight, ease:'easeOutBack'});
+        // TweenLite.from(this.backButton.getContent(), 0.5, {delay:0.4,y:windowHeight, ease:'easeOutBack', onComplete:function(){
+        //     if(callback){
+        //         callback();
+        //     }
+        // }});
        
-        if(this.audioOn){
-            TweenLite.from(this.audioOn.getContent(), 0.5, {delay:0.3,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
-        }
-        if(this.audioOff){
-            TweenLite.from(this.audioOff.getContent(), 0.5, {delay:0.3,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
-        }
+        // if(this.audioOn){
+        //     TweenLite.from(this.audioOn.getContent(), 0.5, {delay:0.3,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
+        // }
+        // if(this.audioOff){
+        //     TweenLite.from(this.audioOff.getContent(), 0.5, {delay:0.3,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
+        // }
     },
     transitionIn:function()
     {

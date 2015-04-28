@@ -222,11 +222,8 @@
             <filename>back_shop_button.png</filename>
             <filename>moeda.png</filename>
             <filename>uni_corpo_bruxa.png</filename>
-            <filename>uni_corpo_cavaleiro.png</filename>
             <filename>uni_corpo_cowboy.png</filename>
             <filename>uni_corpo_elvis.png</filename>
-            <filename>uni_corpo_rambo.png</filename>
-            <filename>uni_corpo_vestido.png</filename>
             <filename>uni_head_normal.png</filename>
             <filename>uni_head2.png</filename>
             <filename>uni_head2_feliz.png</filename>
@@ -241,6 +238,40 @@
             <filename>barra_bolita_gray.png</filename>
             <filename>barra_bolita_white.png</filename>
             <filename>barra_bolita_gold.png</filename>
+            <filename>nuvem_blue_bolha.png</filename>
+            <filename>SHOP/aba_clothes_off.png</filename>
+            <filename>SHOP/aba_clothes_on.png</filename>
+            <filename>SHOP/aba_horns_off.png</filename>
+            <filename>SHOP/aba_horns_on.png</filename>
+            <filename>SHOP/aba_lands_off.png</filename>
+            <filename>SHOP/aba_lands_on.png</filename>
+            <filename>SHOP/balao_nope.png</filename>
+            <filename>SHOP/balao_yep.png</filename>
+            <filename>SHOP/barra_bottom.png</filename>
+            <filename>SHOP/botao_buy.png</filename>
+            <filename>SHOP/botao_equip.png</filename>
+            <filename>SHOP/botao_equipped.png</filename>
+            <filename>SHOP/star_coin.png</filename>
+            <filename>SHOP/star_shine.png</filename>
+            <filename>uni_corpo_katyperry.png</filename>
+            <filename>uni_corpo_ironman.png</filename>
+            <filename>bolha.png</filename>
+            <filename>titulo_magichorns.png</filename>
+            <filename>titulo_coolclothes.png</filename>
+            <filename>titulo_greatlands.png</filename>
+            <filename>barra_bottom2.png</filename>
+            <filename>menu.png</filename>
+            <filename>menu_over.png</filename>
+            <filename>pause.png</filename>
+            <filename>pause_over.png</filename>
+            <filename>play.png</filename>
+            <filename>play_over.png</filename>
+            <filename>replay.png</filename>
+            <filename>replay_over.png</filename>
+            <filename>volume_off.png</filename>
+            <filename>volume_off_over.png</filename>
+            <filename>volume_on.png</filename>
+            <filename>volume_on_over.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

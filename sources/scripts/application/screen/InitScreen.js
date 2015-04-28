@@ -43,9 +43,9 @@ var InitScreen = AbstractScreen.extend({
         this.bg.getContent().position.x = windowWidth / 2 - this.bg.getContent().width / 2;
         this.bg.getContent().position.y = windowHeight / 2 - this.bg.getContent().height / 2;
 
-        this.logo = new SimpleSprite('logo.png');
-        // this.container.addChild(this.logo.getContent());
-        scaleConverter(this.logo.getContent().width, windowWidth, 0.5, this.logo);
+        this.logo = new SimpleSprite('dist/img/title.png');
+        this.container.addChild(this.logo.getContent());
+        // scaleConverter(this.logo.getContent().width, windowWidth, 0.5, this.logo);
         this.logo.getContent().position.x = windowWidth / 2 - this.logo.getContent().width / 2;
         this.logo.getContent().position.y = windowHeight / 2 - this.logo.getContent().height / 2;
 

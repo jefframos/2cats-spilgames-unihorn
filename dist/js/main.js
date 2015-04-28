@@ -325,11 +325,12 @@ var Application = AbstractApplication.extend({
             fill: "#FFF"
         }), this.labelDebug.position.y = 20, this.labelDebug.position.x = 20, this.mute = !1, 
         this.accelGame = 1, this.audioController = new AudioController(), this.appModel = new AppModel(), 
-        "#withoutAPI" === window.location.hash && (this.withAPI = !1);
+        this.withAPI = !0, "#withoutAPI" === window.location.hash && (this.withAPI = !1);
     },
     update: function() {
         this._super(), this.withAPI && this.apiLogo && this.apiLogo.getContent().height > 1 && 0 === this.apiLogo.getContent().position.x && (scaleConverter(this.apiLogo.getContent().width, windowWidth, .5, this.apiLogo), 
-        this.apiLogo.getContent().position.x = windowWidth / 2 - this.apiLogo.getContent().width / 2), 
+        this.apiLogo.getContent().position.x = windowWidth / 2 - this.apiLogo.getContent().width / 2, 
+        this.apiLogo.getContent().position.y = windowHeight - this.apiLogo.getContent().height), 
         this.screenManager && this.screenManager.currentScreen && this.labelDebug && this.labelDebug.parent && (this.childsCounter = 1, 
         this.recursiveCounter(this.screenManager.currentScreen), this.labelDebug.setText(this.childsCounter));
     },
@@ -1294,7 +1295,7 @@ var Application = AbstractApplication.extend({
             cover: "uni_horn1.png",
             source: "uni_horn1.png",
             bulletSource: "bullet.png",
-            label: "Normal"
+            label: "Horn"
         }, {
             size: 1,
             demage: 1,
@@ -1303,10 +1304,10 @@ var Application = AbstractApplication.extend({
             coast: getBalanceCoast(this.hornModels.length),
             id: this.hornModels.length + 1e3
         })), this.hornModels.push(new HornModel({
-            cover: "uni_horn1.png",
-            source: "uni_horn1.png",
+            cover: "uni_horn2.png",
+            source: "uni_horn2.png",
             bulletSource: "bullet.png",
-            label: "Sinoid"
+            label: "Hot Dog Horn"
         }, {
             size: 1,
             demage: 1,
@@ -1316,10 +1317,10 @@ var Application = AbstractApplication.extend({
             coast: getBalanceCoast(this.hornModels.length),
             id: this.hornModels.length + 1e3
         })), this.hornModels.push(new HornModel({
-            cover: "uni_horn2.png",
-            source: "uni_horn2.png",
+            cover: "uni_horn3.png",
+            source: "uni_horn3.png",
             bulletSource: "bullet.png",
-            label: "Hot Dog"
+            label: "Cup Horn"
         }, {
             size: 1,
             demage: 1,
@@ -1328,37 +1329,13 @@ var Application = AbstractApplication.extend({
             coast: getBalanceCoast(this.hornModels.length),
             id: this.hornModels.length + 1e3
         })), this.hornModels.push(new HornModel({
-            cover: "uni_horn1.png",
-            source: "uni_horn1.png",
+            cover: "uni_horn4.png",
+            source: "uni_horn4.png",
             bulletSource: "bullet.png",
-            label: "Piercing"
+            label: "Iron Horn"
         }, {
             size: 1,
             demage: 1,
-            fireAcumMax: 25,
-            enabled: !1,
-            coast: getBalanceCoast(this.hornModels.length),
-            id: this.hornModels.length + 1e3
-        })), this.hornModels.push(new HornModel({
-            cover: "uni_horn1.png",
-            source: "uni_horn1.png",
-            bulletSource: "bullet.png",
-            label: "x3"
-        }, {
-            size: 1,
-            demage: .9,
-            fireAcumMax: 25,
-            enabled: !1,
-            coast: getBalanceCoast(this.hornModels.length),
-            id: this.hornModels.length + 1e3
-        })), this.hornModels.push(new HornModel({
-            cover: "uni_horn1.png",
-            source: "uni_horn1.png",
-            bulletSource: "bullet.png",
-            label: "ALL STATS"
-        }, {
-            size: 1,
-            demage: .9,
             fireAcumMax: 25,
             enabled: !1,
             coast: getBalanceCoast(this.hornModels.length),
@@ -1594,7 +1571,7 @@ var Application = AbstractApplication.extend({
         this.label = graphicsObject.label ? graphicsObject.label : "", this.id = statsObjec.id ? statsObjec.id : 0, 
         this.enabled = statsObjec.enabled ? statsObjec.enabled : !1, this.coast = statsObjec.coast ? statsObjec.coast : 0, 
         this.sizePercent = statsObjec.sizePercent ? statsObjec.sizePercent : 1, this.demage = statsObjec.demage ? statsObjec.demage : 1, 
-        this.fireSpeed = statsObjec.fireSpeed ? statsObjec.fireSpeed : 10, this.fireAcumMax = statsObjec.fireAcumMax ? statsObjec.fireAcumMax : 10, 
+        this.fireSpeed = statsObjec.fireSpeed ? statsObjec.fireSpeed : 15, this.fireAcumMax = statsObjec.fireAcumMax ? statsObjec.fireAcumMax : 10, 
         this.hasMultiple = statsObjec.hasMultiple ? statsObjec.hasMultiple : 1, this.hasBounce = statsObjec.hasBounce ? statsObjec.hasBounce : !1, 
         this.piercing = statsObjec.piercing ? statsObjec.piercing : !1, this.sinoid = statsObjec.sinoid ? statsObjec.sinoid : 0;
     },
@@ -1823,25 +1800,7 @@ var Application = AbstractApplication.extend({
         }, this.hitTouch.touchend = function(touchData) {
             self.touchDown = !1, updateVel(touchData);
         }, this.updateable = !0, this.fireAcumMax = APP.currentHornModel.fireAcumMax - APP.currentClothModel.fireAcumMax, 
-        this.fireAcum = this.fireAcumMax, this.backButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
-        this.backButton.build(), this.backButton.addLabel(new PIXI.Text("BACK", {
-            font: "50px Vagron",
-            fill: "#FFFFFF"
-        }), 40), scaleConverter(this.backButton.getContent().width, windowWidth, .4, this.backButton), 
-        this.backButton.setPosition(20, windowHeight - 2.5 * this.backButton.getContent().height), 
-        this.backButton.clickCallback = function() {
-            self.updateable = !1, self.toTween(function() {
-                self.screenManager.change("Init");
-            });
-        }, this.endGameButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
-        this.endGameButton.build(), this.endGameButton.addLabel(new PIXI.Text("END", {
-            font: "50px Vagron",
-            fill: "#FFFFFF"
-        }), 45), scaleConverter(this.endGameButton.getContent().width, windowWidth, .4, this.endGameButton), 
-        this.endGameButton.setPosition(windowWidth - 20 - this.endGameButton.getContent().width, windowHeight - 2.5 * this.endGameButton.getContent().height), 
-        this.endGameButton.clickCallback = function() {
-            self.updateable = !1, self.endModal.show();
-        }, APP.withAPI && GameAPI.GameBreak.request(function() {
+        this.fireAcum = this.fireAcumMax, APP.withAPI && GameAPI.GameBreak.request(function() {
             self.pauseModal.show();
         }, function() {
             self.pauseModal.hide();
@@ -1860,7 +1819,7 @@ var Application = AbstractApplication.extend({
             x: windowWidth / 2 - 2 * (this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl,
             y: this.unihorn.getContent().position.y + this.unihorn.neck.height * scl,
             ease: "easeOutCubic"
-        }), this.HUDback = new SimpleSprite("barra.png"), this.pauseButton = new DefaultButton("UI_button_pause_1.png", "UI_button_pause_1_over.png", "UI_button_pause_1_over.png"), 
+        }), this.HUDback = new SimpleSprite("barra_bottom2.png"), this.pauseButton = new DefaultButton("pause.png", "pause_over.png", "pause_over.png"), 
         this.pauseButton.build(), scaleConverter(this.pauseButton.getContent().height, this.HUDback.getContent().height, .8, this.pauseButton), 
         this.pauseButton.clickCallback = function() {
             self.updateable && self.pauseModal.show();
@@ -1884,7 +1843,7 @@ var Application = AbstractApplication.extend({
         this.HUDContainer.addChild(this.coinsLabel), this.HUDContainer.addChild(this.star.getContent()), 
         TweenLite.from(this.HUDContainer.position, .3, {
             delay: 1,
-            y: -50
+            y: -this.HUDContainer.height
         }), this.thumbContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.thumbContainer), 
         this.back = new PIXI.Graphics(), this.back.beginFill(0), this.back.drawRect(0, 0, windowWidth, 40), 
         this.thumbContainer.position.y = this.HUDContainer.height, this.badClouds = [], 
@@ -1896,9 +1855,9 @@ var Application = AbstractApplication.extend({
         }), TweenLite.from(this.arcoiris.getContent(), .3, {
             delay: .7,
             alpha: 0
-        }), this.fromTween(), this.end = !1, this.startCoinMonitore = !1, this.blockPause = !1, 
-        this.specAccMax = 350, this.specAcc = 0, this.pauseModal = new PauseModal(this), 
-        this.endModal = new EndModal(this);
+        }), this.end = !1, this.startCoinMonitore = !1, this.blockPause = !1, this.specAccMax = 350, 
+        this.specAcc = 0, this.pauseModal = new PauseModal(this), this.endModal = new EndModal(this), 
+        this.setAudioButtons();
     },
     addEnemyThumb: function(enemy) {
         this.thumbContainer.addChild(enemy.thumb);
@@ -1944,7 +1903,8 @@ var Application = AbstractApplication.extend({
             tempCoin.getContent().position.x = target.position.x, tempCoin.getContent().position.y = target.position.y, 
             self.layer.addChild(tempCoin), self.arrayCoins.push(tempCoin), self.startCoinMonitore = !0;
         }
-        this.end = !0, this.spawner.killAll(), this.specialLabel.alpha = 0, APP.appModel.removeBehaviour();
+        this.end = !0, this.spawner.killAll(), this.specialLabel && (this.specialLabel.alpha = 0), 
+        APP.appModel.removeBehaviour();
         var self = this;
         self.arrayCoins = [], this.unihorn.sad(), TweenLite.to(this.darkShape, .5, {
             alpha: 0
@@ -1974,7 +1934,7 @@ var Application = AbstractApplication.extend({
             this.specAcc > 0 ? this.specAcc-- : APP.appModel.removeBehaviour();
             this.fireAcum > 0 ? this.fireAcum-- : this.touchDown && (this.shoot(this.mouseAngle), 
             this.fireAcum = this.fireAcumMax), this.coinsLabel.setText(APP.appModel.totalPoints), 
-            this.coinsLabel.position.x = windowWidth - this.coinsLabel.width - .1 * this.HUDback.getContent().height, 
+            this.coinsLabel.position.x = windowWidth / 2 - this.coinsLabel.width / 2 - .1 * this.HUDback.getContent().height + this.star.getContent().width / 2, 
             this.star.getContent().position.x = this.coinsLabel.position.x - 1.1 * this.star.getContent().width;
         }
     },
@@ -2002,67 +1962,26 @@ var Application = AbstractApplication.extend({
     renderLevel: function() {},
     setAudioButtons: function() {
         var self = this;
-        APP.mute = !0, Howler.mute(), this.audioOn = new DefaultButton("volumeButton_on.png", "volumeButton_on_over.png"), 
-        this.audioOn.build(), scaleConverter(this.audioOn.width, windowWidth, .15, this.audioOn), 
-        this.audioOn.setPosition(windowWidth - this.audioOn.getContent().width - 20, 20), 
-        this.audioOff = new DefaultButton("volumeButton_off.png", "volumeButton_off_over.png"), 
-        this.audioOff.build(), scaleConverter(this.audioOff.width, windowWidth, .15, this.audioOff), 
-        this.audioOff.setPosition(windowWidth - this.audioOn.getContent().width - 20, 20), 
-        this.addChild(APP.mute ? this.audioOff : this.audioOn), this.audioOn.clickCallback = function() {
+        APP.mute = !0, Howler.mute(), this.audioOn = new DefaultButton("volume_on.png", "volume_on_over.png"), 
+        this.audioOn.build(), scaleConverter(this.audioOn.height, this.pauseButton.getContent().height, 1, this.audioOn), 
+        this.audioOn.setPosition(windowWidth - this.audioOn.getContent().width - .1 * this.pauseButton.getContent().height, .1 * this.pauseButton.getContent().height), 
+        this.audioOff = new DefaultButton("volume_off.png", "volume_off_over.png"), this.audioOff.build(), 
+        scaleConverter(this.audioOff.height, this.pauseButton.getContent().height, 1, this.audioOff), 
+        this.audioOff.setPosition(windowWidth - this.audioOn.getContent().width - .1 * this.pauseButton.getContent().height, .1 * this.pauseButton.getContent().height), 
+        this.HUDContainer.addChild(APP.mute ? this.audioOff.getContent() : this.audioOn.getContent()), 
+        this.audioOn.clickCallback = function() {
             APP.mute = !0, Howler.mute(), self.audioOn.getContent().parent && self.audioOn.getContent().parent.removeChild(self.audioOn.getContent()), 
-            self.audioOff.getContent() && self.addChild(self.audioOff);
+            self.audioOff.getContent() && self.HUDContainer.addChild(self.audioOff.getContent());
         }, this.audioOff.clickCallback = function() {
             APP.mute = !1, Howler.unmute(), self.audioOff.getContent().parent && self.audioOff.getContent().parent.removeChild(self.audioOff.getContent()), 
-            self.audioOn.getContent() && self.addChild(self.audioOn);
+            self.audioOn.getContent() && self.HUDContainer.addChild(self.audioOn.getContent());
         };
     },
     toTween: function(callback) {
-        TweenLite.to(this.bg.getContent(), .5, {
-            alpha: 0
-        }), TweenLite.to(this.endGameButton.getContent(), .5, {
-            delay: .2,
-            y: windowHeight,
-            ease: "easeOutBack"
-        }), TweenLite.to(this.backButton.getContent(), .5, {
-            delay: .1,
-            y: windowHeight,
-            ease: "easeOutBack",
-            onComplete: function() {
-                callback && callback();
-            }
-        }), this.audioOn && TweenLite.to(this.audioOn.getContent(), .5, {
-            delay: .4,
-            y: -this.audioOn.getContent().height,
-            ease: "easeOutBack"
-        }), this.audioOff && TweenLite.to(this.audioOff.getContent(), .5, {
-            delay: .4,
-            y: -this.audioOn.getContent().height,
-            ease: "easeOutBack"
-        });
+        callback();
     },
     fromTween: function(callback) {
-        TweenLite.from(this.bg.getContent(), .5, {
-            alpha: 0
-        }), TweenLite.from(this.endGameButton.getContent(), .5, {
-            delay: .5,
-            y: windowHeight,
-            ease: "easeOutBack"
-        }), TweenLite.from(this.backButton.getContent(), .5, {
-            delay: .4,
-            y: windowHeight,
-            ease: "easeOutBack",
-            onComplete: function() {
-                callback && callback();
-            }
-        }), this.audioOn && TweenLite.from(this.audioOn.getContent(), .5, {
-            delay: .3,
-            y: -this.audioOn.getContent().height,
-            ease: "easeOutBack"
-        }), this.audioOff && TweenLite.from(this.audioOff.getContent(), .5, {
-            delay: .3,
-            y: -this.audioOn.getContent().height,
-            ease: "easeOutBack"
-        });
+        callback();
     },
     transitionIn: function() {
         this.build();
@@ -2104,7 +2023,7 @@ var Application = AbstractApplication.extend({
         this.bg = new SimpleSprite("fundo1.png"), this.container.addChild(this.bg.getContent()), 
         scaleConverter(this.bg.getContent().width, windowWidth, 1.2, this.bg), this.bg.getContent().position.x = windowWidth / 2 - this.bg.getContent().width / 2, 
         this.bg.getContent().position.y = windowHeight / 2 - this.bg.getContent().height / 2, 
-        this.logo = new SimpleSprite("logo.png"), scaleConverter(this.logo.getContent().width, windowWidth, .5, this.logo), 
+        this.logo = new SimpleSprite("dist/img/title.png"), this.container.addChild(this.logo.getContent()), 
         this.logo.getContent().position.x = windowWidth / 2 - this.logo.getContent().width / 2, 
         this.logo.getContent().position.y = windowHeight / 2 - this.logo.getContent().height / 2, 
         APP.withAPI && (this.moreGames = new DefaultButton("UI_button_default_2.png", "UI_button_default_2.png"), 
@@ -2217,17 +2136,29 @@ var Application = AbstractApplication.extend({
         this._super();
     },
     build: function() {
-        this._super();
+        this._super(), this.fundo = new SimpleSprite("dist/img/fundo.jpg"), this.container.addChild(this.fundo.getContent()), 
+        this.fundo.getContent().alpha = 0, this.logo = new SimpleSprite("dist/img/title.png"), 
+        this.container.addChild(this.logo.getContent()), this.loaderContainer = new PIXI.DisplayObjectContainer(), 
+        this.addChild(this.loaderContainer), this.backLoader = new SimpleSprite("dist/img/loader.png"), 
+        this.loaderContainer.addChild(this.backLoader.getContent());
         var assetsToLoader = [ "dist/img/atlas.json", "dist/img/fundo1.png" ];
-        assetsToLoader.length > 0 && !this.isLoaded ? (this.loader = new PIXI.AssetLoader(assetsToLoader), 
-        this.initLoad()) : this.onAssetsLoaded();
+        assetsToLoader.length > 0 && !this.isLoaded ? this.loader = new PIXI.AssetLoader(assetsToLoader) : this.onAssetsLoaded();
+    },
+    update: function() {
+        this.logo && this.logo.getContent().width > 1 && 1 === this.logo.getContent().scale.x && (scaleConverter(this.logo.getContent().width, windowWidth, 1.3, this.logo), 
+        this.logo.getContent().position.x = windowWidth / 2 - this.logo.getContent().width / 2, 
+        this.logo.getContent().position.y = windowHeight - this.logo.getContent().height), 
+        this.fundo && this.fundo.getContent().width > 1 && 1 === this.fundo.getContent().scale.x && this.logo.getContent().width > 1 && (this.fundo.getContent().alpha = 1, 
+        scaleConverter(this.fundo.getContent().height, windowHeight, 1, this.fundo), this.fundo.getContent().position.x = windowWidth / 2 - this.fundo.getContent().width / 2), 
+        this.backLoader && this.backLoader.getContent().width > 1 && 1 === this.backLoader.getContent().scale.x && (this.backLoader.getContent().position.x = windowWidth / 2 - this.backLoader.getContent().width / 2, 
+        this.backLoader.getContent().position.y = windowHeight - 1.8 * this.backLoader.getContent().height, 
+        this.initInit || this.initLoad());
     },
     initLoad: function() {
-        var barHeight = 20;
-        this.loaderContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.loaderContainer), 
-        this.loaderBar = new LifeBarHUD(.6 * windowWidth, barHeight, 0, 10956153, 857662), 
+        this.initInit = !0;
+        this.loaderBar = new LifeBarHUD(.9 * this.backLoader.getContent().width, .45 * this.backLoader.getContent().height, 0, 16715143, 6078975), 
         this.loaderContainer.addChild(this.loaderBar.getContent()), this.loaderBar.getContent().position.x = windowWidth / 2 - this.loaderBar.getContent().width / 2, 
-        this.loaderBar.getContent().position.y = windowHeight - this.loaderBar.getContent().height - .1 * windowHeight, 
+        this.loaderBar.getContent().position.y = this.backLoader.getContent().position.y + .18 * this.backLoader.getContent().height, 
         this.loaderBar.updateBar(0, 100), this._super();
         var text = new PIXI.Text("PLAY", {
             font: "50px Vagron",
@@ -2241,8 +2172,8 @@ var Application = AbstractApplication.extend({
     onAssetsLoaded: function() {
         this.ready = !0;
         var self = this;
-        TweenLite.to(this.loaderBar.getContent(), .5, {
-            delay: .2,
+        TweenLite.to(this.loaderContainer, .5, {
+            delay: .5,
             alpha: 0,
             onComplete: function() {
                 self.initApplication();
@@ -2253,16 +2184,38 @@ var Application = AbstractApplication.extend({
         this.isLoaded = !0;
         var self = this;
         APP.currentHornModel = APP.appModel.hornModels[0], APP.currentClothModel = APP.appModel.clothModels[0], 
-        APP.currentEnvModel = APP.appModel.envModels[0], this.playButton = new DefaultButton("UI_button_default_1.png", "UI_button_default_1.png"), 
-        this.playButton.build(), this.playButton.addLabel(new PIXI.Text("PLAY", {
-            font: "50px Vagron",
-            fill: "#FFFFFF"
-        }), 45, 2), scaleConverter(this.playButton.getContent().width, windowWidth, .4, this.playButton), 
-        this.playButton.setPosition(windowWidth / 2 - this.playButton.getContent().width / 2, windowHeight - 2.5 * this.playButton.getContent().height), 
-        this.addChild(this.playButton), this.playButton.clickCallback = function() {
+        APP.currentEnvModel = APP.appModel.envModels[0], this.playContainer = new PIXI.DisplayObjectContainer(), 
+        this.addChild(this.playContainer), this.playButton = new DefaultButton("playB.png", "playB_over.png"), 
+        this.playButton.build(), this.playButton.setPosition(-this.playButton.getContent().width / 2, -this.playButton.getContent().height / 2), 
+        this.playContainer.addChild(this.playButton.getContent()), this.playContainer.position.x = windowWidth / 2, 
+        this.playContainer.scale.x = this.playContainer.scale.y = .5, this.playContainer.alpha = 0;
+        var playScale = scaleConverter(this.playContainer.height, this.logo.getContent().height, .1);
+        this.playContainer.position.y = windowHeight - this.playButton.getContent().height / 1.6, 
+        TweenLite.to(this.playContainer, .3, {
+            delay: .3,
+            alpha: 1
+        }), TweenLite.to(this.playContainer.scale, .8, {
+            delay: .3,
+            x: playScale,
+            y: playScale,
+            ease: "easeOutElastic"
+        }), this.playButton.clickCallback = function() {
             possibleFullscreen() && !isfull && testMobile() && fullscreen(), self.updateable = !1, 
-            self.screenManager.change("Game");
+            self.toTween(function() {
+                self.screenManager.change("Game");
+            });
         };
+    },
+    toTween: function(callback) {
+        TweenLite.to(this.playContainer, .3, {
+            alpha: 0
+        }), TweenLite.to(this.playContainer.scale, .6, {
+            x: .5,
+            y: .5,
+            onComplete: function() {
+                callback();
+            }
+        });
     },
     transitionIn: function() {
         return this.isLoaded ? void this.build() : void this.build();
@@ -2319,12 +2272,12 @@ var Application = AbstractApplication.extend({
         this.container.addChild(this.scrollContainer), this.applyScroll(this.scrollContainer);
         var self = this;
         this.backScroll = new PIXI.Graphics(), this.backScroll.beginFill(1383495), this.backScroll.drawRect(0, 0, windowWidth, 2 * windowHeight), 
-        this.backScroll.alpha = 0, this.scrollContainer.addChild(this.backScroll), this.closeButton = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
+        this.backScroll.alpha = 0, this.scrollContainer.addChild(this.backScroll), this.closeButton = new DefaultButton("play.png", "play_over.png"), 
         this.closeButton.build(), this.closeButton.setPosition(20, 20), this.closeButton.clickCallback = function() {
             self.hide(function() {
                 self.screen.updateable = !0, self.screen.reset();
             });
-        }, this.barraTop = new SimpleSprite("barra.png"), this.topHUD.addChild(this.barraTop.getContent()), 
+        }, this.barraTop = new SimpleSprite("barra_bottom2.png"), this.topHUD.addChild(this.barraTop.getContent()), 
         this.topHUD.addChild(this.closeButton.getContent()), scaleConverter(this.closeButton.getContent().height, this.barraTop.getContent().height, .8, this.closeButton), 
         this.closeButton.getContent().position.x = this.topHUD.width - this.closeButton.getContent().width - .1 * this.barraTop.getContent().height, 
         this.closeButton.getContent().position.y = .1 * this.barraTop.getContent().height;
@@ -2345,32 +2298,30 @@ var Application = AbstractApplication.extend({
         this.star.getContent().position.y = this.textScreen.position.y + this.textScreen.height / 2 - this.star.getContent().height / 2, 
         this.addShopList(), this.baseHUD = new PIXI.DisplayObjectContainer(), this.barraBottom = new SimpleSprite("barra_bottom.png"), 
         this.baseHUD.addChild(this.barraBottom.getContent()), this.getContent().addChild(this.baseHUD), 
-        this.getContent().addChild(this.topHUD), this.toHorn = new DefaultButton("aba_horns_off.png", "aba_horns_off.png"), 
+        this.getContent().addChild(this.topHUD), this.toHorn = new DefaultButton("aba_horns_on.png", "aba_horns_on.png"), 
         this.toHorn.build(), this.toHorn.clickCallback = function() {
             TweenLite.to(self.scrollContainer.position, .5, {
                 y: 0
             });
-        }, this.toWear = new DefaultButton("aba_clothes_off.png", "aba_clothes_off.png"), 
+        }, this.toWear = new DefaultButton("aba_clothes_on.png", "aba_clothes_on.png"), 
         this.toWear.build(), this.toWear.clickCallback = function() {
             TweenLite.to(self.scrollContainer.position, .5, {
                 y: -self.clothTitle.getContent().position.y + self.marginTopBottom
             });
-        }, this.toLand = new DefaultButton("aba_lands_off.png", "aba_lands_off.png"), this.toLand.build(), 
+        }, this.toLand = new DefaultButton("aba_lands_on.png", "aba_lands_on.png"), this.toLand.build(), 
         this.toLand.clickCallback = function() {
             TweenLite.to(self.scrollContainer.position, .5, {
                 y: -self.envTitle.getContent().position.y + self.marginTopBottom
             });
         }, this.baseHUD.addChild(this.toHorn.getContent()), this.baseHUD.addChild(this.toWear.getContent()), 
         this.baseHUD.addChild(this.toLand.getContent());
-        var distBtn = (this.baseHUD.width - 1.1 * this.toHorn.getContent().width * 3) / 2 + .05 * this.toHorn.getContent().width;
-        this.toHorn.getContent().position.y = this.baseHUD.height - this.toHorn.getContent().height, 
-        this.toWear.getContent().position.y = this.baseHUD.height - this.toWear.getContent().height, 
-        this.toLand.getContent().position.y = this.baseHUD.height - this.toLand.getContent().height, 
-        this.toHorn.getContent().position.x = distBtn + 1.1 * this.toHorn.getContent().width * 0, 
-        this.toWear.getContent().position.x = distBtn + 1.1 * this.toHorn.getContent().width * 1, 
-        this.toLand.getContent().position.x = distBtn + 1.1 * this.toHorn.getContent().width * 2, 
+        var distBtn = (this.baseHUD.width - 3 * this.toHorn.getContent().width) / 2, recuo = this.baseHUD.height - .9 * this.toHorn.getContent().height;
+        this.toHorn.getContent().position.y = recuo, this.toWear.getContent().position.y = recuo, 
+        this.toLand.getContent().position.y = recuo, this.toHorn.getContent().position.x = distBtn + 0 * this.toHorn.getContent().width, 
+        this.toWear.getContent().position.x = distBtn + 1 * this.toHorn.getContent().width, 
+        this.toLand.getContent().position.x = distBtn + 2 * this.toHorn.getContent().width, 
         scaleConverter(this.baseHUD.width, windowWidth, 1, this.baseHUD), scaleConverter(this.topHUD.width, windowWidth, 1, this.topHUD), 
-        this.baseHUD.position.y = windowHeight - this.baseHUD.height;
+        this.baseHUD.position.y = windowHeight - this.baseHUD.height, this.barraBottom.getContent().position.y = this.toHorn.getContent().height - .85 * this.barraBottom.getContent().height;
     },
     updateCoins: function() {
         this.textScreen.setText(APP.appModel.totalPoints), this.textScreen.position.x = this.topHUD.width / 2 - this.textScreen.width / 2, 
@@ -2535,60 +2486,30 @@ var Application = AbstractApplication.extend({
         this.bg = new PIXI.Graphics(), this.bg.beginFill(1383495), this.bg.drawRect(0, 0, windowWidth, windowHeight), 
         this.bg.alpha = .8, this.container.addChild(this.bg), this.container.addChild(this.boxContainer);
         var self = this;
-        this.back = new SimpleSprite("UI_modal_back_1.png"), this.boxContainer.addChild(this.back.getContent());
-        var thirdPart = this.back.getContent().width / 3;
-        this.backButton = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
-        this.backButton.build(), this.backButton.setPosition(1 * thirdPart - thirdPart / 2 - this.backButton.getContent().width / 2, this.back.getContent().height / 2 - this.backButton.getContent().height / 2), 
+        this.backB = new SimpleSprite("UI_modal_back_1.png"), this.back = new PIXI.DisplayObjectContainer(), 
+        this.backB.getContent().alpha = 0, this.back.addChild(this.backB.getContent()), 
+        this.boxContainer.addChild(this.back);
+        var thirdPart = this.back.width / 3;
+        this.backButton = new DefaultButton("menu.png", "menu_over.png"), this.backButton.build(), 
+        this.backButton.setPosition(1 * thirdPart - thirdPart / 2 - this.backButton.getContent().width / 2, this.back.height / 2 - this.backButton.getContent().height / 2), 
         this.backButton.clickCallback = function() {
             self.hide(function() {
                 self.screen.endModal.show();
             });
-        }, this.back.getContent().addChild(this.backButton.getContent()), this.continueButton = new DefaultButton("UI_button_play_1_retina.png", "UI_button_play_1_over_retina.png"), 
-        this.continueButton.build(), scaleConverter(this.continueButton.getContent().width, this.back.getContent().width, .3, this.continueButton), 
-        this.continueButton.setPosition(2 * thirdPart - thirdPart / 2 - this.continueButton.getContent().width / 2, this.back.getContent().height / 2 - this.continueButton.getContent().height / 2), 
+        }, this.back.addChild(this.backButton.getContent()), this.continueButton = new DefaultButton("play.png", "play_over.png"), 
+        this.continueButton.build(), scaleConverter(this.continueButton.getContent().width, this.back.width, .3, this.continueButton), 
+        this.continueButton.setPosition(2 * thirdPart - thirdPart / 2 - this.continueButton.getContent().width / 2, this.back.height / 2 - this.continueButton.getContent().height / 2), 
         this.continueButton.clickCallback = function() {
             self.hide(function() {
                 self.screen.updateable = !0;
             });
-        }, this.back.getContent().addChild(this.continueButton.getContent()), this.restartButton = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
-        this.restartButton.build(), this.restartButton.setPosition(3 * thirdPart - thirdPart / 2 - this.restartButton.getContent().width / 2, this.back.getContent().height / 2 - this.restartButton.getContent().height / 2), 
+        }, this.back.addChild(this.continueButton.getContent()), this.restartButton = new DefaultButton("replay.png", "replay_over.png"), 
+        this.restartButton.build(), this.restartButton.setPosition(3 * thirdPart - thirdPart / 2 - this.restartButton.getContent().width / 2, this.back.height / 2 - this.restartButton.getContent().height / 2), 
         this.restartButton.clickCallback = function() {
             self.hide(function() {
                 self.screen.updateable = !0, self.screen.reset();
             });
-        }, this.back.getContent().addChild(this.restartButton.getContent()), scaleConverter(this.boxContainer.width, windowWidth, .8, this.boxContainer);
-        var quarterPart = this.back.getContent().width / 5;
-        this.chifre1 = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
-        this.chifre1.build(), this.chifre1.setPosition(1 * quarterPart - quarterPart / 2 - this.chifre1.getContent().width / 2, this.back.getContent().height / 1.2 - this.chifre1.getContent().height / 2), 
-        this.chifre1.clickCallback = function() {
-            self.hide(function() {
-                APP.currentHornModel = APP.appModel.hornModels[0];
-            });
-        }, this.chifre2 = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
-        this.chifre2.build(), this.chifre2.setPosition(2 * quarterPart - quarterPart / 2 - this.chifre2.getContent().width / 2, this.back.getContent().height / 1.2 - this.chifre2.getContent().height / 2), 
-        this.chifre2.clickCallback = function() {
-            self.hide(function() {
-                APP.currentHornModel = APP.appModel.hornModels[1];
-            });
-        }, this.chifre3 = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
-        this.chifre3.build(), this.chifre3.setPosition(3 * quarterPart - quarterPart / 2 - this.chifre3.getContent().width / 2, this.back.getContent().height / 1.2 - this.chifre3.getContent().height / 2), 
-        this.chifre3.clickCallback = function() {
-            self.hide(function() {
-                APP.currentHornModel = APP.appModel.hornModels[2];
-            });
-        }, this.chifre4 = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
-        this.chifre4.build(), this.chifre4.setPosition(4 * quarterPart - quarterPart / 2 - this.chifre4.getContent().width / 2, this.back.getContent().height / 1.2 - this.chifre4.getContent().height / 2), 
-        this.chifre4.clickCallback = function() {
-            self.hide(function() {
-                APP.currentHornModel = APP.appModel.hornModels[3];
-            });
-        }, this.chifre5 = new DefaultButton("UI_button_play_1.png", "UI_button_play_1.png"), 
-        this.chifre5.build(), this.chifre5.setPosition(5 * quarterPart - quarterPart / 2 - this.chifre5.getContent().width / 2, this.back.getContent().height / 1.2 - this.chifre5.getContent().height / 2), 
-        this.chifre5.clickCallback = function() {
-            self.hide(function() {
-                APP.currentHornModel = APP.appModel.hornModels[4];
-            });
-        };
+        }, this.back.addChild(this.restartButton.getContent()), scaleConverter(this.boxContainer.width, windowWidth, .8, this.boxContainer);
     },
     show: function() {
         this.screen.addChild(this), this.screen.blockPause = !0, this.boxContainer.visible = !0, 
@@ -2667,7 +2588,7 @@ var Application = AbstractApplication.extend({
             var enemy = APP.appModel.getNewEnemy(null, this.screen);
             enemy.build(), this.accum = enemy.model.toNext / APP.accelGame, this.accum < 50 && (this.accum = 50);
             var part10 = .1 * windowWidth;
-            enemy.setPosition(part10 + (windowWidth - 2 * part10) * Math.random(), .05 * windowHeight), 
+            enemy.setPosition(part10 + (windowWidth - 2 * part10) * Math.random(), this.screen.HUDContainer.height), 
             this.enemyList.push(enemy), this.screen.addEnemyThumb(enemy), this.screen.layer.addChild(enemy);
         } else this.accum--;
     }

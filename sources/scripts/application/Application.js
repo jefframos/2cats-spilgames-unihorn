@@ -15,7 +15,7 @@ var Application = AbstractApplication.extend({
         this.accelGame = 1;
         this.audioController = new AudioController();
         this.appModel = new AppModel();
-        // this.withAPI = true;
+        this.withAPI = true;
         if(window.location.hash === '#withoutAPI'){
             this.withAPI = false;
         }
@@ -26,6 +26,7 @@ var Application = AbstractApplication.extend({
             // this.apiLogo.getContent().position.y = windowHeight - this.apiLogo.getContent().height;
             scaleConverter(this.apiLogo.getContent().width, windowWidth, 0.5, this.apiLogo);
             this.apiLogo.getContent().position.x = windowWidth / 2 - this.apiLogo.getContent().width / 2;
+            this.apiLogo.getContent().position.y = windowHeight - this.apiLogo.getContent().height;
         }
         if(!this.screenManager)  {
             return;

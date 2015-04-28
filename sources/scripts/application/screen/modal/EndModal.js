@@ -24,7 +24,7 @@ var EndModal = Class.extend({
         this.backScroll.alpha = 0;
         this.scrollContainer.addChild(this.backScroll);
 
-        this.closeButton = new DefaultButton('UI_button_play_1.png', 'UI_button_play_1.png');
+        this.closeButton = new DefaultButton('play.png', 'play_over.png');
         this.closeButton.build();
         this.closeButton.setPosition(20,20);//this.backBars.getContent().height - 20 - this.rankingButton.height / 2 - 10);
         this.closeButton.clickCallback = function(){
@@ -34,7 +34,7 @@ var EndModal = Class.extend({
             });
         };
 
-        this.barraTop = new SimpleSprite('barra.png');
+        this.barraTop = new SimpleSprite('barra_bottom2.png');
         this.topHUD.addChild(this.barraTop.getContent());
         // this.barraTop.getContent().scale.y = -1;
         // this.barraTop.getContent().position.y = this.barraTop.getContent().height * -1;//this.barraTop.getContent().height;
@@ -104,7 +104,7 @@ var EndModal = Class.extend({
         this.getContent().addChild(this.baseHUD);
         this.getContent().addChild(this.topHUD);
 
-        this.toHorn = new DefaultButton('aba_horns_off.png', 'aba_horns_off.png');
+        this.toHorn = new DefaultButton('aba_horns_on.png', 'aba_horns_on.png');
         this.toHorn.build();
         // this.toHorn.setPosition(thirdPart * 3 - thirdPart /2 -  this.toHorn.getContent().width/2,this.backScroll.height - this.toHorn.getContent().height - 20);//this.backBars.getContent().height / 2 - this.rankingButton.height / 2 - 10);
 
@@ -114,7 +114,7 @@ var EndModal = Class.extend({
         };
 
 
-        this.toWear = new DefaultButton('aba_clothes_off.png', 'aba_clothes_off.png');
+        this.toWear = new DefaultButton('aba_clothes_on.png', 'aba_clothes_on.png');
         this.toWear.build();
         // this.toWear.setPosition(thirdPart * 3 - thirdPart /2 -  this.toWear.getContent().width/2,this.backScroll.height - this.toWear.getContent().height - 20);//this.backBars.getContent().height / 2 - this.rankingButton.height / 2 - 10);
 
@@ -124,7 +124,7 @@ var EndModal = Class.extend({
         };
 
 
-        this.toLand = new DefaultButton('aba_lands_off.png', 'aba_lands_off.png');
+        this.toLand = new DefaultButton('aba_lands_on.png', 'aba_lands_on.png');
         this.toLand.build();
         // this.toLand.setPosition(thirdPart * 3 - thirdPart /2 -  this.toLand.getContent().width/2,this.backScroll.height - this.toLand.getContent().height - 20);//this.backBars.getContent().height / 2 - this.rankingButton.height / 2 - 10);
 
@@ -138,18 +138,20 @@ var EndModal = Class.extend({
         this.baseHUD.addChild(this.toWear.getContent());
         this.baseHUD.addChild(this.toLand.getContent());
 
-        var distBtn = (this.baseHUD.width - (this.toHorn.getContent().width * 1.1) * 3) / 2 + this.toHorn.getContent().width * 0.05;
-        this.toHorn.getContent().position.y = this.baseHUD.height - this.toHorn.getContent().height;
-        this.toWear.getContent().position.y = this.baseHUD.height - this.toWear.getContent().height;
-        this.toLand.getContent().position.y = this.baseHUD.height - this.toLand.getContent().height;
+        var distBtn = (this.baseHUD.width - (this.toHorn.getContent().width) * 3) / 2;// + this.toHorn.getContent().width * 0.01;
+        var recuo = this.baseHUD.height - this.toHorn.getContent().height * 0.9;
+        this.toHorn.getContent().position.y = recuo;
+        this.toWear.getContent().position.y = recuo;
+        this.toLand.getContent().position.y = recuo;
 
-        this.toHorn.getContent().position.x = distBtn + (this.toHorn.getContent().width * 1.1) * 0;
-        this.toWear.getContent().position.x = distBtn + (this.toHorn.getContent().width * 1.1) * 1;
-        this.toLand.getContent().position.x = distBtn + (this.toHorn.getContent().width * 1.1) * 2;
+        this.toHorn.getContent().position.x = distBtn + (this.toHorn.getContent().width) * 0;
+        this.toWear.getContent().position.x = distBtn + (this.toHorn.getContent().width) * 1;
+        this.toLand.getContent().position.x = distBtn + (this.toHorn.getContent().width) * 2;
 
         scaleConverter(this.baseHUD.width, windowWidth, 1, this.baseHUD);
         scaleConverter(this.topHUD.width, windowWidth, 1, this.topHUD);
         this.baseHUD.position.y = windowHeight - this.baseHUD.height;
+        this.barraBottom.getContent().position.y = this.toHorn.getContent().height - this.barraBottom.getContent().height * 0.85;
         // this.topHUD.position.y = -2;
     },
     updateCoins:function(){
