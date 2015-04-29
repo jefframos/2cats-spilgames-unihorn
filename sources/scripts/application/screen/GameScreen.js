@@ -293,14 +293,18 @@ var GameScreen = AbstractScreen.extend({
     },
     addSpecial:function(){
         this.specAcc = this.specAccMax;
-        if(this.specialLabel && this.specialLabel.parent){
-            this.specialLabel.parent.removeChild(this.specialLabel);
+        if(this.specialLabel && this.specialLabel.getContent() && this.specialLabel.getContent().parent){
+            this.specialLabel.getContent().parent.removeChild(this.specialLabel.getContent());
         }
         var type = APP.appModel.addRandonBehaviour();
-        this.specialLabel  = new PIXI.Text(type, {font:'40px Vagron', fill:'#ffe63e', stroke:'#665c18', strokeThickness:3});
-        this.specialLabel.position.x = windowWidth / 2 - this.specialLabel.width / 2;
-        this.specialLabel.position.y = this.specialLabel.height * 2;
-        this.addChild(this.specialLabel);
+
+        this.specialLabel  = new SimpleSprite(type, {x:0.5, y:0.5});//new PIXI.Text(type, {font:'40px Vagron', fill:'#ffe63e', stroke:'#665c18', strokeThickness:3});
+        this.specialLabel.getContent().anchor = {x:0.5, y:0.5};
+        this.specialLabel.getContent().position.x = windowWidth / 2 ;
+        this.specialLabel.getContent().position.y = this.HUDback.getContent().height + this.specialLabel.getContent().height / 2;
+        TweenLite.from(this.specialLabel.getContent().scale, 0.8, {x:0, y:0, ease:'easeOutElastic'});
+
+        this.addChild(this.specialLabel.getContent());
     },
     updateCloudList:function(){
         var hasbad = false;
@@ -339,8 +343,8 @@ var GameScreen = AbstractScreen.extend({
     endGame:function(){
         this.end = true;
         this.spawner.killAll();
-        if(this.specialLabel){
-            this.specialLabel.alpha = 0;
+        if(this.specialLabel && this.specialLabel.getContent()){
+            this.specialLabel.getContent().alpha = 0;
         }
         APP.appModel.removeBehaviour();
         var self = this;
@@ -381,8 +385,8 @@ var GameScreen = AbstractScreen.extend({
             this.unihorn.update();
             this.spawner.update();
             this.updateCloudList();
-            if(this.specialLabel && this.specialLabel.parent){
-                this.specialLabel.alpha = this.specAcc / this.specAccMax;
+            if(this.specialLabel && this.specialLabel.getContent() && this.specialLabel.getContent().parent){
+                this.specialLabel.getContent().alpha = this.specAcc / this.specAccMax;
             }
             if(this.specAcc > 0){
                 this.specAcc --;

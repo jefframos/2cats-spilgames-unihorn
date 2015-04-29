@@ -450,19 +450,19 @@ var AppModel = Class.extend({
 		var rnd = Math.random();
 		if(rnd < 1/4){
 			APP.currentHornModel.hasMultiple=2;
-			return 'DOUBLE SHOOTS';
+			return 'double.png';
 		}
 		else if(rnd < 2/4){
 			APP.currentHornModel.hasBounce=true;
-			return 'BOUNCE BALLS';
+			return 'bounce.png';
 		}
 		else if(rnd < 3/4){
 			APP.currentHornModel.piercing=true;
-			return 'PIERCING SHOOT';
+			return 'piercing.png';
 		}
 		else{
 			APP.currentHornModel.sinoid=0.5;
-			return 'CRAZY BULLET';
+			return 'crazy.png';
 		}
 	},
 	removeBehaviour:function(){

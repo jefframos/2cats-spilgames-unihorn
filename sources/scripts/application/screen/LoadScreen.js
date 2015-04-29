@@ -11,7 +11,7 @@ var LoadScreen = AbstractScreen.extend({
     build: function () {
         this._super();
 
-        this.fundo = new SimpleSprite('dist/img/fundo.png');
+        this.fundo = new SimpleSprite('dist/img/fundo.jpg');
         this.container.addChild(this.fundo.getContent());
         this.fundo.getContent().alpha = 0;
 

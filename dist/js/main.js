@@ -1445,9 +1445,9 @@ var Application = AbstractApplication.extend({
     addRandonBehaviour: function() {
         this.removeBehaviour();
         var rnd = Math.random();
-        return .25 > rnd ? (APP.currentHornModel.hasMultiple = 2, "DOUBLE SHOOTS") : .5 > rnd ? (APP.currentHornModel.hasBounce = !0, 
-        "BOUNCE BALLS") : .75 > rnd ? (APP.currentHornModel.piercing = !0, "PIERCING SHOOT") : (APP.currentHornModel.sinoid = .5, 
-        "CRAZY BULLET");
+        return .25 > rnd ? (APP.currentHornModel.hasMultiple = 2, "double.png") : .5 > rnd ? (APP.currentHornModel.hasBounce = !0, 
+        "bounce.png") : .75 > rnd ? (APP.currentHornModel.piercing = !0, "piercing.png") : (APP.currentHornModel.sinoid = .5, 
+        "crazy.png");
     },
     removeBehaviour: function() {
         APP.currentHornModel.fireAcumMax = 25, APP.currentHornModel.hasMultiple = 1, APP.currentHornModel.hasBounce = !1, 
@@ -1868,15 +1868,20 @@ var Application = AbstractApplication.extend({
         });
     },
     addSpecial: function() {
-        this.specAcc = this.specAccMax, this.specialLabel && this.specialLabel.parent && this.specialLabel.parent.removeChild(this.specialLabel);
+        this.specAcc = this.specAccMax, this.specialLabel && this.specialLabel.getContent() && this.specialLabel.getContent().parent && this.specialLabel.getContent().parent.removeChild(this.specialLabel.getContent());
         var type = APP.appModel.addRandonBehaviour();
-        this.specialLabel = new PIXI.Text(type, {
-            font: "40px Vagron",
-            fill: "#ffe63e",
-            stroke: "#665c18",
-            strokeThickness: 3
-        }), this.specialLabel.position.x = windowWidth / 2 - this.specialLabel.width / 2, 
-        this.specialLabel.position.y = 2 * this.specialLabel.height, this.addChild(this.specialLabel);
+        this.specialLabel = new SimpleSprite(type, {
+            x: .5,
+            y: .5
+        }), this.specialLabel.getContent().anchor = {
+            x: .5,
+            y: .5
+        }, this.specialLabel.getContent().position.x = windowWidth / 2, this.specialLabel.getContent().position.y = this.HUDback.getContent().height + this.specialLabel.getContent().height / 2, 
+        TweenLite.from(this.specialLabel.getContent().scale, .8, {
+            x: 0,
+            y: 0,
+            ease: "easeOutElastic"
+        }), this.addChild(this.specialLabel.getContent());
     },
     updateCloudList: function() {
         for (var hasbad = !1, i = 0; i < this.spawner.enemyList.length; i++) if (this.spawner.enemyList[i].kill) this.thumbContainer.removeChild(this.spawner.enemyList[i].thumb), 
@@ -1903,7 +1908,7 @@ var Application = AbstractApplication.extend({
             tempCoin.getContent().position.x = target.position.x, tempCoin.getContent().position.y = target.position.y, 
             self.layer.addChild(tempCoin), self.arrayCoins.push(tempCoin), self.startCoinMonitore = !0;
         }
-        this.end = !0, this.spawner.killAll(), this.specialLabel && (this.specialLabel.alpha = 0), 
+        this.end = !0, this.spawner.killAll(), this.specialLabel && this.specialLabel.getContent() && (this.specialLabel.getContent().alpha = 0), 
         APP.appModel.removeBehaviour();
         var self = this;
         self.arrayCoins = [], this.unihorn.sad(), TweenLite.to(this.darkShape, .5, {
@@ -1930,7 +1935,7 @@ var Application = AbstractApplication.extend({
                     for (var i = this.arrayCoins.length - 1; i >= 0; i--) this.arrayCoins[i].kill && this.arrayCoins.splice(i, 1);
                     this.arrayCoins.length <= 0 && this.endModal.show();
                 }
-            } else this.unihorn.update(), this.spawner.update(), this.updateCloudList(), this.specialLabel && this.specialLabel.parent && (this.specialLabel.alpha = this.specAcc / this.specAccMax), 
+            } else this.unihorn.update(), this.spawner.update(), this.updateCloudList(), this.specialLabel && this.specialLabel.getContent() && this.specialLabel.getContent().parent && (this.specialLabel.getContent().alpha = this.specAcc / this.specAccMax), 
             this.specAcc > 0 ? this.specAcc-- : APP.appModel.removeBehaviour();
             this.fireAcum > 0 ? this.fireAcum-- : this.touchDown && (this.shoot(this.mouseAngle), 
             this.fireAcum = this.fireAcumMax), this.coinsLabel.setText(APP.appModel.totalPoints), 
@@ -2136,7 +2141,7 @@ var Application = AbstractApplication.extend({
         this._super();
     },
     build: function() {
-        this._super(), this.fundo = new SimpleSprite("dist/img/fundo.png"), this.container.addChild(this.fundo.getContent()), 
+        this._super(), this.fundo = new SimpleSprite("dist/img/fundo.jpg"), this.container.addChild(this.fundo.getContent()), 
         this.fundo.getContent().alpha = 0, this.logo = new SimpleSprite("dist/img/title.png"), 
         this.container.addChild(this.logo.getContent()), this.loaderContainer = new PIXI.DisplayObjectContainer(), 
         this.addChild(this.loaderContainer), this.backLoader = new SimpleSprite("dist/img/loader.png"), 
