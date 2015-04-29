@@ -21,10 +21,10 @@ var Unihorn = Entity.extend({
         this.nonKillOnus = this.nonKillOnusMax;
 
         this.vecExpressions = [];
-        this.justSad = ['uni_head2_triste.png'];
-        this.sadArray = ['uni_head_normal.png', 'uni_head2_triste.png'];
-        this.happyArray = ['uni_head_normal.png', 'uni_head2_feliz.png'];
-        this.normalArray = ['uni_head_normal.png'];
+        this.justSad = ['uni_head_sad.png'];
+        this.sadArray = ['uni_head_normal.png', 'uni_head_sad.png', 'uni_head_disapointed.png'];
+        this.happyArray = ['uni_head_normal.png', 'uni_head_happy.png', 'uni_head_love.png', 'uni_head_proud.png'];
+        this.normalArray = ['uni_head_normal.png','uni_head_brave.png'];
 
         this.head = new PIXI.Sprite(new PIXI.Texture.fromImage(this.normalArray[0]));
 
@@ -44,7 +44,7 @@ var Unihorn = Entity.extend({
         if(this.acumChangeExpressions<=0){
             var texture = new PIXI.Texture.fromImage(this.vecExpressions[Math.floor(this.vecExpressions.length * Math.random())]);
             this.head.setTexture(texture);
-            this.acumChangeExpressions = 2 + Math.floor(5 * Math.random());
+            this.acumChangeExpressions = 2 + Math.floor(3 * Math.random());
         }
     },
     killed: function(){
@@ -56,7 +56,7 @@ var Unihorn = Entity.extend({
         }
     },
     deaded: function(){
-        this.fellingMaster -= 1.5;
+        this.fellingMaster -= 1.8;
         // this.felling --;
         // this.lastKillCounter = 0;
     },
@@ -90,7 +90,7 @@ var Unihorn = Entity.extend({
     update: function(){
         // this._super();
         // console.log(this.fellingMaster + this.felling);
-        if(this.fellingMaster + this.felling < 8){
+        if(this.fellingMaster + this.felling < 9){
             this.vecExpressions = this.sadArray;
         }else if(this.fellingMaster + this.felling > 12){
             this.vecExpressions = this.happyArray;

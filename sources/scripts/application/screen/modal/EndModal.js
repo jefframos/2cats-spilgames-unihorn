@@ -288,7 +288,7 @@ var EndModal = Class.extend({
         this.screen.updateable = false;
 
         this.scrollContainer.position.x = windowWidth / 2 - this.scrollContainer.width / 2;
-        this.bg.alpha = 0.5;
+        this.bg.alpha = 0.7;
         this.scrollContainer.alpha = 1;
 
         TweenLite.from(this.bg, 0.5, {alpha:0});

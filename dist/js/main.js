@@ -776,10 +776,10 @@ var Application = AbstractApplication.extend({
         this.horn = new PIXI.Sprite(new PIXI.Texture.fromImage(APP.currentHornModel.imgSource)), 
         this.felling = 1, this.fellingMaster = 10, this.lastKillAccum = 0, this.lastKillAccumMax = 150, 
         this.lastKillCounter = 0, this.nonKillOnusMax = 200, this.nonKillOnus = this.nonKillOnusMax, 
-        this.vecExpressions = [], this.justSad = [ "uni_head2_triste.png" ], this.sadArray = [ "uni_head_normal.png", "uni_head2_triste.png" ], 
-        this.happyArray = [ "uni_head_normal.png", "uni_head2_feliz.png" ], this.normalArray = [ "uni_head_normal.png" ], 
-        this.head = new PIXI.Sprite(new PIXI.Texture.fromImage(this.normalArray[0])), this.vecExpressions = this.normalArray, 
-        this.acumChangeExpressions = 5;
+        this.vecExpressions = [], this.justSad = [ "uni_head_sad.png" ], this.sadArray = [ "uni_head_normal.png", "uni_head_sad.png", "uni_head_disapointed.png" ], 
+        this.happyArray = [ "uni_head_normal.png", "uni_head_happy.png", "uni_head_love.png", "uni_head_proud.png" ], 
+        this.normalArray = [ "uni_head_normal.png", "uni_head_brave.png" ], this.head = new PIXI.Sprite(new PIXI.Texture.fromImage(this.normalArray[0])), 
+        this.vecExpressions = this.normalArray, this.acumChangeExpressions = 5;
     },
     getContent: function() {
         return this.sprite;
@@ -790,7 +790,7 @@ var Application = AbstractApplication.extend({
             ease: "easeOutBack"
         }), this.acumChangeExpressions--, this.acumChangeExpressions <= 0) {
             var texture = new PIXI.Texture.fromImage(this.vecExpressions[Math.floor(this.vecExpressions.length * Math.random())]);
-            this.head.setTexture(texture), this.acumChangeExpressions = 2 + Math.floor(5 * Math.random());
+            this.head.setTexture(texture), this.acumChangeExpressions = 2 + Math.floor(3 * Math.random());
         }
     },
     killed: function() {
@@ -798,7 +798,7 @@ var Application = AbstractApplication.extend({
         this.felling < 10 && this.lastKillCounter % 3 === 0 && this.felling++;
     },
     deaded: function() {
-        this.fellingMaster -= 1.5;
+        this.fellingMaster -= 1.8;
     },
     sad: function() {
         this.vecExpressions = this.justSad;
@@ -813,7 +813,7 @@ var Application = AbstractApplication.extend({
         this.horn.position.y = -70, this.horn.position.x = -20;
     },
     update: function() {
-        this.vecExpressions = this.fellingMaster + this.felling < 8 ? this.sadArray : this.fellingMaster + this.felling > 12 ? this.happyArray : this.normalArray, 
+        this.vecExpressions = this.fellingMaster + this.felling < 9 ? this.sadArray : this.fellingMaster + this.felling > 12 ? this.happyArray : this.normalArray, 
         this.nonKillOnus > 0 ? this.nonKillOnus-- : this.felling > -10 && (this.felling--, 
         this.nonKillOnus = this.nonKillOnusMax), this.lastKillAccum > 0 ? this.lastKillAccum-- : this.lastKillCounter = 0;
     }
@@ -2432,7 +2432,7 @@ var Application = AbstractApplication.extend({
         this.updateCoins(), this.screen.addChild(this), this.screen.blockPause = !0, this.scrollContainer.visible = !0, 
         this.container.parent.setChildIndex(this.container, this.container.parent.children.length - 1), 
         this.screen.updateable = !1, this.scrollContainer.position.x = windowWidth / 2 - this.scrollContainer.width / 2, 
-        this.bg.alpha = .5, this.scrollContainer.alpha = 1, TweenLite.from(this.bg, .5, {
+        this.bg.alpha = .7, this.scrollContainer.alpha = 1, TweenLite.from(this.bg, .5, {
             alpha: 0
         }), TweenLite.from(this.scrollContainer, .5, {
             alpha: 0
