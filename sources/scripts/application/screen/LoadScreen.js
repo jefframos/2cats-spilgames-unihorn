@@ -11,7 +11,7 @@ var LoadScreen = AbstractScreen.extend({
     build: function () {
         this._super();
 
-        this.fundo = new SimpleSprite('dist/img/fundo.jpg');
+        this.fundo = new SimpleSprite('dist/img/fundo.png');
         this.container.addChild(this.fundo.getContent());
         this.fundo.getContent().alpha = 0;
 
@@ -40,7 +40,7 @@ var LoadScreen = AbstractScreen.extend({
         if(this.logo && this.logo.getContent().width > 1 && this.logo.getContent().scale.x === 1){
             scaleConverter(this.logo.getContent().width, windowWidth, 1.3, this.logo);
             this.logo.getContent().position.x = windowWidth / 2 - this.logo.getContent().width / 2;
-            this.logo.getContent().position.y = windowHeight - this.logo.getContent().height;
+            this.logo.getContent().position.y = windowHeight - this.logo.getContent().height * 1.1;
         }
         if(this.fundo && this.fundo.getContent().width > 1 && this.fundo.getContent().scale.x === 1 && this.logo.getContent().width > 1){
             this.fundo.getContent().alpha = 1;
@@ -67,7 +67,7 @@ var LoadScreen = AbstractScreen.extend({
         this.loaderBar = new LifeBarHUD(this.backLoader.getContent().width * 0.9, this.backLoader.getContent().height * 0.45, 0, 0xff0d87, 0x5cc1ff);
         this.loaderContainer.addChild(this.loaderBar.getContent());
         this.loaderBar.getContent().position.x = windowWidth / 2 - this.loaderBar.getContent().width / 2;
-        this.loaderBar.getContent().position.y = this.backLoader.getContent().position.y + this.backLoader.getContent().height * 0.18;
+        this.loaderBar.getContent().position.y = this.backLoader.getContent().position.y + this.backLoader.getContent().height * 0.2;
         this.loaderBar.updateBar(0, 100);
         this._super();
 
@@ -95,6 +95,8 @@ var LoadScreen = AbstractScreen.extend({
         APP.currentClothModel = APP.appModel.clothModels[0];
         APP.currentEnvModel = APP.appModel.envModels[0];
         // this.screenManager.change('Game');
+
+
         this.playContainer = new PIXI.DisplayObjectContainer();
 
         this.addChild(this.playContainer);
@@ -127,12 +129,81 @@ var LoadScreen = AbstractScreen.extend({
             });
         };
 
+
+
+        this.creditsContainer = new PIXI.DisplayObjectContainer();
+
+        this.addChild(this.creditsContainer);
+        this.creditsButton = new DefaultButton('creditos.png', 'creditos_over.png');
+        this.creditsButton.build();
+        // this.creditsButton.addLabel(new PIXI.Text('PLAY', {font:'50px Vagron', fill:'#FFFFFF'}), 45,2);
+        // scaleConverter(this.creditsButton.getContent().width, this.playButton.getContent().width, 0.9, this.creditsButton);
+
+        this.creditsButton.setPosition( - this.creditsButton.getContent().width/2,
+            - this.creditsButton.getContent().height / 2);
+
+        this.creditsContainer.addChild(this.creditsButton.getContent());
+
+        this.creditsContainer.position.x = windowWidth / 2 - this.creditsButton.getContent().width * 2;
+      
+        this.creditsContainer.scale.x = this.creditsContainer.scale.y = 0.5;
+        this.creditsContainer.alpha = 0;
+        var creditsScale = scaleConverter(this.creditsContainer.height, this.logo.getContent().height, 0.09);
+        this.creditsContainer.position.y = this.playContainer.position.y  - this.creditsContainer.height / 2;//windowHeight - (this.creditsButton.getContent().height / 1.6);
+        TweenLite.to(this.creditsContainer, 0.3,{delay:0.2, alpha:1});
+        TweenLite.to(this.creditsContainer.scale, 0.8,{delay:0.2, x:creditsScale, y:creditsScale, ease:'easeOutElastic'});
+        this.creditsButton.clickCallback = function(){
+            // if(possibleFullscreen() && !isfull && testMobile()){
+            //     fullscreen();
+            // }
+            // self.updateable = false;
+            // self.toTween(function(){
+            //     self.screenManager.change('Game');
+
+            // });
+        };
+
+
+
+        this.moreContainer = new PIXI.DisplayObjectContainer();
+
+        this.addChild(this.moreContainer);
+        this.moreGamesButton = new DefaultButton('moregames.png', 'moregames_over.png');
+        this.moreGamesButton.build();
+        // this.moreGamesButton.addLabel(new PIXI.Text('PLAY', {font:'50px Vagron', fill:'#FFFFFF'}), 45,2);
+        // scaleConverter(this.moreGamesButton.getContent().width, this.playButton.getContent().width, 0.9, this.moreGamesButton);
+
+        this.moreGamesButton.setPosition( - this.moreGamesButton.getContent().width/2,
+            - this.moreGamesButton.getContent().height / 2);
+
+        this.moreContainer.addChild(this.moreGamesButton.getContent());
+
+        this.moreContainer.position.x = windowWidth / 2 + this.moreGamesButton.getContent().width * 2;
+      
+        this.moreContainer.scale.x = this.moreContainer.scale.y = 0.5;
+        this.moreContainer.alpha = 0;
+        var moreScale = scaleConverter(this.moreContainer.height, this.logo.getContent().height, 0.09);
+        this.moreContainer.position.y = this.playContainer.position.y - this.moreContainer.height / 2;//windowHeight - (this.moreGamesButton.getContent().height / 1.6);
+        TweenLite.to(this.moreContainer, 0.3,{delay:0.4, alpha:1});
+        TweenLite.to(this.moreContainer.scale, 0.8,{delay:0.4, x:moreScale, y:moreScale, ease:'easeOutElastic'});
+        this.moreGamesButton.clickCallback = function(){
+            if(APP.withAPI){
+                APP.buttonProperties.action();
+            }
+        };
+
         // this.screenManager.change('Init');
     },
     toTween:function(callback){
+
+        TweenLite.to(this.creditsContainer, 0.3,{alpha:0});
+        TweenLite.to(this.creditsContainer.scale, 0.6,{x:0.5, y:0.5});
+
+        TweenLite.to(this.moreContainer, 0.3,{alpha:0});
+        TweenLite.to(this.moreContainer.scale, 0.6,{x:0.5, y:0.5});
         
-        TweenLite.to(this.playContainer, 0.3,{alpha:0});
-        TweenLite.to(this.playContainer.scale, 0.6,{x:0.5, y:0.5, onComplete:function(){
+        TweenLite.to(this.playContainer, 0.3,{delay:0.3, alpha:0});
+        TweenLite.to(this.playContainer.scale, 0.6,{delay:0.3,x:0.5, y:0.5, onComplete:function(){
             callback();
         }});
     },

@@ -277,7 +277,7 @@ var EndModal = Class.extend({
             tempShopItem.getContent().position.y = i * _s + this.marginTopBottom + lastCloath + this.envTitle.getContent().height;
         }
 
-        this.backScroll.height = this.scrollContainer.height + 100;//totItens * _s + this.marginTopBottom * 4 + 100;
+        this.backScroll.height = this.scrollContainer.height + 200;//totItens * _s + this.marginTopBottom * 4 + 100;
     },
     show:function(){
         this.updateCoins();

@@ -192,7 +192,7 @@ var GameScreen = AbstractScreen.extend({
         
 
 
-        this.pauseButton = new DefaultButton('pause.png', 'pause_over.png', 'pause_over.png');
+        this.pauseButton = new DefaultButton('pause2.png', 'pause2_over.png', 'pause2_over.png');
         this.pauseButton.build();
         // scaleConverter(this.pauseButton.getContent().width, windowWidth, 0.1, this.pauseButton);
 

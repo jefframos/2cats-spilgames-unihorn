@@ -1,4 +1,4 @@
-/*! jefframos 28-04-2015 */
+/*! jefframos 29-04-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -1819,7 +1819,7 @@ var Application = AbstractApplication.extend({
             x: windowWidth / 2 - 2 * (this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl,
             y: this.unihorn.getContent().position.y + this.unihorn.neck.height * scl,
             ease: "easeOutCubic"
-        }), this.HUDback = new SimpleSprite("barra_bottom2.png"), this.pauseButton = new DefaultButton("pause.png", "pause_over.png", "pause_over.png"), 
+        }), this.HUDback = new SimpleSprite("barra_bottom2.png"), this.pauseButton = new DefaultButton("pause2.png", "pause2_over.png", "pause2_over.png"), 
         this.pauseButton.build(), scaleConverter(this.pauseButton.getContent().height, this.HUDback.getContent().height, .8, this.pauseButton), 
         this.pauseButton.clickCallback = function() {
             self.updateable && self.pauseModal.show();
@@ -2136,7 +2136,7 @@ var Application = AbstractApplication.extend({
         this._super();
     },
     build: function() {
-        this._super(), this.fundo = new SimpleSprite("dist/img/fundo.jpg"), this.container.addChild(this.fundo.getContent()), 
+        this._super(), this.fundo = new SimpleSprite("dist/img/fundo.png"), this.container.addChild(this.fundo.getContent()), 
         this.fundo.getContent().alpha = 0, this.logo = new SimpleSprite("dist/img/title.png"), 
         this.container.addChild(this.logo.getContent()), this.loaderContainer = new PIXI.DisplayObjectContainer(), 
         this.addChild(this.loaderContainer), this.backLoader = new SimpleSprite("dist/img/loader.png"), 
@@ -2147,7 +2147,7 @@ var Application = AbstractApplication.extend({
     update: function() {
         this.logo && this.logo.getContent().width > 1 && 1 === this.logo.getContent().scale.x && (scaleConverter(this.logo.getContent().width, windowWidth, 1.3, this.logo), 
         this.logo.getContent().position.x = windowWidth / 2 - this.logo.getContent().width / 2, 
-        this.logo.getContent().position.y = windowHeight - this.logo.getContent().height), 
+        this.logo.getContent().position.y = windowHeight - 1.1 * this.logo.getContent().height), 
         this.fundo && this.fundo.getContent().width > 1 && 1 === this.fundo.getContent().scale.x && this.logo.getContent().width > 1 && (this.fundo.getContent().alpha = 1, 
         scaleConverter(this.fundo.getContent().height, windowHeight, 1, this.fundo), this.fundo.getContent().position.x = windowWidth / 2 - this.fundo.getContent().width / 2), 
         this.backLoader && this.backLoader.getContent().width > 1 && 1 === this.backLoader.getContent().scale.x && (this.backLoader.getContent().position.x = windowWidth / 2 - this.backLoader.getContent().width / 2, 
@@ -2158,7 +2158,7 @@ var Application = AbstractApplication.extend({
         this.initInit = !0;
         this.loaderBar = new LifeBarHUD(.9 * this.backLoader.getContent().width, .45 * this.backLoader.getContent().height, 0, 16715143, 6078975), 
         this.loaderContainer.addChild(this.loaderBar.getContent()), this.loaderBar.getContent().position.x = windowWidth / 2 - this.loaderBar.getContent().width / 2, 
-        this.loaderBar.getContent().position.y = this.backLoader.getContent().position.y + .18 * this.backLoader.getContent().height, 
+        this.loaderBar.getContent().position.y = this.backLoader.getContent().position.y + .2 * this.backLoader.getContent().height, 
         this.loaderBar.updateBar(0, 100), this._super();
         var text = new PIXI.Text("PLAY", {
             font: "50px Vagron",
@@ -2204,12 +2204,56 @@ var Application = AbstractApplication.extend({
             self.toTween(function() {
                 self.screenManager.change("Game");
             });
+        }, this.creditsContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.creditsContainer), 
+        this.creditsButton = new DefaultButton("creditos.png", "creditos_over.png"), this.creditsButton.build(), 
+        this.creditsButton.setPosition(-this.creditsButton.getContent().width / 2, -this.creditsButton.getContent().height / 2), 
+        this.creditsContainer.addChild(this.creditsButton.getContent()), this.creditsContainer.position.x = windowWidth / 2 - 2 * this.creditsButton.getContent().width, 
+        this.creditsContainer.scale.x = this.creditsContainer.scale.y = .5, this.creditsContainer.alpha = 0;
+        var creditsScale = scaleConverter(this.creditsContainer.height, this.logo.getContent().height, .09);
+        this.creditsContainer.position.y = this.playContainer.position.y - this.creditsContainer.height / 2, 
+        TweenLite.to(this.creditsContainer, .3, {
+            delay: .2,
+            alpha: 1
+        }), TweenLite.to(this.creditsContainer.scale, .8, {
+            delay: .2,
+            x: creditsScale,
+            y: creditsScale,
+            ease: "easeOutElastic"
+        }), this.creditsButton.clickCallback = function() {}, this.moreContainer = new PIXI.DisplayObjectContainer(), 
+        this.addChild(this.moreContainer), this.moreGamesButton = new DefaultButton("moregames.png", "moregames_over.png"), 
+        this.moreGamesButton.build(), this.moreGamesButton.setPosition(-this.moreGamesButton.getContent().width / 2, -this.moreGamesButton.getContent().height / 2), 
+        this.moreContainer.addChild(this.moreGamesButton.getContent()), this.moreContainer.position.x = windowWidth / 2 + 2 * this.moreGamesButton.getContent().width, 
+        this.moreContainer.scale.x = this.moreContainer.scale.y = .5, this.moreContainer.alpha = 0;
+        var moreScale = scaleConverter(this.moreContainer.height, this.logo.getContent().height, .09);
+        this.moreContainer.position.y = this.playContainer.position.y - this.moreContainer.height / 2, 
+        TweenLite.to(this.moreContainer, .3, {
+            delay: .4,
+            alpha: 1
+        }), TweenLite.to(this.moreContainer.scale, .8, {
+            delay: .4,
+            x: moreScale,
+            y: moreScale,
+            ease: "easeOutElastic"
+        }), this.moreGamesButton.clickCallback = function() {
+            APP.withAPI && APP.buttonProperties.action();
         };
     },
     toTween: function(callback) {
-        TweenLite.to(this.playContainer, .3, {
+        TweenLite.to(this.creditsContainer, .3, {
+            alpha: 0
+        }), TweenLite.to(this.creditsContainer.scale, .6, {
+            x: .5,
+            y: .5
+        }), TweenLite.to(this.moreContainer, .3, {
+            alpha: 0
+        }), TweenLite.to(this.moreContainer.scale, .6, {
+            x: .5,
+            y: .5
+        }), TweenLite.to(this.playContainer, .3, {
+            delay: .3,
             alpha: 0
         }), TweenLite.to(this.playContainer.scale, .6, {
+            delay: .3,
             x: .5,
             y: .5,
             onComplete: function() {
@@ -2361,7 +2405,7 @@ var Application = AbstractApplication.extend({
         this.scrollContainer.addChild(tempShopItem.getContent()), scaleConverter(tempShopItem.backShopItem.getContent().width, windowWidth, .3, tempShopItem), 
         _s = tempShopItem.getContent().height + marginItens, tempShopItem.getContent().position.x = windowWidth / 2 - tempShopItem.getContent().width / 2, 
         tempShopItem.getContent().position.y = i * _s + this.marginTopBottom + lastCloath + this.envTitle.getContent().height;
-        this.backScroll.height = this.scrollContainer.height + 100;
+        this.backScroll.height = this.scrollContainer.height + 200;
     },
     show: function() {
         this.updateCoins(), this.screen.addChild(this), this.screen.blockPause = !0, this.scrollContainer.visible = !0, 
