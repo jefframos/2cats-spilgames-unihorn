@@ -203,7 +203,6 @@
             <filename>cloud2a.png</filename>
             <filename>cloud3a.png</filename>
             <filename>uni_corpo.png</filename>
-            <filename>uni_head.png</filename>
             <filename>uni_horn1.png</filename>
             <filename>arcoiris_redondo.png</filename>
             <filename>top_degrade.png</filename>
@@ -213,9 +212,6 @@
             <filename>uni_corpo_cowboy.png</filename>
             <filename>uni_corpo_elvis.png</filename>
             <filename>uni_head_normal.png</filename>
-            <filename>uni_head2.png</filename>
-            <filename>uni_head2_feliz.png</filename>
-            <filename>uni_head2_triste.png</filename>
             <filename>uni_corpo_super.png</filename>
             <filename>uni_horn2.png</filename>
             <filename>barra.png</filename>
@@ -276,6 +272,19 @@
             <filename>double.png</filename>
             <filename>uni_horn5.png</filename>
             <filename>uni_horn6.png</filename>
+            <filename>preta_3.png</filename>
+            <filename>preta_2.png</filename>
+            <filename>uni_head_love.png</filename>
+            <filename>uni_head_proud.png</filename>
+            <filename>uni_head_sad.png</filename>
+            <filename>uni_head_brave.png</filename>
+            <filename>uni_head_disapointed.png</filename>
+            <filename>uni_head_happy.png</filename>
+            <filename>cowboy_thumb.png</filename>
+            <filename>Iron_thumb.png</filename>
+            <filename>katy_thumb.png</filename>
+            <filename>witch_thumb.png</filename>
+            <filename>pelado_thumb.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

@@ -215,8 +215,8 @@ var Bullet = Entity.extend({
                         if(!this.piercing && this.hasBounce || arrayCollide[i].bounce){
                             // this.velocity.x *= -1;
                             // this.startVel.x *= -1;
-                            var angle2 = degreesToRadians(45);
-                            this.velocity.x = 5 * (this.velocity.x < 0 || arrayCollide[i].velocity.x > 0 ?angle2:-angle2);
+                            var angle2 = degreesToRadians(60);
+                            this.velocity.x = 10 * (this.velocity.x < 0 || arrayCollide[i].velocity.x > 0 ?angle2:-angle2);
                         }
                         if(!this.piercing && !arrayCollide[i].bounce&& !this.hasBounce){
                             this.preKill();

@@ -70,7 +70,7 @@ var AppModel = Class.extend({
 		this.clothModels = [];
 		this.clothModels.push(new ClothModel(
 			{
-				cover:'uni_corpo.png',
+				cover:'pelado_thumb.png',
 				source:'uni_corpo.png',
 				label:'Normal'
 			},

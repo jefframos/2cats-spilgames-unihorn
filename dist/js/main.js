@@ -1021,8 +1021,8 @@ var Application = AbstractApplication.extend({
             if (this.hasCollideEntity.length > 0) for (var j = this.hasCollideEntity.length - 1; j >= 0; j--) this.hasCollideEntity[j] === arrayCollide[i] && (pass = !1);
             if (pass) {
                 if (!this.piercing && this.hasBounce || arrayCollide[i].bounce) {
-                    var angle2 = degreesToRadians(45);
-                    this.velocity.x = 5 * (this.velocity.x < 0 || arrayCollide[i].velocity.x > 0 ? angle2 : -angle2);
+                    var angle2 = degreesToRadians(60);
+                    this.velocity.x = 10 * (this.velocity.x < 0 || arrayCollide[i].velocity.x > 0 ? angle2 : -angle2);
                 }
                 this.piercing || arrayCollide[i].bounce || this.hasBounce || this.preKill(), this.hasCollideEntity.push(arrayCollide[i]), 
                 arrayCollide[i].hurt(this.demage);
@@ -1257,7 +1257,7 @@ var Application = AbstractApplication.extend({
             enabled: !1,
             coast: getBalanceCoast(this.envModels.length) * getBalanceCoast(this.envModels.length)
         })), this.clothModels = [], this.clothModels.push(new ClothModel({
-            cover: "uni_corpo.png",
+            cover: "pelado_thumb.png",
             source: "uni_corpo.png",
             label: "Normal"
         }, {
