@@ -669,7 +669,8 @@ var Application = AbstractApplication.extend({
         this.vel = this.model.vel, this.hp = this.model.hp > 1 ? this.model.hp + Math.floor(APP.accelGame - 1) : 1, 
         console.log(this.model.hp, APP.accelGame), this.behaviour = this.model.behaviour ? this.model.behaviour.clone() : null, 
         this.resistance = this.model.resistance, this.subdivide = this.model.subdivide, 
-        this.special = this.model.special, this.bounce = this.model.bounce;
+        this.special = this.model.special, this.bounce = this.model.bounce, this.stats = this.model.moreStats ? this.model.imgSource.length : 1, 
+        this.currentState = 0;
     },
     build: function() {
         this.thumb = new PIXI.Sprite(new PIXI.Texture.fromImage(this.model.thumb)), this.thumb.anchor.x = .5, 
@@ -705,6 +706,12 @@ var Application = AbstractApplication.extend({
                 this.layer.addChild(particle);
             }
             this.bounce = !1;
+        }
+        if (this.currentState++, this.stats > 1 && this.currentState < this.stats) {
+            var rnd = Math.random() + "motion", motionState2 = new SpritesheetAnimation();
+            motionState2.build(rnd, [ this.model.imgSource[this.currentState] ], 5, !0, null), 
+            this.spritesheet.addAnimation(motionState2), this.spritesheet.play(rnd), this.vel *= 1.5, 
+            this.velocity.y *= 1.5;
         }
         this.getContent().scale.x = this.getContent().scale.y = this.scaleMax / 1.2, TweenLite.to(this.getContent().scale, .8, {
             x: this.scaleMax,
@@ -1260,22 +1267,6 @@ var Application = AbstractApplication.extend({
             enabled: !1,
             coast: getBalanceCoast(this.clothModels.length)
         })), this.clothModels.push(new ClothModel({
-            cover: "uni_corpo_elvis.png",
-            source: "uni_corpo_elvis.png",
-            label: "Elvis"
-        }, {
-            id: 10 * this.clothModels.length,
-            enabled: !1,
-            coast: getBalanceCoast(this.clothModels.length)
-        })), this.clothModels.push(new ClothModel({
-            cover: "uni_corpo_ironman.png",
-            source: "uni_corpo_ironman.png",
-            label: "Iron"
-        }, {
-            id: 10 * this.clothModels.length,
-            enabled: !1,
-            coast: getBalanceCoast(this.clothModels.length)
-        })), this.clothModels.push(new ClothModel({
             cover: "uni_corpo_katyperry.png",
             source: "uni_corpo_katyperry.png",
             label: "Katy"
@@ -1284,9 +1275,9 @@ var Application = AbstractApplication.extend({
             enabled: !1,
             coast: getBalanceCoast(this.clothModels.length)
         })), this.clothModels.push(new ClothModel({
-            cover: "uni_corpo_super.png",
-            source: "uni_corpo_super.png",
-            label: "Sayajin"
+            cover: "uni_corpo_ironman.png",
+            source: "uni_corpo_ironman.png",
+            label: "Iron"
         }, {
             id: 10 * this.clothModels.length,
             enabled: !1,
@@ -1313,6 +1304,30 @@ var Application = AbstractApplication.extend({
             demage: 1,
             fireAcumMax: 25,
             sinoid: .7,
+            enabled: !1,
+            coast: getBalanceCoast(this.hornModels.length),
+            id: this.hornModels.length + 1e3
+        })), this.hornModels.push(new HornModel({
+            cover: "uni_horn5.png",
+            source: "uni_horn5.png",
+            bulletSource: "bullet.png",
+            label: "Witch Horn"
+        }, {
+            size: 1,
+            demage: 1,
+            fireAcumMax: 25,
+            enabled: !1,
+            coast: getBalanceCoast(this.hornModels.length),
+            id: this.hornModels.length + 1e3
+        })), this.hornModels.push(new HornModel({
+            cover: "uni_horn6.png",
+            source: "uni_horn6.png",
+            bulletSource: "bullet.png",
+            label: "Bang Bang"
+        }, {
+            size: 1,
+            demage: 1,
+            fireAcumMax: 25,
             enabled: !1,
             coast: getBalanceCoast(this.hornModels.length),
             id: this.hornModels.length + 1e3
@@ -1392,7 +1407,7 @@ var Application = AbstractApplication.extend({
             subdivide: 2
         }), new EnemyModel({
             cover: "cloud2a.png",
-            source: [ "cloud2a.png" ],
+            source: [ "cloud2a.png", "preta_2.png", "preta_3.png" ],
             thumb: "barra_bolita_black.png",
             particles: [ "bullet.png" ],
             sizePercent: .25,
@@ -1405,7 +1420,8 @@ var Application = AbstractApplication.extend({
             }),
             money: 5,
             hp: 3,
-            resistance: .6
+            resistance: .6,
+            moreStats: !0
         }) ], this.smallEnemyModel = new EnemyModel({
             cover: "cloud3a.png",
             source: [ "cloud3a.png" ],
@@ -1550,9 +1566,9 @@ var Application = AbstractApplication.extend({
         this.particles = graphicsObject.particles ? graphicsObject.particles : [ "smoke.png" ], 
         this.egg = graphicsObject.egg ? graphicsObject.egg : [ "smoke.png" ], this.sizePercent = graphicsObject.sizePercent ? graphicsObject.sizePercent : .2, 
         this.label = graphicsObject.label ? graphicsObject.label : "", this.sizePercent = graphicsObject.sizePercent ? graphicsObject.sizePercent : .1, 
-        this.bounce = statsObjec.bounce ? statsObjec.bounce : !1, this.demage = statsObjec.demage, 
-        this.vel = statsObjec.vel, this.hp = statsObjec.hp, this.target = statsObjec.target, 
-        this.timeLive = 999, this.toNext = statsObjec.toNext ? statsObjec.toNext : 150, 
+        this.moreStats = statsObjec.moreStats ? statsObjec.moreStats : !1, this.bounce = statsObjec.bounce ? statsObjec.bounce : !1, 
+        this.demage = statsObjec.demage, this.vel = statsObjec.vel, this.hp = statsObjec.hp, 
+        this.target = statsObjec.target, this.timeLive = 999, this.toNext = statsObjec.toNext ? statsObjec.toNext : 150, 
         this.behaviour = statsObjec.behaviour, this.money = statsObjec.money, this.resistance = statsObjec.resistance ? statsObjec.resistance : 0, 
         this.subdivide = statsObjec.subdivide ? statsObjec.subdivide : 0, this.special = statsObjec.special ? statsObjec.special : !1;
     },

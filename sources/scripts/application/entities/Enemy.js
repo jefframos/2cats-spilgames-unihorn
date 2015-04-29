@@ -22,6 +22,8 @@ var Enemy = Entity.extend({
         this.subdivide = this.model.subdivide;
         this.special = this.model.special;
         this.bounce = this.model.bounce;
+        this.stats = this.model.moreStats ? this.model.imgSource.length: 1;
+        this.currentState = 0;
     },
     build: function(){
         // console.log(this.model);
@@ -102,6 +104,17 @@ var Enemy = Entity.extend({
             }
 
             this.bounce = false;
+        }
+
+        this.currentState ++;//Math.floor(this.stats / this.hp);
+        if(this.stats > 1 && this.currentState < this.stats){
+            var rnd = Math.random() + 'motion';
+            var motionState2 = new SpritesheetAnimation();
+            motionState2.build(rnd, [this.model.imgSource[this.currentState]], 5, true, null);
+            this.spritesheet.addAnimation(motionState2);
+            this.spritesheet.play(rnd);
+            this.vel *= 1.5;
+            this.velocity.y  *= 1.5;
         }
         // this.sprite.tint = 0xFF0000;
         // this.spritesheet.container.tint = 0xFF0000;

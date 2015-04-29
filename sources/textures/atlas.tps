@@ -188,23 +188,11 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>volumeButton_on_over.png</filename>
-            <filename>volumeButton_off.png</filename>
-            <filename>volumeButton_off_over.png</filename>
-            <filename>volumeButton_on.png</filename>
             <filename>fullscreen.png</filename>
             <filename>normal/logo.png</filename>
-            <filename>normal/UI_button_close_1.png</filename>
-            <filename>normal/UI_button_close_1_over.png</filename>
             <filename>normal/UI_button_default_1.png</filename>
             <filename>normal/UI_button_default_2.png</filename>
             <filename>normal/UI_button_facebook_1.png</filename>
-            <filename>normal/UI_button_help_1.png</filename>
-            <filename>normal/UI_button_help_1_over.png</filename>
-            <filename>normal/UI_button_pause_1.png</filename>
-            <filename>normal/UI_button_pause_1_over.png</filename>
-            <filename>normal/UI_button_play_1.png</filename>
-            <filename>normal/UI_button_play_1_over.png</filename>
             <filename>normal/UI_button_ranking_1.png</filename>
             <filename>normal/UI_button_twitter_1.png</filename>
             <filename>normal/UI_modal_back_1.png</filename>
@@ -272,6 +260,22 @@
             <filename>volume_off_over.png</filename>
             <filename>volume_on.png</filename>
             <filename>volume_on_over.png</filename>
+            <filename>uni_horn4.png</filename>
+            <filename>uni_horn3.png</filename>
+            <filename>playB.png</filename>
+            <filename>playB_over.png</filename>
+            <filename>pause2_over.png</filename>
+            <filename>pause2.png</filename>
+            <filename>moregames_over.png</filename>
+            <filename>creditos.png</filename>
+            <filename>creditos_over.png</filename>
+            <filename>moregames.png</filename>
+            <filename>piercing.png</filename>
+            <filename>bounce.png</filename>
+            <filename>crazy.png</filename>
+            <filename>double.png</filename>
+            <filename>uni_horn5.png</filename>
+            <filename>uni_horn6.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

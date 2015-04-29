@@ -11,6 +11,7 @@ var EnemyModel = Class.extend({
 		this.label = graphicsObject.label?graphicsObject.label:'';
 		this.sizePercent = graphicsObject.sizePercent?graphicsObject.sizePercent:0.1;
 		
+		this.moreStats = statsObjec.moreStats?statsObjec.moreStats:false;
 		this.bounce = statsObjec.bounce?statsObjec.bounce:false;
 		this.demage = statsObjec.demage;
 		this.vel = statsObjec.vel;

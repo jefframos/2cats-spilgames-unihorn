@@ -119,40 +119,7 @@ var AppModel = Class.extend({
 				coast: getBalanceCoast(this.clothModels.length)
 			}
 		));
-		this.clothModels.push(new ClothModel(
-			{
-				cover:'uni_corpo_elvis.png',
-				source:'uni_corpo_elvis.png',
-				label:'Elvis'
-			},
-			{
-				id:this.clothModels.length * 10,
-				// sizePercent: 0,
-				// demage: 3,
-				// fireAcumMax:0,
-				// extraCoins:0,
-				// fireSpeed:0,
-				enabled: false,
-				coast: getBalanceCoast(this.clothModels.length)
-			}
-		));
-		this.clothModels.push(new ClothModel(
-			{
-				cover:'uni_corpo_ironman.png',
-				source:'uni_corpo_ironman.png',
-				label:'Iron'
-			},
-			{
-				id:this.clothModels.length * 10,
-				// sizePercent: 0,
-				// demage: 0,
-				// fireAcumMax:10,
-				// extraCoins:0,
-				// fireSpeed:0,
-				enabled: false,
-				coast: getBalanceCoast(this.clothModels.length)
-			}
-		));
+		
 		this.clothModels.push(new ClothModel(
 			{
 				cover:'uni_corpo_katyperry.png',
@@ -173,21 +140,23 @@ var AppModel = Class.extend({
 
 		this.clothModels.push(new ClothModel(
 			{
-				cover:'uni_corpo_super.png',
-				source:'uni_corpo_super.png',
-				label:'Sayajin'
+				cover:'uni_corpo_ironman.png',
+				source:'uni_corpo_ironman.png',
+				label:'Iron'
 			},
 			{
 				id:this.clothModels.length * 10,
-				// sizePercent: 0.03,
-				// demage: 1,
+				// sizePercent: 0,
+				// demage: 0,
 				// fireAcumMax:10,
-				// extraCoins:2,
-				// fireSpeed:3,
+				// extraCoins:0,
+				// fireSpeed:0,
 				enabled: false,
 				coast: getBalanceCoast(this.clothModels.length)
 			}
 		));
+
+		
 
 		this.hornModels = [];
 		this.hornModels.push(new HornModel(
@@ -227,6 +196,46 @@ var AppModel = Class.extend({
 				// fireSpeed:10.5,
 				// // piercing:false,
 				sinoid:0.7,
+				enabled: false,
+				coast: getBalanceCoast(this.hornModels.length),
+				id:this.hornModels.length + 1000
+			}
+		));
+		this.hornModels.push(new HornModel(
+			{
+				cover:'uni_horn5.png',
+				source:'uni_horn5.png',
+				bulletSource:'bullet.png',
+				label:'Witch Horn'
+			},
+			{
+				size: 1,
+				demage: 1,
+				fireAcumMax:25,
+				// hasMultiple:1,
+				// hasBounce:false,
+				// piercing:true,
+				// sinoid:0,
+				enabled: false,
+				coast: getBalanceCoast(this.hornModels.length),
+				id:this.hornModels.length + 1000
+			}
+		));
+		this.hornModels.push(new HornModel(
+			{
+				cover:'uni_horn6.png',
+				source:'uni_horn6.png',
+				bulletSource:'bullet.png',
+				label:'Bang Bang'
+			},
+			{
+				size: 1,
+				demage: 1,
+				fireAcumMax:25,
+				// hasMultiple:1,
+				// hasBounce:false,
+				// piercing:true,
+				// sinoid:0,
 				enabled: false,
 				coast: getBalanceCoast(this.hornModels.length),
 				id:this.hornModels.length + 1000
@@ -373,7 +382,7 @@ var AppModel = Class.extend({
 				new EnemyModel(
 				{
 					cover:'cloud2a.png',
-					source:['cloud2a.png'],
+					source:['cloud2a.png','preta_2.png','preta_3.png'],
 					thumb:'barra_bolita_black.png',
 					particles:['bullet.png'],
 					sizePercent: 0.25,
@@ -385,7 +394,8 @@ var AppModel = Class.extend({
 					behaviour: new BirdBehaviourSinoid({sinAcc:0.03}),
 					money:5,
 					hp:3,
-					resistance: 0.6
+					resistance: 0.6,
+					moreStats: true
 				}
 			),
 			];
