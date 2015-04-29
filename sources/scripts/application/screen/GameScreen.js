@@ -298,7 +298,9 @@ var GameScreen = AbstractScreen.extend({
         }
         var type = APP.appModel.addRandonBehaviour();
 
-        this.specialLabel  = new SimpleSprite(type, {x:0.5, y:0.5});//new PIXI.Text(type, {font:'40px Vagron', fill:'#ffe63e', stroke:'#665c18', strokeThickness:3});
+        APP.fireTint = type.color;
+
+        this.specialLabel  = new SimpleSprite(type.src, {x:0.5, y:0.5});//new PIXI.Text(type, {font:'40px Vagron', fill:'#ffe63e', stroke:'#665c18', strokeThickness:3});
         this.specialLabel.getContent().anchor = {x:0.5, y:0.5};
         this.specialLabel.getContent().position.x = windowWidth / 2 ;
         this.specialLabel.getContent().position.y = this.HUDback.getContent().height + this.specialLabel.getContent().height / 2;

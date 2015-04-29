@@ -87,7 +87,7 @@ var AppModel = Class.extend({
 		));
 		this.clothModels.push(new ClothModel(
 			{
-				cover:'uni_corpo_bruxa.png',
+				cover:'witch_thumb.png',
 				source:'uni_corpo_bruxa.png',
 				label:'Witch'
 			},
@@ -104,7 +104,7 @@ var AppModel = Class.extend({
 		));
 		this.clothModels.push(new ClothModel(
 			{
-				cover:'uni_corpo_cowboy.png',
+				cover:'cowboy_thumb.png',
 				source:'uni_corpo_cowboy.png',
 				label:'Cowboy'
 			},
@@ -122,7 +122,7 @@ var AppModel = Class.extend({
 		
 		this.clothModels.push(new ClothModel(
 			{
-				cover:'uni_corpo_katyperry.png',
+				cover:'katy_thumb.png',
 				source:'uni_corpo_katyperry.png',
 				label:'Katy'
 			},
@@ -140,7 +140,7 @@ var AppModel = Class.extend({
 
 		this.clothModels.push(new ClothModel(
 			{
-				cover:'uni_corpo_ironman.png',
+				cover:'Iron_thumb.png',
 				source:'uni_corpo_ironman.png',
 				label:'Iron'
 			},
@@ -458,24 +458,27 @@ var AppModel = Class.extend({
 	addRandonBehaviour:function(){
 		this.removeBehaviour();
 		var rnd = Math.random();
+		var src = '';
 		if(rnd < 1/4){
 			APP.currentHornModel.hasMultiple=2;
-			return 'double.png';
+			src = 'double.png';
 		}
 		else if(rnd < 2/4){
 			APP.currentHornModel.hasBounce=true;
-			return 'bounce.png';
+			src = 'bounce.png';
 		}
 		else if(rnd < 3/4){
 			APP.currentHornModel.piercing=true;
-			return 'piercing.png';
+			src = 'piercing.png';
 		}
 		else{
 			APP.currentHornModel.sinoid=0.5;
-			return 'crazy.png';
+			src = 'crazy.png';
 		}
+		return {src:src, color:0x00FFFF};
 	},
 	removeBehaviour:function(){
+		APP.fireTint = 0xFFFFFF;
 		APP.currentHornModel.fireAcumMax=25;
 		APP.currentHornModel.hasMultiple=1;
 		APP.currentHornModel.hasBounce=false;

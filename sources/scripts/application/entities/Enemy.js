@@ -24,6 +24,7 @@ var Enemy = Entity.extend({
         this.bounce = this.model.bounce;
         this.stats = this.model.moreStats ? this.model.imgSource.length: 1;
         this.currentState = 0;
+        this.invencible = 0;
     },
     build: function(){
         // console.log(this.model);
@@ -64,6 +65,11 @@ var Enemy = Entity.extend({
 
     },
     update: function(){
+        if(this.invencible > 0){
+            this.invencible --;
+        }else{
+            this.invencible = 0;
+        }
         this.range = this.spritesheet.container.width / 2;
         // this.spritesheet.container.tint = 0xFF0000;
         this._super();
@@ -86,6 +92,9 @@ var Enemy = Entity.extend({
         }
     },
     hurt:function(demage){
+        if(this.invencible > 0){
+            return;
+        }
         this.hp -= demage;
         // console.log(this.spritesheet.currentAnimation.label);
         if(this.bounce && this.spritesheet.currentAnimation.label !== 'state2'){
@@ -115,6 +124,11 @@ var Enemy = Entity.extend({
             this.spritesheet.play(rnd);
             this.vel *= 1.5;
             this.velocity.y  *= 1.5;
+            this.invencible = 40;
+
+            this.scaleMax *= 1.2;
+
+            this.getContent().scale.x = this.getContent().scale.y = this.scaleMax;
         }
         // this.sprite.tint = 0xFF0000;
         // this.spritesheet.container.tint = 0xFF0000;
@@ -135,9 +149,9 @@ var Enemy = Entity.extend({
         }
     },
     preKill:function(){
-        if(!this.collidable){
-            return;
-        }
+        // if(!this.collidable){
+        //     return;
+        // }
         this.onList = true;
         if(this.thumb.parent){
             this.thumb.parent.removeChild(this.thumb);

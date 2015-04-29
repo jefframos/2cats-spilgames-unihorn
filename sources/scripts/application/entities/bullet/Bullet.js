@@ -30,6 +30,9 @@ var Bullet = Entity.extend({
         }
         this.sin = 0;
         this.hasCollideEntity = [];
+
+        this.colors = [0xa12cff,0x67a5ff,0xa1ff39,0xe8ff5b,0xfd777b,0xff1c44];
+        this.colorsIndex = Math.floor(Math.random() * this.colors.length);
     },
     startScaleTween: function(){
         TweenLite.from(this.getContent().scale, 0.8, {x:0, y:0, ease:'easeOutBack'});
@@ -45,6 +48,15 @@ var Bullet = Entity.extend({
 
         this.sprite.anchor.x = 0.5;
         this.sprite.anchor.y = 0.5;
+
+        // this.sprite.tint = APP.fireTint;
+        if(APP.fireTint !== 0xFFFFFF){
+            this.sprite.tint = this.colors[this.colorsIndex];
+            this.colorsIndex ++;
+            if(this.colorsIndex >= this.colors.length){
+                this.colorsIndex = 0;
+            }
+        }
 
         this.updateable = true;
         this.collidable = false;
@@ -161,6 +173,13 @@ var Bullet = Entity.extend({
             particle.maxInitScale = particle.maxScale;
             // particle.growType = -1;
             particle.build();
+            if(APP.fireTint !== 0xFFFFFF){
+                particle.getContent().tint = this.colors[this.colorsIndex];
+                this.colorsIndex ++;
+                if(this.colorsIndex >= this.colors.length){
+                    this.colorsIndex = 0;
+                }
+            }
             particle.gravity = 0.0;
             particle.alphadecress = 0.15;
             particle.scaledecress = -0.04;
@@ -223,6 +242,13 @@ var Bullet = Entity.extend({
         for (var i = 3; i >= 0; i--) {
             var particle = new Particles({x: Math.random() * 4 - 2, y:-(Math.random() * 2 + 1)}, 120, this.particleSource, Math.random() * 0.05);
             particle.build();
+            if(APP.fireTint !== 0xFFFFFF){
+                particle.getContent().tint = this.colors[this.colorsIndex];
+                this.colorsIndex ++;
+                if(this.colorsIndex >= this.colors.length){
+                    this.colorsIndex = 0;
+                }
+            }
             particle.maxScale = 0.5;
             particle.gravity = 0.1 * Math.random() + 0.2;
             // particle.alphadecres = 0.1;

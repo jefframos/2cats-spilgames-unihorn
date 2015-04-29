@@ -550,12 +550,17 @@ var Application = AbstractApplication.extend({
         this.equipButton = new DefaultButton("botao_equip.png", "botao_equip.png"), this.equipButton.build(), 
         this.equipButton.setPosition(this.backScroll.width - this.equipButton.getContent().width - .15 * this.backShopItem.getContent().width, this.backShopItem.getContent().height - this.equipButton.getContent().height + this.backShopItem.getContent().position.y), 
         this.equipButton.clickCallback = this.equipButton.mouseDownCallback = function() {
-            var targetArray = [];
-            "horn" === self.type ? (APP.currentHornModel = self.model, targetArray = self.screen.hornList) : "cloth" === self.type ? (APP.currentClothModel = self.model, 
-            targetArray = self.screen.clothList) : "env" === self.type && (APP.currentEnvModel = self.model, 
-            targetArray = self.screen.envList);
-            for (var i = targetArray.length - 1; i >= 0; i--) targetArray[i].updateStats();
-            self.updateStats();
+            self.equipButton.down = !0;
+        }, this.equipButton.clickCallback = this.equipButton.mouseUpCallback = function() {
+            if (self.equipButton.down) {
+                self.equipButton.down = !1;
+                var targetArray = [];
+                "horn" === self.type ? (APP.currentHornModel = self.model, targetArray = self.screen.hornList) : "cloth" === self.type ? (APP.currentClothModel = self.model, 
+                targetArray = self.screen.clothList) : "env" === self.type && (APP.currentEnvModel = self.model, 
+                targetArray = self.screen.envList);
+                for (var i = targetArray.length - 1; i >= 0; i--) targetArray[i].updateStats();
+                self.updateStats();
+            }
         }, this.equipped = new SimpleSprite("botao_equipped.png"), scaleConverter(this.equipped.getContent().height, this.equipButton.getContent().height, 1, this.equipped.getContent()), 
         this.equipped.getContent().position.x = this.backScroll.width - this.equipped.getContent().width - .15 * this.backShopItem.getContent().width, 
         this.equipped.getContent().position.y = this.backShopItem.getContent().height - this.equipped.getContent().height + this.backShopItem.getContent().position.y, 
@@ -567,7 +572,9 @@ var Application = AbstractApplication.extend({
             strokeThickness: 4
         }), 50, 4), this.buyButton.setPosition(this.backScroll.width - this.buyButton.getContent().width - .15 * this.backShopItem.getContent().width, this.backShopItem.getContent().height - this.buyButton.getContent().height + this.backShopItem.getContent().position.y), 
         this.buyButton.clickCallback = this.buyButton.mouseDownCallback = function() {
-            if (!(self.model.coast > APP.appModel.totalPoints)) {
+            self.buyButton.down = !0;
+        }, this.buyButton.clickCallback = this.buyButton.mouseUpCallback = function() {
+            if (self.buyButton.down && !(self.model.coast > APP.appModel.totalPoints)) {
                 APP.appModel.totalPoints -= self.model.coast, self.screen.updateCoins();
                 var targetArray = [];
                 "horn" === self.type ? (APP.currentHornModel = self.model, APP.currentHornModel.enabled = !0, 
@@ -670,7 +677,7 @@ var Application = AbstractApplication.extend({
         console.log(this.model.hp, APP.accelGame), this.behaviour = this.model.behaviour ? this.model.behaviour.clone() : null, 
         this.resistance = this.model.resistance, this.subdivide = this.model.subdivide, 
         this.special = this.model.special, this.bounce = this.model.bounce, this.stats = this.model.moreStats ? this.model.imgSource.length : 1, 
-        this.currentState = 0;
+        this.currentState = 0, this.invencible = 0;
     },
     build: function() {
         this.thumb = new PIXI.Sprite(new PIXI.Texture.fromImage(this.model.thumb)), this.thumb.anchor.x = .5, 
@@ -688,86 +695,87 @@ var Application = AbstractApplication.extend({
         this.collideArea = new PIXI.Rectangle(-50, -50, windowWidth + 100, windowHeight + 100);
     },
     update: function() {
-        this.range = this.spritesheet.container.width / 2, this._super(), this.velocity.y < this.vel ? this.velocity.y += .1 : this.velocity.y = this.vel, 
+        this.invencible > 0 ? this.invencible-- : this.invencible = 0, this.range = this.spritesheet.container.width / 2, 
+        this._super(), this.velocity.y < this.vel ? this.velocity.y += .1 : this.velocity.y = this.vel, 
         this.behaviour && this.behaviour.update(this), this.spritesheet.update(), this.spritesheet.container.tint = 16711935, 
         this.getContent().position.y > windowHeight + 100 && (this.onList = !0, this.kill = !0), 
         this.collideArea.contains(this.getPosition().x, this.getPosition().y) || (this.kill = !0);
     },
     hurt: function(demage) {
-        if (this.hp -= demage, this.bounce && "state2" !== this.spritesheet.currentAnimation.label) {
-            this.spritesheet.play("state2");
-            for (var i = 0; i >= 0; i--) {
-                var particle = new Particles({
-                    x: 4 * Math.random() - 2,
-                    y: -(2 * Math.random() + 1)
-                }, 120, "bolha.png", .05 * Math.random());
-                particle.build(), particle.maxScale = .5, particle.gravity = .1 * Math.random() + .2, 
-                particle.alphadecres = .1, particle.scaledecress = .02, particle.setPosition(this.getPosition().x - (Math.random() + .1 * this.getContent().width) / 2, this.getPosition().y), 
-                this.layer.addChild(particle);
+        if (!(this.invencible > 0)) {
+            if (this.hp -= demage, this.bounce && "state2" !== this.spritesheet.currentAnimation.label) {
+                this.spritesheet.play("state2");
+                for (var i = 0; i >= 0; i--) {
+                    var particle = new Particles({
+                        x: 4 * Math.random() - 2,
+                        y: -(2 * Math.random() + 1)
+                    }, 120, "bolha.png", .05 * Math.random());
+                    particle.build(), particle.maxScale = .5, particle.gravity = .1 * Math.random() + .2, 
+                    particle.alphadecres = .1, particle.scaledecress = .02, particle.setPosition(this.getPosition().x - (Math.random() + .1 * this.getContent().width) / 2, this.getPosition().y), 
+                    this.layer.addChild(particle);
+                }
+                this.bounce = !1;
             }
-            this.bounce = !1;
+            if (this.currentState++, this.stats > 1 && this.currentState < this.stats) {
+                var rnd = Math.random() + "motion", motionState2 = new SpritesheetAnimation();
+                motionState2.build(rnd, [ this.model.imgSource[this.currentState] ], 5, !0, null), 
+                this.spritesheet.addAnimation(motionState2), this.spritesheet.play(rnd), this.vel *= 1.5, 
+                this.velocity.y *= 1.5, this.invencible = 40, this.scaleMax *= 1.2, this.getContent().scale.x = this.getContent().scale.y = this.scaleMax;
+            }
+            this.getContent().scale.x = this.getContent().scale.y = this.scaleMax / 1.2, TweenLite.to(this.getContent().scale, .8, {
+                x: this.scaleMax,
+                y: this.scaleMax,
+                ease: "easeOutElastic"
+            }), this.velocity.y -= this.resistance, this.hp <= 0 && this.preKill();
         }
-        if (this.currentState++, this.stats > 1 && this.currentState < this.stats) {
-            var rnd = Math.random() + "motion", motionState2 = new SpritesheetAnimation();
-            motionState2.build(rnd, [ this.model.imgSource[this.currentState] ], 5, !0, null), 
-            this.spritesheet.addAnimation(motionState2), this.spritesheet.play(rnd), this.vel *= 1.5, 
-            this.velocity.y *= 1.5;
-        }
-        this.getContent().scale.x = this.getContent().scale.y = this.scaleMax / 1.2, TweenLite.to(this.getContent().scale, .8, {
-            x: this.scaleMax,
-            y: this.scaleMax,
-            ease: "easeOutElastic"
-        }), this.velocity.y -= this.resistance, this.hp <= 0 && this.preKill();
     },
     removeSprite: function() {
         this.updateable = !1, this.collidable = !1, this.removed = !0, this.onList = !0, 
         this.getContent().parent && this.getContent().parent.removeChild(this.getContent());
     },
     preKill: function() {
-        if (this.collidable) {
-            this.onList = !0, this.thumb.parent && this.thumb.parent.removeChild(this.thumb), 
-            this.screen.unihorn.killed(), this.special && this.screen.addSpecial();
-            for (var i = this.subdivide - 1; i >= 0; i--) {
-                var enemy = new Enemy(APP.appModel.smallEnemyModel, this.screen);
-                enemy.build(), enemy.setPosition(this.getPosition().x, this.getPosition().y);
-                var destX = this.getPosition().x - 50 + 100 * i;
-                50 > destX ? destX = this.getPosition().x + 100 * i : destX > windowWidth - 50 && (destX = this.getPosition().x - 100 + 100 * i), 
-                TweenLite.to(enemy.getContent(), .5, {
-                    x: destX,
-                    y: this.getPosition().y - 50
-                }), this.screen.spawner.enemyList.push(enemy), this.screen.addEnemyThumb(enemy), 
-                this.screen.layer.addChild(enemy);
-            }
-            var tempLAbel = new PIXI.Text("+" + (this.model.money + APP.currentClothModel.extraCoins), {
-                font: "30px Vagron",
-                fill: "#ffe63e",
-                stroke: "#665c18",
-                strokeThickness: 3
-            }), mascadasLabel = new Particles({
-                x: 0,
-                y: -(.2 * Math.random() + .3)
-            }, 120, tempLAbel, 0);
-            mascadasLabel.build(), mascadasLabel.setPosition(this.getPosition().x, this.getPosition().y - 50 * Math.random()), 
-            mascadasLabel.alphadecress = .01, this.screen.addChild(mascadasLabel);
-            for (var j = 2; j >= 0; j--) {
-                var particle = new Particles({
-                    x: 4 * Math.random() - 2,
-                    y: -(Math.random() + .5)
-                }, 220, "star_shine.png", .1 * Math.random());
-                particle.build(), particle.gravity = .2 * Math.random(), particle.setPosition(this.getPosition().x, this.getPosition().y), 
-                this.layer.addChild(particle);
-            }
-            var self = this;
-            TweenLite.to(this.getContent(), .3, {
-                alpha: 0,
-                onCOmplete: function() {
-                    self.kill = !0;
-                }
-            }), TweenLite.to(this.getContent().scale, .3, {
-                x: 0,
-                y: 0
-            }), this.collidable = !1, APP.appModel.totalPoints += this.model.money + APP.currentClothModel.extraCoins;
+        this.onList = !0, this.thumb.parent && this.thumb.parent.removeChild(this.thumb), 
+        this.screen.unihorn.killed(), this.special && this.screen.addSpecial();
+        for (var i = this.subdivide - 1; i >= 0; i--) {
+            var enemy = new Enemy(APP.appModel.smallEnemyModel, this.screen);
+            enemy.build(), enemy.setPosition(this.getPosition().x, this.getPosition().y);
+            var destX = this.getPosition().x - 50 + 100 * i;
+            50 > destX ? destX = this.getPosition().x + 100 * i : destX > windowWidth - 50 && (destX = this.getPosition().x - 100 + 100 * i), 
+            TweenLite.to(enemy.getContent(), .5, {
+                x: destX,
+                y: this.getPosition().y - 50
+            }), this.screen.spawner.enemyList.push(enemy), this.screen.addEnemyThumb(enemy), 
+            this.screen.layer.addChild(enemy);
         }
+        var tempLAbel = new PIXI.Text("+" + (this.model.money + APP.currentClothModel.extraCoins), {
+            font: "30px Vagron",
+            fill: "#ffe63e",
+            stroke: "#665c18",
+            strokeThickness: 3
+        }), mascadasLabel = new Particles({
+            x: 0,
+            y: -(.2 * Math.random() + .3)
+        }, 120, tempLAbel, 0);
+        mascadasLabel.build(), mascadasLabel.setPosition(this.getPosition().x, this.getPosition().y - 50 * Math.random()), 
+        mascadasLabel.alphadecress = .01, this.screen.addChild(mascadasLabel);
+        for (var j = 2; j >= 0; j--) {
+            var particle = new Particles({
+                x: 4 * Math.random() - 2,
+                y: -(Math.random() + .5)
+            }, 220, "star_shine.png", .1 * Math.random());
+            particle.build(), particle.gravity = .2 * Math.random(), particle.setPosition(this.getPosition().x, this.getPosition().y), 
+            this.layer.addChild(particle);
+        }
+        var self = this;
+        TweenLite.to(this.getContent(), .3, {
+            alpha: 0,
+            onCOmplete: function() {
+                self.kill = !0;
+            }
+        }), TweenLite.to(this.getContent().scale, .3, {
+            x: 0,
+            y: 0
+        }), this.collidable = !1, APP.appModel.totalPoints += this.model.money + APP.currentClothModel.extraCoins;
     }
 }), Unihorn = Entity.extend({
     init: function() {
@@ -957,7 +965,8 @@ var Application = AbstractApplication.extend({
         this.vel = vel.x, this.defaultVelocity = 1, this.hasBounce = !1, this.piercing = !1, 
         this.sinoid = 0, this.sin = 0, this.imgSource = "bullet.png", this.particleSource = particle ? particle : this.imgSource, 
         this.isRotation = rotation, this.isRotation && (this.accumRot = .1 * Math.random() - .05), 
-        this.sin = 0, this.hasCollideEntity = [];
+        this.sin = 0, this.hasCollideEntity = [], this.colors = [ 10562815, 6792703, 10616633, 15269723, 16611195, 16718916 ], 
+        this.colorsIndex = Math.floor(Math.random() * this.colors.length);
     },
     startScaleTween: function() {
         TweenLite.from(this.getContent().scale, .8, {
@@ -976,8 +985,9 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this.sprite = new PIXI.Sprite.fromFrame(this.imgSource), this.sprite.anchor.x = .5, 
-        this.sprite.anchor.y = .5, this.updateable = !0, this.collidable = !1, this.birdsCollided = [], 
-        this.particlesCounterMax = (Math.abs(this.velocity.x) + Math.abs(this.velocity.y)) / 10, 
+        this.sprite.anchor.y = .5, 16777215 !== APP.fireTint && (this.sprite.tint = this.colors[this.colorsIndex], 
+        this.colorsIndex++, this.colorsIndex >= this.colors.length && (this.colorsIndex = 0)), 
+        this.updateable = !0, this.collidable = !1, this.birdsCollided = [], this.particlesCounterMax = (Math.abs(this.velocity.x) + Math.abs(this.velocity.y)) / 10, 
         this.particlesCounter = 20, this.collideArea = new PIXI.Rectangle(-50, -50, windowWidth + 100, windowHeight + 100);
     },
     update: function() {
@@ -995,7 +1005,9 @@ var Application = AbstractApplication.extend({
                 y: 0
             }, 120, this.imgSource, .05 * Math.random());
             particle.maxScale = this.getContent().scale.x, particle.maxInitScale = particle.maxScale, 
-            particle.build(), particle.gravity = 0, particle.alphadecress = .15, particle.scaledecress = -.04, 
+            particle.build(), 16777215 !== APP.fireTint && (particle.getContent().tint = this.colors[this.colorsIndex], 
+            this.colorsIndex++, this.colorsIndex >= this.colors.length && (this.colorsIndex = 0)), 
+            particle.gravity = 0, particle.alphadecress = .15, particle.scaledecress = -.04, 
             particle.setPosition(this.getPosition().x - (Math.random() + .1 * this.getContent().width) / 2, this.getPosition().y), 
             this.layer.addChild(particle);
         }
@@ -1024,8 +1036,10 @@ var Application = AbstractApplication.extend({
                     x: 4 * Math.random() - 2,
                     y: -(2 * Math.random() + 1)
                 }, 120, this.particleSource, .05 * Math.random());
-                particle.build(), particle.maxScale = .5, particle.gravity = .1 * Math.random() + .2, 
-                particle.scaledecress = .02, particle.setPosition(this.getPosition().x - (Math.random() + .1 * this.getContent().width) / 2, this.getPosition().y), 
+                particle.build(), 16777215 !== APP.fireTint && (particle.getContent().tint = this.colors[this.colorsIndex], 
+                this.colorsIndex++, this.colorsIndex >= this.colors.length && (this.colorsIndex = 0)), 
+                particle.maxScale = .5, particle.gravity = .1 * Math.random() + .2, particle.scaledecress = .02, 
+                particle.setPosition(this.getPosition().x - (Math.random() + .1 * this.getContent().width) / 2, this.getPosition().y), 
                 this.layer.addChild(particle);
             }
             this.collidable = !1, this.kill = !0;
@@ -1251,7 +1265,7 @@ var Application = AbstractApplication.extend({
             enabled: !0,
             coast: getBalanceCoast(this.clothModels.length)
         })), this.clothModels.push(new ClothModel({
-            cover: "uni_corpo_bruxa.png",
+            cover: "witch_thumb.png",
             source: "uni_corpo_bruxa.png",
             label: "Witch"
         }, {
@@ -1259,7 +1273,7 @@ var Application = AbstractApplication.extend({
             enabled: !1,
             coast: getBalanceCoast(this.clothModels.length)
         })), this.clothModels.push(new ClothModel({
-            cover: "uni_corpo_cowboy.png",
+            cover: "cowboy_thumb.png",
             source: "uni_corpo_cowboy.png",
             label: "Cowboy"
         }, {
@@ -1267,7 +1281,7 @@ var Application = AbstractApplication.extend({
             enabled: !1,
             coast: getBalanceCoast(this.clothModels.length)
         })), this.clothModels.push(new ClothModel({
-            cover: "uni_corpo_katyperry.png",
+            cover: "katy_thumb.png",
             source: "uni_corpo_katyperry.png",
             label: "Katy"
         }, {
@@ -1275,7 +1289,7 @@ var Application = AbstractApplication.extend({
             enabled: !1,
             coast: getBalanceCoast(this.clothModels.length)
         })), this.clothModels.push(new ClothModel({
-            cover: "uni_corpo_ironman.png",
+            cover: "Iron_thumb.png",
             source: "uni_corpo_ironman.png",
             label: "Iron"
         }, {
@@ -1460,14 +1474,17 @@ var Application = AbstractApplication.extend({
     },
     addRandonBehaviour: function() {
         this.removeBehaviour();
-        var rnd = Math.random();
-        return .25 > rnd ? (APP.currentHornModel.hasMultiple = 2, "double.png") : .5 > rnd ? (APP.currentHornModel.hasBounce = !0, 
-        "bounce.png") : .75 > rnd ? (APP.currentHornModel.piercing = !0, "piercing.png") : (APP.currentHornModel.sinoid = .5, 
-        "crazy.png");
+        var rnd = Math.random(), src = "";
+        return .25 > rnd ? (APP.currentHornModel.hasMultiple = 2, src = "double.png") : .5 > rnd ? (APP.currentHornModel.hasBounce = !0, 
+        src = "bounce.png") : .75 > rnd ? (APP.currentHornModel.piercing = !0, src = "piercing.png") : (APP.currentHornModel.sinoid = .5, 
+        src = "crazy.png"), {
+            src: src,
+            color: 65535
+        };
     },
     removeBehaviour: function() {
-        APP.currentHornModel.fireAcumMax = 25, APP.currentHornModel.hasMultiple = 1, APP.currentHornModel.hasBounce = !1, 
-        APP.currentHornModel.piercing = !1, APP.currentHornModel.sinoid = 0;
+        APP.fireTint = 16777215, APP.currentHornModel.fireAcumMax = 25, APP.currentHornModel.hasMultiple = 1, 
+        APP.currentHornModel.hasBounce = !1, APP.currentHornModel.piercing = !1, APP.currentHornModel.sinoid = 0;
     },
     setModel: function(id) {
         this.currentID = id, this.currentPlayerModel = this.playerModels[id];
@@ -1886,7 +1903,7 @@ var Application = AbstractApplication.extend({
     addSpecial: function() {
         this.specAcc = this.specAccMax, this.specialLabel && this.specialLabel.getContent() && this.specialLabel.getContent().parent && this.specialLabel.getContent().parent.removeChild(this.specialLabel.getContent());
         var type = APP.appModel.addRandonBehaviour();
-        this.specialLabel = new SimpleSprite(type, {
+        APP.fireTint = type.color, this.specialLabel = new SimpleSprite(type.src, {
             x: .5,
             y: .5
         }), this.specialLabel.getContent().anchor = {
