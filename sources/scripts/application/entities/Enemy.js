@@ -125,7 +125,7 @@ var Enemy = Entity.extend({
             this.spritesheet.play(rnd);
             this.vel *= 1.5;
             this.velocity.y  *= 1.5;
-            this.invencible = 40;
+            this.invencible = 20;
 
             this.scaleMax *= 1.2;
 

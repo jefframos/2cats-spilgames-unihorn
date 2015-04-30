@@ -50,14 +50,14 @@ var ShopItem = Class.extend({
 		// this.equipButton.addLabel(new PIXI.Text('EQUIP', {font:'30px Vagron', fill:'#FFFFFF'}), 33,5);
 		// this.equipButton.setPosition(this.backScroll.width - this.equipButton.getContent().width - this.backShopItem.getContent().height * 0.1,this.backShopItem.getContent().height - this.equipButton.getContent().height + this.backShopItem.getContent().position.y);//this.backBars.getContent().height - 20 - this.continueButton.height / 2 - 10);
 		this.equipButton.setPosition(this.backScroll.width - this.equipButton.getContent().width - this.backShopItem.getContent().width * 0.15,this.backShopItem.getContent().height - this.equipButton.getContent().height + this.backShopItem.getContent().position.y);//this.backBars.getContent().height - 20 - this.continueButton.height / 2 - 10);
-		this.equipButton.clickCallback = this.equipButton.mouseDownCallback = function(){
-			self.equipButton.down = true;
-		};
+		// this.equipButton.clickCallback = this.equipButton.mouseDownCallback = function(){
+		// 	self.equipButton.down = true;
+		// };
 
-		this.equipButton.clickCallback = this.equipButton.mouseUpCallback = function(){
-			if(!self.equipButton.down){
-				return;
-			}
+		this.equipButton.clickCallback = this.equipButton.mouseDownCallback = function(){
+			// if(!self.equipButton.down){
+			// 	return;
+			// }
 			self.equipButton.down = false;
 			var targetArray = [];//self.screen.shopList;
 			if(self.type === 'horn'){
@@ -89,20 +89,19 @@ var ShopItem = Class.extend({
 		this.buyButton.build();
 		this.buyButton.addLabel(new PIXI.Text(this.model.coast, {font:'30px Vagron', fill:'#FFFFFF', stroke:'#006f00', strokeThickness:4}), 50,4);
 		this.buyButton.setPosition(this.backScroll.width - this.buyButton.getContent().width - this.backShopItem.getContent().width * 0.15,this.backShopItem.getContent().height - this.buyButton.getContent().height + this.backShopItem.getContent().position.y);//this.backBars.getContent().height - 20 - this.continueButton.height / 2 - 10);
-		this.buyButton.clickCallback = this.buyButton.mouseDownCallback = function(){
-			self.buyButton.down = true;
-		};
+		// this.buyButton.clickCallback = this.buyButton.mouseDownCallback = function(){
+		// 	self.buyButton.down = true;
+		// };
 
-		this.buyButton.clickCallback = this.buyButton.mouseUpCallback = function(){
-			if(!self.buyButton.down){
-				return;
-			}
+		this.buyButton.clickCallback = this.buyButton.mouseDownCallback = function(){
+			// if(!self.buyButton.down){
+			// 	return;
+			// }
 			// alert(self.model.coast);
 			if(self.model.coast > APP.appModel.totalPoints){
 				return;
 			}
 			APP.appModel.totalPoints -= self.model.coast;
-			self.screen.updateCoins();
 			var targetArray = [];//self.screen.shopList;
 			if(self.type === 'horn'){
 				APP.currentHornModel = self.model;
@@ -120,6 +119,8 @@ var ShopItem = Class.extend({
 			for (var i = targetArray.length - 1; i >= 0; i--) {
 				targetArray[i].updateStats();
 			}
+			
+			self.screen.updateCoins();
 			self.updateStats();
 		};
 

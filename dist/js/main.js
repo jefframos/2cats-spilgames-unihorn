@@ -324,8 +324,7 @@ var Application = AbstractApplication.extend({
             font: "15px Arial",
             fill: "#FFF"
         }), this.labelDebug.position.y = 20, this.labelDebug.position.x = 20, this.mute = !1, 
-        this.accelGame = 1, this.audioController = new AudioController(), this.appModel = new AppModel(), 
-        this.withAPI = !0, "#withoutAPI" === window.location.hash && (this.withAPI = !1);
+        this.accelGame = 1, this.withAPI = !0, "#withoutAPI" === window.location.hash && (this.withAPI = !1);
     },
     update: function() {
         this._super(), this.withAPI && this.apiLogo && this.apiLogo.getContent().height > 1 && 0 === this.apiLogo.getContent().position.x && (scaleConverter(this.apiLogo.getContent().width, windowWidth, .5, this.apiLogo), 
@@ -360,7 +359,8 @@ var Application = AbstractApplication.extend({
         this.withAPI || this.initApplication();
     },
     initApplication: function() {
-        this.initScreen = new InitScreen("Init"), this.choiceScreen = new ChoiceScreen("Choice"), 
+        this.audioController = new AudioController(), this.cookieManager = new CookieManager(), 
+        this.appModel = new AppModel(), this.initScreen = new InitScreen("Init"), this.choiceScreen = new ChoiceScreen("Choice"), 
         this.gameScreen = new GameScreen("Game"), this.loadScreen = new LoadScreen("Loader"), 
         this.screenManager.addScreen(this.loadScreen), this.screenManager.addScreen(this.initScreen), 
         this.screenManager.addScreen(this.choiceScreen), this.screenManager.addScreen(this.gameScreen), 
@@ -550,17 +550,13 @@ var Application = AbstractApplication.extend({
         this.equipButton = new DefaultButton("botao_equip.png", "botao_equip.png"), this.equipButton.build(), 
         this.equipButton.setPosition(this.backScroll.width - this.equipButton.getContent().width - .15 * this.backShopItem.getContent().width, this.backShopItem.getContent().height - this.equipButton.getContent().height + this.backShopItem.getContent().position.y), 
         this.equipButton.clickCallback = this.equipButton.mouseDownCallback = function() {
-            self.equipButton.down = !0;
-        }, this.equipButton.clickCallback = this.equipButton.mouseUpCallback = function() {
-            if (self.equipButton.down) {
-                self.equipButton.down = !1;
-                var targetArray = [];
-                "horn" === self.type ? (APP.currentHornModel = self.model, targetArray = self.screen.hornList) : "cloth" === self.type ? (APP.currentClothModel = self.model, 
-                targetArray = self.screen.clothList) : "env" === self.type && (APP.currentEnvModel = self.model, 
-                targetArray = self.screen.envList);
-                for (var i = targetArray.length - 1; i >= 0; i--) targetArray[i].updateStats();
-                self.updateStats();
-            }
+            self.equipButton.down = !1;
+            var targetArray = [];
+            "horn" === self.type ? (APP.currentHornModel = self.model, targetArray = self.screen.hornList) : "cloth" === self.type ? (APP.currentClothModel = self.model, 
+            targetArray = self.screen.clothList) : "env" === self.type && (APP.currentEnvModel = self.model, 
+            targetArray = self.screen.envList);
+            for (var i = targetArray.length - 1; i >= 0; i--) targetArray[i].updateStats();
+            self.updateStats();
         }, this.equipped = new SimpleSprite("botao_equipped.png"), scaleConverter(this.equipped.getContent().height, this.equipButton.getContent().height, 1, this.equipped.getContent()), 
         this.equipped.getContent().position.x = this.backScroll.width - this.equipped.getContent().width - .15 * this.backShopItem.getContent().width, 
         this.equipped.getContent().position.y = this.backShopItem.getContent().height - this.equipped.getContent().height + this.backShopItem.getContent().position.y, 
@@ -572,17 +568,15 @@ var Application = AbstractApplication.extend({
             strokeThickness: 4
         }), 50, 4), this.buyButton.setPosition(this.backScroll.width - this.buyButton.getContent().width - .15 * this.backShopItem.getContent().width, this.backShopItem.getContent().height - this.buyButton.getContent().height + this.backShopItem.getContent().position.y), 
         this.buyButton.clickCallback = this.buyButton.mouseDownCallback = function() {
-            self.buyButton.down = !0;
-        }, this.buyButton.clickCallback = this.buyButton.mouseUpCallback = function() {
-            if (self.buyButton.down && !(self.model.coast > APP.appModel.totalPoints)) {
-                APP.appModel.totalPoints -= self.model.coast, self.screen.updateCoins();
+            if (!(self.model.coast > APP.appModel.totalPoints)) {
+                APP.appModel.totalPoints -= self.model.coast;
                 var targetArray = [];
                 "horn" === self.type ? (APP.currentHornModel = self.model, APP.currentHornModel.enabled = !0, 
                 targetArray = self.screen.hornList) : "cloth" === self.type ? (APP.currentClothModel = self.model, 
                 APP.currentClothModel.enabled = !0, targetArray = self.screen.clothList) : "env" === self.type && (APP.currentEnvModel = self.model, 
                 APP.currentEnvModel.enabled = !0, targetArray = self.screen.envList);
                 for (var i = targetArray.length - 1; i >= 0; i--) targetArray[i].updateStats();
-                self.updateStats();
+                self.screen.updateCoins(), self.updateStats();
             }
         }, this.updateStats();
     },
@@ -720,7 +714,7 @@ var Application = AbstractApplication.extend({
                 var rnd = Math.random() + "motion", motionState2 = new SpritesheetAnimation();
                 motionState2.build(rnd, [ this.model.imgSource[this.currentState] ], 5, !0, null), 
                 this.spritesheet.addAnimation(motionState2), this.spritesheet.play(rnd), this.vel *= 1.5, 
-                this.velocity.y *= 1.5, this.invencible = 40, this.scaleMax *= 1.2, this.getContent().scale.x = this.getContent().scale.y = this.scaleMax;
+                this.velocity.y *= 1.5, this.invencible = 20, this.scaleMax *= 1.2, this.getContent().scale.x = this.getContent().scale.y = this.scaleMax;
             }
             this.getContent().scale.x = this.getContent().scale.y = this.scaleMax / 1.2, TweenLite.to(this.getContent().scale, .8, {
                 x: this.scaleMax,
@@ -1230,8 +1224,8 @@ var Application = AbstractApplication.extend({
             return 5 * Math.floor(id * id * id / 5) * Math.floor(id * id / 5) * 5 + 25 * id;
         }
         this.currentPlayerModel = {}, console.log(APP);
-        var points = 0, high = 0;
-        this.highScore = high ? high : 0, this.totalPoints = points ? points : 5e4, this.currentPoints = 5e4, 
+        var high = 0, coins = parseInt(APP.cookieManager.getCookie("coins"));
+        this.highScore = high ? high : 0, this.totalPoints = coins ? coins : 0, this.currentPoints = this.totalPoints, 
         this.playerModels = [], this.envModels = [], this.envModels.push(new EnvironmentModel({
             cover: "uni_horn1.png",
             source: "dist/img/fundo1.png",
@@ -1242,7 +1236,7 @@ var Application = AbstractApplication.extend({
             coast: getBalanceCoast(this.envModels.length)
         })), this.envModels.push(new EnvironmentModel({
             cover: "uni_horn1.png",
-            source: "fullscreen.png",
+            source: "dist/img/fundo2.png",
             label: "Normal 2"
         }, {
             id: 750 * this.envModels.length,
@@ -1382,7 +1376,7 @@ var Application = AbstractApplication.extend({
             behaviour: new BirdBehaviourSinoid({
                 sinAcc: .05
             }),
-            money: 5,
+            money: 2,
             hp: 1,
             resistance: 1.2
         }), new EnemyModel({
@@ -1398,7 +1392,7 @@ var Application = AbstractApplication.extend({
             behaviour: new BirdBehaviourSinoid({
                 sinAcc: .05
             }),
-            money: 5,
+            money: 3,
             hp: 2,
             resistance: 1.5,
             bounce: !0
@@ -1432,7 +1426,7 @@ var Application = AbstractApplication.extend({
             behaviour: new BirdBehaviourSinoid({
                 sinAcc: .03
             }),
-            money: 5,
+            money: 10,
             hp: 3,
             resistance: .6,
             moreStats: !0
@@ -1471,6 +1465,39 @@ var Application = AbstractApplication.extend({
         for (var i = this.playerModels.length - 1; i >= 0; i--) this.playerModels[i].toAble <= this.totalPoints && (this.playerModels[i].able = !0, 
         this.totalPlayers++);
         this.enemyProbs = [ 0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 3 ], this.currentHorde = 0, this.totalEnemy = 4;
+        var enabledsHorns = APP.cookieManager.getCookie("enabledsHorns"), j = 0;
+        if (enabledsHorns) for (enabledsHorns = enabledsHorns.split(","), j = 0; j < this.hornModels.length - 1; j++) console.log(enabledsHorns[j]), 
+        "1" === enabledsHorns[j] && (this.hornModels[j].enabled = !0); else {
+            for (console.log("whata"), enabledsHorns = "1", j = 0; j < this.hornModels.length - 1; j++) enabledsHorns += ",0";
+            APP.cookieManager.setCookie("enabledsHorns", enabledsHorns, 500);
+        }
+        var enabledsClothes = APP.cookieManager.getCookie("enabledsClothes");
+        if (enabledsClothes) for (enabledsClothes = enabledsClothes.split(","), j = 0; j < this.clothModels.length - 1; j++) console.log(enabledsClothes[j]), 
+        "1" === enabledsClothes[j] && (this.clothModels[j].enabled = !0); else {
+            for (console.log("whata"), enabledsClothes = "1", j = 0; j < this.clothModels.length - 1; j++) enabledsClothes += ",0";
+            APP.cookieManager.setCookie("enabledsClothes", enabledsClothes, 500);
+        }
+        var enabledsLands = APP.cookieManager.getCookie("enabledsLands");
+        if (enabledsLands) for (enabledsLands = enabledsLands.split(","), j = 0; j < this.envModels.length - 1; j++) console.log(enabledsLands[j]), 
+        "1" === enabledsLands[j] && (this.envModels[j].enabled = !0); else {
+            for (console.log("whata"), enabledsLands = "1", j = 0; j < this.envModels.length - 1; j++) enabledsLands += ",0";
+            APP.cookieManager.setCookie("enabledsLands", enabledsLands, 500);
+        }
+    },
+    save: function() {
+        this.currentHorde = 0, APP.cookieManager.setCookie("coins", APP.appModel.totalPoints, 500);
+        var i = 0, enabledsHorns = "1";
+        for (i = 1; i < this.hornModels.length; i++) console.log(this.hornModels[i].enabled), 
+        enabledsHorns += this.hornModels[i].enabled ? ",1" : ",0";
+        console.log(enabledsHorns), APP.cookieManager.setCookie("enabledsHorns", enabledsHorns, 500);
+        var enabledsClothes = "1";
+        for (i = 1; i < this.clothModels.length; i++) console.log(this.clothModels[i].enabled), 
+        enabledsClothes += this.clothModels[i].enabled ? ",1" : ",0";
+        console.log(enabledsClothes), APP.cookieManager.setCookie("enabledsClothes", enabledsClothes, 500);
+        var enabledsLands = "1";
+        for (i = 1; i < this.envModels.length; i++) console.log(this.envModels[i].enabled), 
+        enabledsLands += this.envModels[i].enabled ? ",1" : ",0";
+        console.log(enabledsLands), APP.cookieManager.setCookie("enabledsLands", enabledsLands, 500);
     },
     addRandonBehaviour: function() {
         this.removeBehaviour();
@@ -1823,13 +1850,13 @@ var Application = AbstractApplication.extend({
         this.mouseAngle = 0, testMobile() || (this.hitTouch.mousemove = function(touchData) {
             updateVel(touchData);
         }, this.hitTouch.mousedown = function(mouseData) {
-            self.touchDown = !0, self.fireAcum = 0, console.log("mousedown"), updateVel(mouseData);
+            self.touchDown = !0, self.fireAcum = 0, updateVel(mouseData);
         }, this.hitTouch.mouseup = function(mouseData) {
             self.touchDown = !1, updateVel(mouseData);
         }), this.hitTouch.touchmove = function(touchData) {
             updateVel(touchData);
         }, this.hitTouch.touchstart = function(touchData) {
-            self.touchDown = !0, self.fireAcum = 0, console.log("mousedown"), updateVel(touchData);
+            self.touchDown = !0, self.fireAcum = 0, updateVel(touchData);
         }, this.hitTouch.touchend = function(touchData) {
             self.touchDown = !1, updateVel(touchData);
         }, this.updateable = !0, this.fireAcumMax = APP.currentHornModel.fireAcumMax - APP.currentClothModel.fireAcumMax, 
@@ -1944,7 +1971,7 @@ var Application = AbstractApplication.extend({
             self.layer.addChild(tempCoin), self.arrayCoins.push(tempCoin), self.startCoinMonitore = !0;
         }
         if (!this.end) {
-            this.end = !0, console.log("endGame", this.end), this.spawner.killAll(), this.specialLabel && this.specialLabel.getContent() && (this.specialLabel.getContent().alpha = 0), 
+            this.end = !0, this.spawner.killAll(), this.specialLabel && this.specialLabel.getContent() && (this.specialLabel.getContent().alpha = 0), 
             APP.appModel.removeBehaviour();
             var self = this;
             self.arrayCoins = [], this.unihorn.sad(), TweenLite.to(this.darkShape, .5, {
@@ -1967,8 +1994,8 @@ var Application = AbstractApplication.extend({
     },
     update: function() {
         if (this.updateable) {
-            if (this._super(), console.log("this.end", this.end), this.end === !1) this.unihorn.update(), 
-            this.spawner.update(), this.updateCloudList(), this.specialLabel && this.specialLabel.getContent() && this.specialLabel.getContent().parent && (this.specialLabel.getContent().alpha = this.specAcc / this.specAccMax), 
+            if (this._super(), this.end === !1) this.unihorn.update(), this.spawner.update(), 
+            this.updateCloudList(), this.specialLabel && this.specialLabel.getContent() && this.specialLabel.getContent().parent && (this.specialLabel.getContent().alpha = this.specAcc / this.specAccMax), 
             this.specAcc > 0 ? this.specAcc-- : APP.appModel.removeBehaviour(); else if (this.startCoinMonitore) {
                 for (var i = this.arrayCoins.length - 1; i >= 0; i--) this.arrayCoins[i].kill && this.arrayCoins.splice(i, 1);
                 this.arrayCoins.length <= 0 && this.endModal.show();
@@ -2182,7 +2209,7 @@ var Application = AbstractApplication.extend({
         this.container.addChild(this.logo.getContent()), this.loaderContainer = new PIXI.DisplayObjectContainer(), 
         this.addChild(this.loaderContainer), this.backLoader = new SimpleSprite("dist/img/loader.png"), 
         this.loaderContainer.addChild(this.backLoader.getContent());
-        var assetsToLoader = [ "dist/img/atlas.json", "dist/img/fundo1.png" ];
+        var assetsToLoader = [ "dist/img/atlas.json", "dist/img/fundo1.png", "dist/img/fundo2.png" ];
         assetsToLoader.length > 0 && !this.isLoaded ? this.loader = new PIXI.AssetLoader(assetsToLoader) : this.onAssetsLoaded();
     },
     update: function() {
@@ -2409,7 +2436,7 @@ var Application = AbstractApplication.extend({
         this.baseHUD.position.y = windowHeight - this.baseHUD.height, this.barraBottom.getContent().position.y = this.toHorn.getContent().height - .85 * this.barraBottom.getContent().height;
     },
     updateCoins: function() {
-        this.textScreen.setText(APP.appModel.totalPoints), this.textScreen.position.x = this.topHUD.width / 2 - this.textScreen.width / 2, 
+        APP.appModel.save(), this.textScreen.setText(APP.appModel.totalPoints), this.textScreen.position.x = this.topHUD.width / 2 - this.textScreen.width / 2, 
         this.textScreen.position.y = this.closeButton.getContent().position.y, this.star.getContent().position.x = this.textScreen.position.x - 1.1 * this.star.getContent().width, 
         this.star.getContent().position.y = this.textScreen.position.y + this.textScreen.height / 2 - this.star.getContent().height / 2;
     },

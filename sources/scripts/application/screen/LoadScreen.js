@@ -27,7 +27,7 @@ var LoadScreen = AbstractScreen.extend({
         this.backLoader = new SimpleSprite('dist/img/loader.png');
         this.loaderContainer.addChild(this.backLoader.getContent());
 
-        var assetsToLoader = ['dist/img/atlas.json', 'dist/img/fundo1.png'];
+        var assetsToLoader = ['dist/img/atlas.json', 'dist/img/fundo1.png','dist/img/fundo2.png'];
         if(assetsToLoader.length > 0 && !this.isLoaded){
             this.loader = new PIXI.AssetLoader(assetsToLoader);
             // this.initLoad();

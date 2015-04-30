@@ -16,10 +16,12 @@ var AppModel = Class.extend({
 
 		var points = 0;//parseInt(APP.cookieManager.getCookie('totalPoints'));
 		var high = 0;//parseInt(APP.cookieManager.getCookie('highScore'));
+		var coins = parseInt(APP.cookieManager.getCookie('coins'));
 
 		this.highScore = high?high:0;
-		this.totalPoints = points?points:50000;
-		this.currentPoints = 50000;
+
+		this.totalPoints = coins?coins:0;
+		this.currentPoints = this.totalPoints;
 
 		
 		this.playerModels = [];
@@ -44,7 +46,7 @@ var AppModel = Class.extend({
 		this.envModels.push(new EnvironmentModel(
 			{
 				cover:'uni_horn1.png',
-				source:'fullscreen.png',
+				source:'dist/img/fundo2.png',
 				label:'Normal 2'
 			},
 			{
@@ -336,7 +338,7 @@ var AppModel = Class.extend({
 					vel: 2,
 					toNext: 75,
 					behaviour:new BirdBehaviourSinoid({sinAcc:0.05}),
-					money:5,
+					money:2,
 					hp:1,
 					resistance: 1.2
 				}
@@ -354,7 +356,7 @@ var AppModel = Class.extend({
 					vel: 1.5,
 					toNext: 55,
 					behaviour: new BirdBehaviourSinoid({sinAcc:0.05}),
-					money:5,
+					money:3,
 					hp:2,
 					resistance: 1.5,
 					bounce: true
@@ -392,7 +394,7 @@ var AppModel = Class.extend({
 					vel: 1,
 					toNext: 155,
 					behaviour: new BirdBehaviourSinoid({sinAcc:0.03}),
-					money:5,
+					money:10,
 					hp:3,
 					resistance: 0.6,
 					moreStats: true
@@ -454,6 +456,132 @@ var AppModel = Class.extend({
 		this.currentHorde = 0;
 
 		this.totalEnemy = 4;
+
+
+
+		var enabledsHorns = APP.cookieManager.getCookie('enabledsHorns');
+		
+		// console.log(enableds.split(','));
+		var j = 0;
+		if(!enabledsHorns){
+			console.log('whata');
+			enabledsHorns = '1';
+			for (j = 0; j < this.hornModels.length - 1; j++) {
+				enabledsHorns+=',0';
+			}
+			APP.cookieManager.setCookie('enabledsHorns', enabledsHorns, 500);
+		}else{
+			enabledsHorns = enabledsHorns.split(',');
+			for (j = 0; j < this.hornModels.length - 1; j++) {
+				console.log(enabledsHorns[j]);
+				if(enabledsHorns[j] === '1'){
+					this.hornModels[j].enabled = true;
+				}
+			}
+		}
+
+
+
+
+		var enabledsClothes = APP.cookieManager.getCookie('enabledsClothes');
+		
+		// console.log(enableds.split(','));
+		if(!enabledsClothes){
+			console.log('whata');
+			enabledsClothes = '1';
+			for (j = 0; j < this.clothModels.length - 1; j++) {
+				enabledsClothes+=',0';
+			}
+			APP.cookieManager.setCookie('enabledsClothes', enabledsClothes, 500);
+		}else{
+			enabledsClothes = enabledsClothes.split(',');
+			for (j = 0; j < this.clothModels.length - 1; j++) {
+				console.log(enabledsClothes[j]);
+				if(enabledsClothes[j] === '1'){
+					this.clothModels[j].enabled = true;
+				}
+			}
+		}
+
+
+
+
+
+		var enabledsLands = APP.cookieManager.getCookie('enabledsLands');
+		
+		// console.log(enableds.split(','));
+		if(!enabledsLands){
+			console.log('whata');
+			enabledsLands = '1';
+			for (j = 0; j < this.envModels.length - 1; j++) {
+				enabledsLands+=',0';
+			}
+			APP.cookieManager.setCookie('enabledsLands', enabledsLands, 500);
+		}else{
+			enabledsLands = enabledsLands.split(',');
+			for (j = 0; j < this.envModels.length - 1; j++) {
+				console.log(enabledsLands[j]);
+				if(enabledsLands[j] === '1'){
+					this.envModels[j].enabled = true;
+				}
+			}
+		}
+
+
+
+
+	},
+	save:function(){
+		this.currentHorde = 0;
+		// APP.cookieManager.getCookie('coins')
+        APP.cookieManager.setCookie('coins', APP.appModel.totalPoints, 500);
+		
+		var i = 0;
+
+		// this.updateTowels();
+		// this.updateBurguers();
+
+		var enabledsHorns = '1';
+		for (i = 1; i < this.hornModels.length; i++) {
+			console.log(this.hornModels[i].enabled);
+			if(this.hornModels[i].enabled){
+				enabledsHorns+=',1';
+			}else{
+				enabledsHorns+=',0';
+			}
+		}
+		console.log(enabledsHorns);
+		APP.cookieManager.setCookie('enabledsHorns', enabledsHorns, 500);
+
+
+		var enabledsClothes = '1';
+		for (i = 1; i < this.clothModels.length; i++) {
+			console.log(this.clothModels[i].enabled);
+			if(this.clothModels[i].enabled){
+				enabledsClothes+=',1';
+			}else{
+				enabledsClothes+=',0';
+			}
+		}
+		console.log(enabledsClothes);
+		APP.cookieManager.setCookie('enabledsClothes', enabledsClothes, 500);
+
+
+
+		var enabledsLands = '1';
+		for (i = 1; i < this.envModels.length; i++) {
+			console.log(this.envModels[i].enabled);
+			if(this.envModels[i].enabled){
+				enabledsLands+=',1';
+			}else{
+				enabledsLands+=',0';
+			}
+		}
+		console.log(enabledsLands);
+		APP.cookieManager.setCookie('enabledsLands', enabledsLands, 500);
+
+
+		// console.log(APP.cookieManager.getCookie('enableds'));
 	},
 	addRandonBehaviour:function(){
 		this.removeBehaviour();

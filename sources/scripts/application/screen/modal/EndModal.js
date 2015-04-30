@@ -155,6 +155,9 @@ var EndModal = Class.extend({
         // this.topHUD.position.y = -2;
     },
     updateCoins:function(){
+
+        APP.appModel.save();
+
         this.textScreen.setText(APP.appModel.totalPoints);
         this.textScreen.position.x = this.topHUD.width / 2 - this.textScreen.width / 2;// - this.barraTop.getContent().height * 0.1;
         this.textScreen.position.y = this.closeButton.getContent().position.y;

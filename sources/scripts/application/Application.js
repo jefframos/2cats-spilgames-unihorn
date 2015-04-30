@@ -13,8 +13,7 @@ var Application = AbstractApplication.extend({
         this.mute = false;
 
         this.accelGame = 1;
-        this.audioController = new AudioController();
-        this.appModel = new AppModel();
+
         this.withAPI = true;
         if(window.location.hash === '#withoutAPI'){
             this.withAPI = false;
@@ -92,6 +91,10 @@ var Application = AbstractApplication.extend({
         }
     },
     initApplication:function(){
+        this.audioController = new AudioController();
+        this.cookieManager = new CookieManager();
+        this.appModel = new AppModel();
+        
         this.initScreen = new InitScreen('Init');
         this.choiceScreen = new ChoiceScreen('Choice');
         this.gameScreen = new GameScreen('Game');

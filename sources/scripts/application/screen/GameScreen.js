@@ -108,7 +108,7 @@ var GameScreen = AbstractScreen.extend({
             this.hitTouch.mousedown = function(mouseData){
                 self.touchDown = true;
                 self.fireAcum = 0;
-                console.log('mousedown');
+                // console.log('mousedown');
                 updateVel(mouseData);
             };
 
@@ -123,7 +123,7 @@ var GameScreen = AbstractScreen.extend({
         this.hitTouch.touchstart = function(touchData){
             self.touchDown = true;
             self.fireAcum = 0;
-            console.log('mousedown');
+            // console.log('mousedown');
             updateVel(touchData);
         };
         this.hitTouch.touchend = function(touchData){
@@ -350,7 +350,7 @@ var GameScreen = AbstractScreen.extend({
             return;
         }
         this.end = true;
-        console.log('endGame', this.end);
+        // console.log('endGame', this.end);
         this.spawner.killAll();
         if(this.specialLabel && this.specialLabel.getContent()){
             this.specialLabel.getContent().alpha = 0;
@@ -390,7 +390,7 @@ var GameScreen = AbstractScreen.extend({
             return;
         }
         this._super();
-        console.log('this.end', this.end);
+        // console.log('this.end', this.end);
         if(this.end === false){
             this.unihorn.update();
             this.spawner.update();
