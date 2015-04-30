@@ -89,6 +89,23 @@ var AppModel = Class.extend({
 		));
 		this.clothModels.push(new ClothModel(
 			{
+				cover:'torcedor_thumb.png',
+				source:'uni_corpo_torcedor.png',
+				label:'Fan'
+			},
+			{
+				id:this.clothModels.length * 10,
+				// sizePercent: 0,
+				// demage: 0,
+				// fireAcumMax:0,
+				// extraCoins:2,
+				// fireSpeed:0,
+				enabled: false,
+				coast: getBalanceCoast(this.clothModels.length)
+			}
+		));
+		this.clothModels.push(new ClothModel(
+			{
 				cover:'witch_thumb.png',
 				source:'uni_corpo_bruxa.png',
 				label:'Witch'

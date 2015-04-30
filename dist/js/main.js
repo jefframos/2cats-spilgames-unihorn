@@ -1317,6 +1317,14 @@ var Application = AbstractApplication.extend({
             enabled: !0,
             coast: getBalanceCoast(this.clothModels.length)
         })), this.clothModels.push(new ClothModel({
+            cover: "torcedor_thumb.png",
+            source: "uni_corpo_torcedor.png",
+            label: "Fan"
+        }, {
+            id: 10 * this.clothModels.length,
+            enabled: !1,
+            coast: getBalanceCoast(this.clothModels.length)
+        })), this.clothModels.push(new ClothModel({
             cover: "witch_thumb.png",
             source: "uni_corpo_bruxa.png",
             label: "Witch"

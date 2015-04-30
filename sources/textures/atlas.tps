@@ -288,6 +288,8 @@
             <filename>thumb_ocean.png</filename>
             <filename>thumb_castle.png</filename>
             <filename>thumb_desert.png</filename>
+            <filename>uni_corpo_torcedor.png</filename>
+            <filename>torcedor_thumb.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
