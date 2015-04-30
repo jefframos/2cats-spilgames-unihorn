@@ -58,6 +58,7 @@ var ShopItem = Class.extend({
 			// if(!self.equipButton.down){
 			// 	return;
 			// }
+			APP.audioController.playSound('pop');
 			self.equipButton.down = false;
 			var targetArray = [];//self.screen.shopList;
 			if(self.type === 'horn'){
@@ -101,6 +102,7 @@ var ShopItem = Class.extend({
 			if(self.model.coast > APP.appModel.totalPoints){
 				return;
 			}
+			APP.audioController.playSound('star');
 			APP.appModel.totalPoints -= self.model.coast;
 			var targetArray = [];//self.screen.shopList;
 			if(self.type === 'horn'){

@@ -9,6 +9,36 @@ var AudioController = Class.extend({
 				volume: 0.1,
 				loop: true
 			},
+			{
+				label:'pop',
+				urls: ['dist/audio/pop.mp3'],
+				volume: 0.3,
+				loop: false
+			},
+			{
+				label:'shoot2',
+				urls: ['dist/audio/kill.mp3'],
+				volume: 0.3,
+				loop: false
+			},
+			{
+				label:'shoot3',
+				urls: ['dist/audio/pop2.mp3'],
+				volume: 0.3,
+				loop: false
+			},
+			{
+				label:'bublenoize',
+				urls: ['dist/audio/bublenoize.mp3'],
+				volume: 0.3,
+				loop: false
+			},
+			{
+				label:'star',
+				urls: ['dist/audio/star.mp3'],
+				volume: 0.3,
+				loop: false
+			},
 		];
 		this.audios = [];
 		var self = this;

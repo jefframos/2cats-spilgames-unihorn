@@ -200,6 +200,7 @@ var GameScreen = AbstractScreen.extend({
         // this.pauseButton.setPosition(20,windowHeight - this.pauseButton.getContent().height - 20);
       
         this.pauseButton.clickCallback = function(){
+            APP.audioController.playSound('pop');
             if(!self.updateable){
                 return;
             }
@@ -336,6 +337,7 @@ var GameScreen = AbstractScreen.extend({
                     tempEnemy.removeSprite();
                     this.badClouds.push(thumbEnemy);
                     this.unihorn.deaded();
+                    APP.audioController.playSound('bublenoize');
                     hasbad = true;
                     TweenLite.to(this.darkShape, 0.5, {alpha:0.8 * this.badClouds.length / this.maxClouds});
                 }
@@ -404,6 +406,9 @@ var GameScreen = AbstractScreen.extend({
                 APP.appModel.removeBehaviour();
             }
         }else{
+            if(this.specialLabel && this.specialLabel.getContent() && this.specialLabel.getContent().parent){
+                this.specialLabel.getContent().alpha = 0;
+            }
             if(this.startCoinMonitore){
                 for (var i = this.arrayCoins.length - 1; i >= 0; i--) {
                     if(this.arrayCoins[i].kill){
@@ -472,6 +477,7 @@ var GameScreen = AbstractScreen.extend({
             bullet.setPosition(this.hornPos.x, this.hornPos.y);
             this.layer.addChild(bullet);
         }
+        APP.audioController.playSound('shoot3');
     },
     reset:function(){
         this.destroy();
@@ -508,6 +514,7 @@ var GameScreen = AbstractScreen.extend({
         }
         // console.log('add');
         this.audioOn.clickCallback = function(){
+            APP.audioController.playSound('pop');
             APP.mute = true;
             Howler.mute();
             if(self.audioOn.getContent().parent)
@@ -520,6 +527,7 @@ var GameScreen = AbstractScreen.extend({
             }
         };
         this.audioOff.clickCallback = function(){
+            APP.audioController.playSound('pop');
             APP.mute = false;
             Howler.unmute();
             if(self.audioOff.getContent().parent)

@@ -61,6 +61,7 @@ var Coin = Entity.extend({
         if(!this.collidable){
             return;
         }
+        APP.audioController.playSound('star');
         this.onList = true;
 
         var tempLAbel = new PIXI.Text('+'+(5 + APP.currentClothModel.extraCoins), {font:'30px Vagron', fill:'#ffe63e', stroke:'#665c18', strokeThickness:3});

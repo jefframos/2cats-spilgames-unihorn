@@ -54,8 +54,9 @@ var LoadScreen = AbstractScreen.extend({
             
             // this.fundo.getContent().position.y = -this.fundo.getContent().height * 0.02;
         }
-        if(this.ready && this.fundo && this.fundo.getContent().width > 1 && this.fundo.getContent().scale.x === 1 && this.logo.getContent().width > 1){
+        if(this.ready && this.fundo && this.fundo.getContent().width > 1){
             if(this.HUDContainer === null){
+                // alert('HUDContainer');
                 this.HUDContainer = new PIXI.DisplayObjectContainer();
                 this.addChild(this.HUDContainer);
                 this.setAudioButtons();
@@ -92,7 +93,13 @@ var LoadScreen = AbstractScreen.extend({
     setAudioButtons:function(){
 
         var self = this;
-        APP.mute = false;
+        if(testMobile()){
+            APP.mute = true;
+            Howler.mute();
+            // alert('mute');
+        }else{
+            APP.mute = false;
+        }
         // Howler.mute();
 
         this.audioOn = new DefaultButton('volume_on.png', 'volume_on_over.png');
@@ -117,6 +124,7 @@ var LoadScreen = AbstractScreen.extend({
         }
         // console.log('add');
         this.audioOn.clickCallback = function(){
+            APP.audioController.playSound('pop');
             APP.mute = true;
             Howler.mute();
             if(self.audioOn.getContent().parent)
@@ -129,6 +137,7 @@ var LoadScreen = AbstractScreen.extend({
             }
         };
         this.audioOff.clickCallback = function(){
+            APP.audioController.playSound('pop');
             APP.mute = false;
             Howler.unmute();
             if(self.audioOff.getContent().parent)
@@ -189,6 +198,7 @@ var LoadScreen = AbstractScreen.extend({
         TweenLite.to(this.playContainer, 0.3,{delay:0.3, alpha:1});
         TweenLite.to(this.playContainer.scale, 0.8,{delay:0.3, x:playScale, y:playScale, ease:'easeOutElastic'});
         this.playButton.clickCallback = function(){
+            APP.audioController.playSound('pop');
             if(possibleFullscreen() && !isfull && testMobile()){
                 fullscreen();
             }
@@ -223,6 +233,7 @@ var LoadScreen = AbstractScreen.extend({
         TweenLite.to(this.creditsContainer, 0.3,{delay:0.2, alpha:1});
         TweenLite.to(this.creditsContainer.scale, 0.8,{delay:0.2, x:creditsScale, y:creditsScale, ease:'easeOutElastic'});
         this.creditsButton.clickCallback = function(){
+            APP.audioController.playSound('pop');
             // if(possibleFullscreen() && !isfull && testMobile()){
             //     fullscreen();
             // }
@@ -257,6 +268,7 @@ var LoadScreen = AbstractScreen.extend({
         TweenLite.to(this.moreContainer, 0.3,{delay:0.4, alpha:1});
         TweenLite.to(this.moreContainer.scale, 0.8,{delay:0.4, x:moreScale, y:moreScale, ease:'easeOutElastic'});
         this.moreGamesButton.clickCallback = function(){
+            APP.audioController.playSound('pop');
             if(APP.withAPI){
                 APP.buttonProperties.action();
             }

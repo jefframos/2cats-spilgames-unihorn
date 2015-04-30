@@ -550,7 +550,7 @@ var Application = AbstractApplication.extend({
         this.equipButton = new DefaultButton("botao_equip.png", "botao_equip.png"), this.equipButton.build(), 
         this.equipButton.setPosition(this.backScroll.width - this.equipButton.getContent().width - .15 * this.backShopItem.getContent().width, this.backShopItem.getContent().height - this.equipButton.getContent().height + this.backShopItem.getContent().position.y), 
         this.equipButton.clickCallback = this.equipButton.mouseDownCallback = function() {
-            self.equipButton.down = !1;
+            APP.audioController.playSound("pop"), self.equipButton.down = !1;
             var targetArray = [];
             "horn" === self.type ? (APP.currentHornModel = self.model, targetArray = self.screen.hornList) : "cloth" === self.type ? (APP.currentClothModel = self.model, 
             targetArray = self.screen.clothList) : "env" === self.type && (APP.currentEnvModel = self.model, 
@@ -569,7 +569,7 @@ var Application = AbstractApplication.extend({
         }), 50, 4), this.buyButton.setPosition(this.backScroll.width - this.buyButton.getContent().width - .15 * this.backShopItem.getContent().width, this.backShopItem.getContent().height - this.buyButton.getContent().height + this.backShopItem.getContent().position.y), 
         this.buyButton.clickCallback = this.buyButton.mouseDownCallback = function() {
             if (!(self.model.coast > APP.appModel.totalPoints)) {
-                APP.appModel.totalPoints -= self.model.coast;
+                APP.audioController.playSound("star"), APP.appModel.totalPoints -= self.model.coast;
                 var targetArray = [];
                 "horn" === self.type ? (APP.currentHornModel = self.model, APP.currentHornModel.enabled = !0, 
                 targetArray = self.screen.hornList) : "cloth" === self.type ? (APP.currentClothModel = self.model, 
@@ -608,6 +608,31 @@ var Application = AbstractApplication.extend({
             urls: [ "dist/audio/trilhak.mp3" ],
             volume: .1,
             loop: !0
+        }, {
+            label: "pop",
+            urls: [ "dist/audio/pop.mp3" ],
+            volume: .3,
+            loop: !1
+        }, {
+            label: "shoot2",
+            urls: [ "dist/audio/kill.mp3" ],
+            volume: .3,
+            loop: !1
+        }, {
+            label: "shoot3",
+            urls: [ "dist/audio/pop2.mp3" ],
+            volume: .3,
+            loop: !1
+        }, {
+            label: "bublenoize",
+            urls: [ "dist/audio/bublenoize.mp3" ],
+            volume: .3,
+            loop: !1
+        }, {
+            label: "star",
+            urls: [ "dist/audio/star.mp3" ],
+            volume: .3,
+            loop: !1
         } ], this.audios = [];
         for (var self = this, i = this.audioList.length - 1; i >= 0; i--) this.audios.push({
             label: this.audioList[i].label,
@@ -671,7 +696,7 @@ var Application = AbstractApplication.extend({
     },
     preKill: function() {
         if (this.collidable) {
-            this.onList = !0;
+            APP.audioController.playSound("star"), this.onList = !0;
             var tempLAbel = new PIXI.Text("+" + (5 + APP.currentClothModel.extraCoins), {
                 font: "30px Vagron",
                 fill: "#ffe63e",
@@ -729,7 +754,7 @@ var Application = AbstractApplication.extend({
     },
     hurt: function(demage) {
         if (!(this.invencible > 0)) {
-            if (this.hp -= demage, this.bounce && "state2" !== this.spritesheet.currentAnimation.label) {
+            if (this.hp -= demage, APP.audioController.playSound("shoot2"), this.bounce && "state2" !== this.spritesheet.currentAnimation.label) {
                 this.spritesheet.play("state2");
                 for (var i = 0; i >= 0; i--) {
                     var particle = new Particles({
@@ -761,7 +786,8 @@ var Application = AbstractApplication.extend({
     },
     preKill: function() {
         this.onList = !0, this.thumb.parent && this.thumb.parent.removeChild(this.thumb), 
-        this.screen.unihorn.killed(), this.special && this.screen.addSpecial(), this.forceKill && (this.subdivide = 0);
+        this.screen.unihorn.killed(), this.special && (APP.audioController.playSound("star"), 
+        this.screen.addSpecial()), this.forceKill && (this.subdivide = 0);
         for (var i = this.subdivide - 1; i >= 0; i--) {
             var enemy = new Enemy(APP.appModel.smallEnemyModel, this.screen);
             enemy.build(), enemy.setPosition(this.getPosition().x, this.getPosition().y);
@@ -1914,7 +1940,7 @@ var Application = AbstractApplication.extend({
         }), this.HUDback = new SimpleSprite("barra_bottom2.png"), this.pauseButton = new DefaultButton("pause2.png", "pause2_over.png", "pause2_over.png"), 
         this.pauseButton.build(), scaleConverter(this.pauseButton.getContent().height, this.HUDback.getContent().height, .8, this.pauseButton), 
         this.pauseButton.clickCallback = function() {
-            self.updateable && self.pauseModal.show();
+            APP.audioController.playSound("pop"), self.updateable && self.pauseModal.show();
         }, this.HUDContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.HUDContainer), 
         scaleConverter(this.HUDback.getContent().width, windowWidth, 1, this.HUDback), this.pauseButton.getContent().position.x = .1 * this.HUDback.getContent().height, 
         this.pauseButton.getContent().position.y = .1 * this.HUDback.getContent().height, 
@@ -1988,7 +2014,8 @@ var Application = AbstractApplication.extend({
             TweenLite.to(thumbEnemy.position, .3, {
                 y: Math.sin(center) * windowHeight / 2 + windowHeight / 2 + thumbEnemy.height / 2
             }), this.badClouds.length >= this.maxClouds && this.endGame(), tempEnemy.getContent().position.y > windowHeight && (tempEnemy.removeSprite(), 
-            this.badClouds.push(thumbEnemy), this.unihorn.deaded(), hasbad = !0, TweenLite.to(this.darkShape, .5, {
+            this.badClouds.push(thumbEnemy), this.unihorn.deaded(), APP.audioController.playSound("bublenoize"), 
+            hasbad = !0, TweenLite.to(this.darkShape, .5, {
                 alpha: .8 * this.badClouds.length / this.maxClouds
             }));
         }
@@ -2028,7 +2055,8 @@ var Application = AbstractApplication.extend({
         if (this.updateable) {
             if (this._super(), this.end === !1) this.unihorn.update(), this.spawner.update(), 
             this.updateCloudList(), this.specialLabel && this.specialLabel.getContent() && this.specialLabel.getContent().parent && (this.specialLabel.getContent().alpha = this.specAcc / this.specAccMax), 
-            this.specAcc > 0 ? this.specAcc-- : APP.appModel.removeBehaviour(); else if (this.startCoinMonitore) {
+            this.specAcc > 0 ? this.specAcc-- : APP.appModel.removeBehaviour(); else if (this.specialLabel && this.specialLabel.getContent() && this.specialLabel.getContent().parent && (this.specialLabel.getContent().alpha = 0), 
+            this.startCoinMonitore) {
                 for (var i = this.arrayCoins.length - 1; i >= 0; i--) this.arrayCoins[i].kill && this.arrayCoins.splice(i, 1);
                 this.arrayCoins.length <= 0 && this.endModal.show();
             }
@@ -2054,6 +2082,7 @@ var Application = AbstractApplication.extend({
                 scaleConverter(bullet.getContent().height, windowHeight, .06 + APP.currentClothModel.sizePercent, bullet), 
                 bullet.startScaleTween(), bullet.setPosition(this.hornPos.x, this.hornPos.y), this.layer.addChild(bullet);
             }
+            APP.audioController.playSound("shoot3");
         }
     },
     reset: function() {
@@ -2070,10 +2099,10 @@ var Application = AbstractApplication.extend({
         this.audioOff.setPosition(windowWidth - this.audioOn.getContent().width - .1 * this.pauseButton.getContent().height, .1 * this.pauseButton.getContent().height), 
         this.HUDContainer.addChild(APP.mute ? this.audioOff.getContent() : this.audioOn.getContent()), 
         this.audioOn.clickCallback = function() {
-            APP.mute = !0, Howler.mute(), self.audioOn.getContent().parent && self.audioOn.getContent().parent.removeChild(self.audioOn.getContent()), 
+            APP.audioController.playSound("pop"), APP.mute = !0, Howler.mute(), self.audioOn.getContent().parent && self.audioOn.getContent().parent.removeChild(self.audioOn.getContent()), 
             self.audioOff.getContent() && self.HUDContainer.addChild(self.audioOff.getContent());
         }, this.audioOff.clickCallback = function() {
-            APP.mute = !1, Howler.unmute(), self.audioOff.getContent().parent && self.audioOff.getContent().parent.removeChild(self.audioOff.getContent()), 
+            APP.audioController.playSound("pop"), APP.mute = !1, Howler.unmute(), self.audioOff.getContent().parent && self.audioOff.getContent().parent.removeChild(self.audioOff.getContent()), 
             self.audioOn.getContent() && self.HUDContainer.addChild(self.audioOn.getContent());
         };
     },
@@ -2251,7 +2280,7 @@ var Application = AbstractApplication.extend({
         this.logo.getContent().position.y = windowHeight - 1.1 * this.logo.getContent().height), 
         this.fundo && this.fundo.getContent().width > 1 && 1 === this.fundo.getContent().scale.x && this.logo.getContent().width > 1 && (this.fundo.getContent().alpha = 1, 
         scaleConverter(this.fundo.getContent().height, windowHeight, 1, this.fundo), this.fundo.getContent().position.x = windowWidth / 2 - this.fundo.getContent().width / 2), 
-        this.ready && this.fundo && this.fundo.getContent().width > 1 && 1 === this.fundo.getContent().scale.x && this.logo.getContent().width > 1 && null === this.HUDContainer && (this.HUDContainer = new PIXI.DisplayObjectContainer(), 
+        this.ready && this.fundo && this.fundo.getContent().width > 1 && null === this.HUDContainer && (this.HUDContainer = new PIXI.DisplayObjectContainer(), 
         this.addChild(this.HUDContainer), this.setAudioButtons()), this.backLoader && this.backLoader.getContent().width > 1 && 1 === this.backLoader.getContent().scale.x && (this.backLoader.getContent().position.x = windowWidth / 2 - this.backLoader.getContent().width / 2, 
         this.backLoader.getContent().position.y = windowHeight - 1.8 * this.backLoader.getContent().height, 
         this.initInit || this.initLoad());
@@ -2270,16 +2299,16 @@ var Application = AbstractApplication.extend({
     },
     setAudioButtons: function() {
         var self = this;
-        APP.mute = !1, this.audioOn = new DefaultButton("volume_on.png", "volume_on_over.png"), 
+        testMobile() ? (APP.mute = !0, Howler.mute()) : APP.mute = !1, this.audioOn = new DefaultButton("volume_on.png", "volume_on_over.png"), 
         this.audioOn.build(), this.audioOn.setPosition(windowWidth - this.audioOn.getContent().width - .1 * this.audioOn.getContent().height, .1 * this.audioOn.getContent().height), 
         this.audioOff = new DefaultButton("volume_off.png", "volume_off_over.png"), this.audioOff.build(), 
         this.audioOff.setPosition(windowWidth - this.audioOn.getContent().width - .1 * this.audioOn.getContent().height, .1 * this.audioOn.getContent().height), 
         this.HUDContainer.addChild(APP.mute ? this.audioOff.getContent() : this.audioOn.getContent()), 
         this.audioOn.clickCallback = function() {
-            APP.mute = !0, Howler.mute(), self.audioOn.getContent().parent && self.audioOn.getContent().parent.removeChild(self.audioOn.getContent()), 
+            APP.audioController.playSound("pop"), APP.mute = !0, Howler.mute(), self.audioOn.getContent().parent && self.audioOn.getContent().parent.removeChild(self.audioOn.getContent()), 
             self.audioOff.getContent() && self.HUDContainer.addChild(self.audioOff.getContent());
         }, this.audioOff.clickCallback = function() {
-            APP.mute = !1, Howler.unmute(), self.audioOff.getContent().parent && self.audioOff.getContent().parent.removeChild(self.audioOff.getContent()), 
+            APP.audioController.playSound("pop"), APP.mute = !1, Howler.unmute(), self.audioOff.getContent().parent && self.audioOff.getContent().parent.removeChild(self.audioOff.getContent()), 
             self.audioOn.getContent() && self.HUDContainer.addChild(self.audioOn.getContent());
         };
     },
@@ -2317,8 +2346,8 @@ var Application = AbstractApplication.extend({
             y: playScale,
             ease: "easeOutElastic"
         }), this.playButton.clickCallback = function() {
-            possibleFullscreen() && !isfull && testMobile() && fullscreen(), self.updateable = !1, 
-            self.toTween(function() {
+            APP.audioController.playSound("pop"), possibleFullscreen() && !isfull && testMobile() && fullscreen(), 
+            self.updateable = !1, self.toTween(function() {
                 self.screenManager.change("Game");
             });
         }, this.creditsContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.creditsContainer), 
@@ -2336,8 +2365,10 @@ var Application = AbstractApplication.extend({
             x: creditsScale,
             y: creditsScale,
             ease: "easeOutElastic"
-        }), this.creditsButton.clickCallback = function() {}, this.moreContainer = new PIXI.DisplayObjectContainer(), 
-        this.addChild(this.moreContainer), this.moreGamesButton = new DefaultButton("moregames.png", "moregames_over.png"), 
+        }), this.creditsButton.clickCallback = function() {
+            APP.audioController.playSound("pop");
+        }, this.moreContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.moreContainer), 
+        this.moreGamesButton = new DefaultButton("moregames.png", "moregames_over.png"), 
         this.moreGamesButton.build(), this.moreGamesButton.setPosition(-this.moreGamesButton.getContent().width / 2, -this.moreGamesButton.getContent().height / 2), 
         this.moreContainer.addChild(this.moreGamesButton.getContent()), this.moreContainer.position.x = windowWidth / 2 + 2 * this.moreGamesButton.getContent().width, 
         this.moreContainer.scale.x = this.moreContainer.scale.y = .5, this.moreContainer.alpha = 0;
@@ -2352,7 +2383,7 @@ var Application = AbstractApplication.extend({
             y: moreScale,
             ease: "easeOutElastic"
         }), this.moreGamesButton.clickCallback = function() {
-            APP.withAPI && APP.buttonProperties.action();
+            APP.audioController.playSound("pop"), APP.withAPI && APP.buttonProperties.action();
         };
     },
     toTween: function(callback) {
@@ -2435,7 +2466,7 @@ var Application = AbstractApplication.extend({
         this.backScroll = new PIXI.Graphics(), this.backScroll.beginFill(1383495), this.backScroll.drawRect(0, 0, windowWidth, 2 * windowHeight), 
         this.backScroll.alpha = 0, this.scrollContainer.addChild(this.backScroll), this.closeButton = new DefaultButton("play.png", "play_over.png"), 
         this.closeButton.build(), this.closeButton.setPosition(20, 20), this.closeButton.clickCallback = function() {
-            self.hide(function() {
+            APP.audioController.playSound("pop"), self.hide(function() {
                 self.screen.updateable = !0, self.screen.reset();
             });
         }, this.barraTop = new SimpleSprite("barra_bottom2.png"), this.topHUD.addChild(this.barraTop.getContent()), 
@@ -2461,17 +2492,17 @@ var Application = AbstractApplication.extend({
         this.baseHUD.addChild(this.barraBottom.getContent()), this.getContent().addChild(this.baseHUD), 
         this.getContent().addChild(this.topHUD), this.toHorn = new DefaultButton("aba_horns_on.png", "aba_horns_on.png"), 
         this.toHorn.build(), this.toHorn.clickCallback = function() {
-            TweenLite.to(self.scrollContainer.position, .5, {
+            APP.audioController.playSound("pop"), TweenLite.to(self.scrollContainer.position, .5, {
                 y: 0
             });
         }, this.toWear = new DefaultButton("aba_clothes_on.png", "aba_clothes_on.png"), 
         this.toWear.build(), this.toWear.clickCallback = function() {
-            TweenLite.to(self.scrollContainer.position, .5, {
+            APP.audioController.playSound("pop"), TweenLite.to(self.scrollContainer.position, .5, {
                 y: -self.clothTitle.getContent().position.y + self.marginTopBottom
             });
         }, this.toLand = new DefaultButton("aba_lands_on.png", "aba_lands_on.png"), this.toLand.build(), 
         this.toLand.clickCallback = function() {
-            TweenLite.to(self.scrollContainer.position, .5, {
+            APP.audioController.playSound("pop"), TweenLite.to(self.scrollContainer.position, .5, {
                 y: -self.envTitle.getContent().position.y + self.marginTopBottom
             });
         }, this.baseHUD.addChild(this.toHorn.getContent()), this.baseHUD.addChild(this.toWear.getContent()), 

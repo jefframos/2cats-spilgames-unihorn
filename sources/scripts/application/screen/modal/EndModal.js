@@ -28,6 +28,7 @@ var EndModal = Class.extend({
         this.closeButton.build();
         this.closeButton.setPosition(20,20);//this.backBars.getContent().height - 20 - this.rankingButton.height / 2 - 10);
         this.closeButton.clickCallback = function(){
+            APP.audioController.playSound('pop');
             self.hide(function(){
                 self.screen.updateable = true;
                 self.screen.reset();
@@ -69,6 +70,7 @@ var EndModal = Class.extend({
         // this.fbButton.build();
         // this.fbButton.setPosition(thirdPart * 1 - thirdPart /2 - this.fbButton.getContent().width/2,this.backScroll.height - this.fbButton.getContent().height - 20);//this.backBars.getContent().height - 20 - this.rankingButton.height / 2 - 10);
         // this.fbButton.clickCallback = function(){
+            // APP.audioController.playSound('pop');
         //     // self.hide(function(){
         //     //  // self.screen.hideBars();
         //     //  self.screen.screenManager.prevScreen();
@@ -81,6 +83,7 @@ var EndModal = Class.extend({
         // scaleConverter(this.rankingButton.getContent().width, this.backScroll.width, 0.3, this.rankingButton);
         // this.rankingButton.setPosition(thirdPart * 2 - thirdPart /2 -  this.rankingButton.getContent().width/2,this.backScroll.height - this.rankingButton.getContent().height - 20);
         // this.rankingButton.clickCallback = function(){
+            // APP.audioController.playSound('pop');
         //     // self.hide(function(){self.screen.updateable = true;});
         // };
         // // this.scrollContainer.addChild(this.rankingButton.getContent());
@@ -90,6 +93,7 @@ var EndModal = Class.extend({
         // this.twitterButton.setPosition(thirdPart * 3 - thirdPart /2 -  this.twitterButton.getContent().width/2,this.backScroll.height - this.twitterButton.getContent().height - 20);//this.backBars.getContent().height / 2 - this.rankingButton.height / 2 - 10);
 
         // this.twitterButton.clickCallback = function(){
+            // APP.audioController.playSound('pop');
         //     // self.hide(function(){
         //     //  self.screen.updateable = true;
         //     //  self.screen.reset();
@@ -109,6 +113,7 @@ var EndModal = Class.extend({
         // this.toHorn.setPosition(thirdPart * 3 - thirdPart /2 -  this.toHorn.getContent().width/2,this.backScroll.height - this.toHorn.getContent().height - 20);//this.backBars.getContent().height / 2 - this.rankingButton.height / 2 - 10);
 
         this.toHorn.clickCallback = function(){
+            APP.audioController.playSound('pop');
             // self.scrollContainer.position.y = 0;
             TweenLite.to(self.scrollContainer.position, 0.5, {y:0});
         };
@@ -119,6 +124,7 @@ var EndModal = Class.extend({
         // this.toWear.setPosition(thirdPart * 3 - thirdPart /2 -  this.toWear.getContent().width/2,this.backScroll.height - this.toWear.getContent().height - 20);//this.backBars.getContent().height / 2 - this.rankingButton.height / 2 - 10);
 
         this.toWear.clickCallback = function(){
+            APP.audioController.playSound('pop');
             // self.scrollContainer.position.y = -self.clothesLabel.position.y + self.marginTopBottom;
             TweenLite.to(self.scrollContainer.position, 0.5, {y:-self.clothTitle.getContent().position.y + self.marginTopBottom});
         };
@@ -129,6 +135,7 @@ var EndModal = Class.extend({
         // this.toLand.setPosition(thirdPart * 3 - thirdPart /2 -  this.toLand.getContent().width/2,this.backScroll.height - this.toLand.getContent().height - 20);//this.backBars.getContent().height / 2 - this.rankingButton.height / 2 - 10);
 
         this.toLand.clickCallback = function(){
+            APP.audioController.playSound('pop');
             // self.scrollContainer.position.y = -self.envLabel.position.y + self.marginTopBottom;
             TweenLite.to(self.scrollContainer.position, 0.5, {y:-self.envTitle.getContent().position.y + self.marginTopBottom});
 

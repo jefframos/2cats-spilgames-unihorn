@@ -97,6 +97,7 @@ var Enemy = Entity.extend({
             return;
         }
         this.hp -= demage;
+        APP.audioController.playSound('shoot2');
         // console.log(this.spritesheet.currentAnimation.label);
         if(this.bounce && this.spritesheet.currentAnimation.label !== 'state2'){
 
@@ -162,7 +163,7 @@ var Enemy = Entity.extend({
 
         if(this.special){
             
-
+            APP.audioController.playSound('star');
             this.screen.addSpecial();
 
         }
