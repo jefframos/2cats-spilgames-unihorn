@@ -600,8 +600,8 @@ var Application = AbstractApplication.extend({
             self.updateAudioList(this);
         }
         function load() {
-            self.currentLoaded++, self.currentLoaded >= self.audioList.length && (this.loadedAudioComplete = !0, 
-            console.log("all loaded"));
+            self.currentLoaded++, self.currentLoaded >= self.audioList.length && (self.loadedAudioComplete = !0, 
+            console.log("all loaded"), self.onCompleteCallback && self.onCompleteCallback());
         }
         this.audioList = [ {
             label: "ambient1",
@@ -633,7 +633,7 @@ var Application = AbstractApplication.extend({
             urls: [ "dist/audio/star.mp3" ],
             volume: .3,
             loop: !1
-        } ], this.audios = [];
+        } ], this.onCompleteCallback = null, this.loadedAudioComplete = !1, this.audios = [];
         for (var self = this, i = this.audioList.length - 1; i >= 0; i--) this.audios.push({
             label: this.audioList[i].label,
             audio: new Howl({
@@ -647,15 +647,12 @@ var Application = AbstractApplication.extend({
         this.currentLoaded = 0, this.playingAudios = [], this.ambientLabel = "";
     },
     updateAudioList: function(target) {
-        if (this.ambientPlaying !== target) {
-            for (var j = this.playingAudios.length - 1; j >= 0; j--) this.playingAudios[j] === target && this.playingAudios.splice(j, 1);
-            console.log(this.playingAudios);
-        }
+        if (this.ambientPlaying !== target) for (var j = this.playingAudios.length - 1; j >= 0; j--) this.playingAudios[j] === target && this.playingAudios.splice(j, 1);
     },
     playSound: function(id) {
         for (var audioP = null, i = this.audios.length - 1; i >= 0; i--) this.audios[i].label === id && (audioP = this.audios[i].audio, 
         audioP.play(), this.playingAudios.push(audioP));
-        return console.log(audioP), audioP;
+        return audioP;
     },
     stopSound: function(id) {
         for (var audioP = null, i = this.audios.length - 1; i >= 0; i--) if (this.audios[i].label === id) {
@@ -1343,7 +1340,7 @@ var Application = AbstractApplication.extend({
         })), this.clothModels.push(new ClothModel({
             cover: "katy_thumb.png",
             source: "uni_corpo_katyperry.png",
-            label: "Katy"
+            label: "Sweet"
         }, {
             id: 10 * this.clothModels.length,
             enabled: !1,
@@ -2102,7 +2099,7 @@ var Application = AbstractApplication.extend({
         this.audioOn = new DefaultButton("volume_on.png", "volume_on_over.png"), this.audioOn.build(), 
         scaleConverter(this.audioOn.height, this.pauseButton.getContent().height, 1, this.audioOn), 
         this.audioOn.setPosition(windowWidth - this.audioOn.getContent().width - .1 * this.pauseButton.getContent().height, .1 * this.pauseButton.getContent().height), 
-        this.audioOff = new DefaultButton("volume_off.png", "volume_off_over.png"), this.audioOff.build(), 
+        this.audioOff = new DefaultButton("volume_off_over.png", "volume_off.png"), this.audioOff.build(), 
         scaleConverter(this.audioOff.height, this.pauseButton.getContent().height, 1, this.audioOff), 
         this.audioOff.setPosition(windowWidth - this.audioOn.getContent().width - .1 * this.pauseButton.getContent().height, .1 * this.pauseButton.getContent().height), 
         this.HUDContainer.addChild(APP.mute ? this.audioOff.getContent() : this.audioOn.getContent()), 
@@ -2290,7 +2287,7 @@ var Application = AbstractApplication.extend({
         scaleConverter(this.fundo.getContent().height, windowHeight, 1, this.fundo), this.fundo.getContent().position.x = windowWidth / 2 - this.fundo.getContent().width / 2), 
         this.ready && this.fundo && this.fundo.getContent().width > 1 && null === this.HUDContainer && (this.HUDContainer = new PIXI.DisplayObjectContainer(), 
         this.addChild(this.HUDContainer), this.setAudioButtons()), this.backLoader && this.backLoader.getContent().width > 1 && 1 === this.backLoader.getContent().scale.x && (this.backLoader.getContent().position.x = windowWidth / 2 - this.backLoader.getContent().width / 2, 
-        this.backLoader.getContent().position.y = windowHeight - 1.8 * this.backLoader.getContent().height, 
+        this.backLoader.getContent().position.y = windowHeight - 2 * this.backLoader.getContent().height, 
         this.initInit || this.initLoad());
     },
     initLoad: function() {
@@ -2309,7 +2306,7 @@ var Application = AbstractApplication.extend({
         var self = this;
         testMobile() ? (APP.mute = !0, Howler.mute()) : APP.mute = !1, this.audioOn = new DefaultButton("volume_on.png", "volume_on_over.png"), 
         this.audioOn.build(), this.audioOn.setPosition(windowWidth - this.audioOn.getContent().width - .1 * this.audioOn.getContent().height, .1 * this.audioOn.getContent().height), 
-        this.audioOff = new DefaultButton("volume_off.png", "volume_off_over.png"), this.audioOff.build(), 
+        this.audioOff = new DefaultButton("volume_off_over.png", "volume_off.png"), this.audioOff.build(), 
         this.audioOff.setPosition(windowWidth - this.audioOn.getContent().width - .1 * this.audioOn.getContent().height, .1 * this.audioOn.getContent().height), 
         this.HUDContainer.addChild(APP.mute ? this.audioOff.getContent() : this.audioOn.getContent()), 
         this.audioOn.clickCallback = function() {
@@ -2321,12 +2318,13 @@ var Application = AbstractApplication.extend({
         };
     },
     onProgress: function() {
-        this._super(), this.loaderBar.updateBar(Math.floor(100 * this.loadPercent), 100);
+        this._super(), this.loaderBar.updateBar(Math.floor(90 * this.loadPercent), 100);
     },
     onAssetsLoaded: function() {
-        this.ready = !0;
-        var self = this;
-        TweenLite.to(this.loaderContainer, .5, {
+        if (console.log(APP.audioController.loadedAudioComplete), !APP.audioController.loadedAudioComplete) return APP.audioController.onCompleteCallback = this.onAssetsLoaded, 
+        void (APP.audioController.parent = this);
+        var self = APP.audioController.parent ? APP.audioController.parent : this;
+        self.ready = !0, self.loaderBar && self.loaderBar.updateBar(100, 100), TweenLite.to(self.loaderContainer, .5, {
             delay: .5,
             alpha: 0,
             onComplete: function() {
@@ -2567,9 +2565,7 @@ var Application = AbstractApplication.extend({
         this.updateCoins(), this.screen.addChild(this), this.screen.blockPause = !0, this.scrollContainer.visible = !0, 
         this.container.parent.setChildIndex(this.container, this.container.parent.children.length - 1), 
         this.screen.updateable = !1, this.scrollContainer.position.x = windowWidth / 2 - this.scrollContainer.width / 2, 
-        this.bg.alpha = .7, this.scrollContainer.alpha = 1, TweenLite.from(this.bg, .5, {
-            alpha: 0
-        }), TweenLite.from(this.scrollContainer, .5, {
+        this.bg.alpha = .7, this.scrollContainer.alpha = 1, TweenLite.from(this.getContent(), .3, {
             alpha: 0
         });
     },

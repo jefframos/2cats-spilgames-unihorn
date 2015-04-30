@@ -301,8 +301,8 @@ var EndModal = Class.extend({
         this.bg.alpha = 0.7;
         this.scrollContainer.alpha = 1;
 
-        TweenLite.from(this.bg, 0.5, {alpha:0});
-        TweenLite.from(this.scrollContainer, 0.5, {alpha:0});
+        TweenLite.from(this.getContent(), 0.3, {alpha:0});
+        // TweenLite.from(this.scrollContainer, 0.1, {alpha:0});
         // TweenLite.from(this.scrollContainer, 0.5, {y:-this.scrollContainer.height});
     },
     hide:function(callback){

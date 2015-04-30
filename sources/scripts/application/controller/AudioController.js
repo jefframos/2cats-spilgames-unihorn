@@ -40,6 +40,8 @@ var AudioController = Class.extend({
 				loop: false
 			},
 		];
+		this.onCompleteCallback = null;
+		this.loadedAudioComplete = false;
 		this.audios = [];
 		var self = this;
 		function end(){
@@ -49,8 +51,11 @@ var AudioController = Class.extend({
 			self.currentLoaded ++;
 			// console.log(self.currentLoaded);
 			if(self.currentLoaded >= self.audioList.length){
-				this.loadedAudioComplete = true;
+				self.loadedAudioComplete = true;
 				console.log('all loaded');
+				if(self.onCompleteCallback){
+					self.onCompleteCallback();
+				}
 			}
 		}
 		for (var i = this.audioList.length - 1; i >= 0; i--) {
@@ -92,7 +97,7 @@ var AudioController = Class.extend({
 				this.playingAudios.splice(j,1);
 			}
 		}
-		console.log(this.playingAudios);
+		// console.log(this.playingAudios);
 	},
 	playSound:function(id){
 		var audioP = null;
@@ -103,7 +108,7 @@ var AudioController = Class.extend({
 				this.playingAudios.push(audioP);
 			}
 		}
-		console.log(audioP);
+		// console.log(audioP);
 		return audioP;
 	},
 	stopSound:function(id){

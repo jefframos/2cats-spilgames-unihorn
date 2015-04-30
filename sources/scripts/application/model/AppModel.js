@@ -143,7 +143,7 @@ var AppModel = Class.extend({
 			{
 				cover:'katy_thumb.png',
 				source:'uni_corpo_katyperry.png',
-				label:'Katy'
+				label:'Sweet'
 			},
 			{
 				id:this.clothModels.length * 10,

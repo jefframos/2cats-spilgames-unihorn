@@ -500,7 +500,7 @@ var GameScreen = AbstractScreen.extend({
         this.audioOn.setPosition(windowWidth - this.audioOn.getContent().width - this.pauseButton.getContent().height*0.1, this.pauseButton.getContent().height*0.1);
         // this.audioOn.setPosition( windowWidth - this.audioOn.getContent().width  - 20, 20);
 
-        this.audioOff = new DefaultButton('volume_off.png', 'volume_off_over.png');
+        this.audioOff = new DefaultButton('volume_off_over.png', 'volume_off.png');
         this.audioOff.build();
         scaleConverter(this.audioOff.height, this.pauseButton.getContent().height, 1, this.audioOff);
         this.audioOff.setPosition(windowWidth - this.audioOn.getContent().width - this.pauseButton.getContent().height*0.1, this.pauseButton.getContent().height*0.1);

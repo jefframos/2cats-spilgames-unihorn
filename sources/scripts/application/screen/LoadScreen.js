@@ -64,7 +64,7 @@ var LoadScreen = AbstractScreen.extend({
         }
         if(this.backLoader && this.backLoader.getContent().width > 1 && this.backLoader.getContent().scale.x === 1){
             this.backLoader.getContent().position.x = windowWidth / 2 - this.backLoader.getContent().width / 2;
-            this.backLoader.getContent().position.y = windowHeight - this.backLoader.getContent().height *1.8;
+            this.backLoader.getContent().position.y = windowHeight - this.backLoader.getContent().height * 2;
             if(!this.initInit){
                 this.initLoad();
             }
@@ -110,7 +110,7 @@ var LoadScreen = AbstractScreen.extend({
         this.audioOn.setPosition(windowWidth - this.audioOn.getContent().width -this.audioOn.getContent().height*0.1,this.audioOn.getContent().height*0.1);
         // this.audioOn.setPosition( windowWidth - this.audioOn.getContent().width  - 20, 20);
 
-        this.audioOff = new DefaultButton('volume_off.png', 'volume_off_over.png');
+        this.audioOff = new DefaultButton('volume_off_over.png', 'volume_off.png');
         this.audioOff.build();
         // scaleConverter(this.audioOff.height, this.pauseButton.getContent().height, 1, this.audioOff);
         this.audioOff.setPosition(windowWidth - this.audioOn.getContent().width - this.audioOn.getContent().height*0.1, this.audioOn.getContent().height*0.1);
@@ -152,13 +152,24 @@ var LoadScreen = AbstractScreen.extend({
     },
     onProgress:function(){
         this._super();
-        this.loaderBar.updateBar(Math.floor(this.loadPercent * 100), 100);
+        this.loaderBar.updateBar(Math.floor(this.loadPercent * 90), 100);
     },
     onAssetsLoaded:function()
     {
-        this.ready = true;
-        var self = this;
-        TweenLite.to(this.loaderContainer, 0.5, {delay:0.5, alpha:0, onComplete:function(){
+        console.log(APP.audioController.loadedAudioComplete);
+        if(!APP.audioController.loadedAudioComplete){
+            APP.audioController.onCompleteCallback = this.onAssetsLoaded;
+            APP.audioController.parent = this;
+            return;
+        }
+        var self = APP.audioController.parent?APP.audioController.parent:this;
+        self.ready = true;
+
+
+        if(self.loaderBar){
+            self.loaderBar.updateBar(100, 100);
+        }
+        TweenLite.to(self.loaderContainer, 0.5, {delay:0.5, alpha:0, onComplete:function(){
             self.initApplication();
         }});
     },
