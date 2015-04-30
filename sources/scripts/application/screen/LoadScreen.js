@@ -27,13 +27,17 @@ var LoadScreen = AbstractScreen.extend({
         this.backLoader = new SimpleSprite('dist/img/loader.png');
         this.loaderContainer.addChild(this.backLoader.getContent());
 
-        var assetsToLoader = ['dist/img/atlas.json', 'dist/img/fundo1.png','dist/img/fundo2.png'];
+        
+
+        var assetsToLoader = ['dist/img/atlas.json', 'dist/img/cenario1b.png','dist/img/cenario2b.png','dist/img/cenario3b.png'];
         if(assetsToLoader.length > 0 && !this.isLoaded){
             this.loader = new PIXI.AssetLoader(assetsToLoader);
             // this.initLoad();
         }else{
             this.onAssetsLoaded();
         }
+
+        this.HUDContainer = null;
     },
     update:function(){
         // console.log('update');
@@ -46,7 +50,16 @@ var LoadScreen = AbstractScreen.extend({
             this.fundo.getContent().alpha = 1;
             scaleConverter(this.fundo.getContent().height, windowHeight, 1, this.fundo);
             this.fundo.getContent().position.x = windowWidth / 2 - this.fundo.getContent().width / 2;
+
+            
             // this.fundo.getContent().position.y = -this.fundo.getContent().height * 0.02;
+        }
+        if(this.ready && this.fundo && this.fundo.getContent().width > 1 && this.fundo.getContent().scale.x === 1 && this.logo.getContent().width > 1){
+            if(this.HUDContainer === null){
+                this.HUDContainer = new PIXI.DisplayObjectContainer();
+                this.addChild(this.HUDContainer);
+                this.setAudioButtons();
+            }
         }
         if(this.backLoader && this.backLoader.getContent().width > 1 && this.backLoader.getContent().scale.x === 1){
             this.backLoader.getContent().position.x = windowWidth / 2 - this.backLoader.getContent().width / 2;
@@ -76,6 +89,58 @@ var LoadScreen = AbstractScreen.extend({
         text.alpha = 0;
         //gambiarra pra forçar a fonte
     },
+    setAudioButtons:function(){
+
+        var self = this;
+        APP.mute = false;
+        // Howler.mute();
+
+        this.audioOn = new DefaultButton('volume_on.png', 'volume_on_over.png');
+        this.audioOn.build();
+        // scaleConverter(this.audioOn.height, this.pauseButton.getContent().height, 1, this.audioOn);
+
+
+        this.audioOn.setPosition(windowWidth - this.audioOn.getContent().width -this.audioOn.getContent().height*0.1,this.audioOn.getContent().height*0.1);
+        // this.audioOn.setPosition( windowWidth - this.audioOn.getContent().width  - 20, 20);
+
+        this.audioOff = new DefaultButton('volume_off.png', 'volume_off_over.png');
+        this.audioOff.build();
+        // scaleConverter(this.audioOff.height, this.pauseButton.getContent().height, 1, this.audioOff);
+        this.audioOff.setPosition(windowWidth - this.audioOn.getContent().width - this.audioOn.getContent().height*0.1, this.audioOn.getContent().height*0.1);
+
+       
+
+        if(!APP.mute){
+            this.HUDContainer.addChild(this.audioOn.getContent());
+        }else{
+            this.HUDContainer.addChild(this.audioOff.getContent());
+        }
+        // console.log('add');
+        this.audioOn.clickCallback = function(){
+            APP.mute = true;
+            Howler.mute();
+            if(self.audioOn.getContent().parent)
+            {
+                self.audioOn.getContent().parent.removeChild(self.audioOn.getContent());
+            }
+            if(self.audioOff.getContent())
+            {
+                self.HUDContainer.addChild(self.audioOff.getContent());
+            }
+        };
+        this.audioOff.clickCallback = function(){
+            APP.mute = false;
+            Howler.unmute();
+            if(self.audioOff.getContent().parent)
+            {
+                self.audioOff.getContent().parent.removeChild(self.audioOff.getContent());
+            }
+            if(self.audioOn.getContent())
+            {
+                self.HUDContainer.addChild(self.audioOn.getContent());
+            }
+        };
+    },
     onProgress:function(){
         this._super();
         this.loaderBar.updateBar(Math.floor(this.loadPercent * 100), 100);
@@ -89,6 +154,11 @@ var LoadScreen = AbstractScreen.extend({
         }});
     },
     initApplication:function(){
+
+        APP.audioController.playAmbientSound('ambient1');
+        // APP.audioController.stopSound('alcemarIntro');
+        // APP.audioController.playSound('alcemarIntro');
+
         this.isLoaded = true;
         var self = this;
         APP.currentHornModel = APP.appModel.hornModels[0];

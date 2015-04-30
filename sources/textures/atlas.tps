@@ -285,6 +285,9 @@
             <filename>katy_thumb.png</filename>
             <filename>witch_thumb.png</filename>
             <filename>pelado_thumb.png</filename>
+            <filename>thumb_ocean.png</filename>
+            <filename>thumb_castle.png</filename>
+            <filename>thumb_desert.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

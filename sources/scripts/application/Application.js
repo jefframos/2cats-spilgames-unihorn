@@ -92,6 +92,7 @@ var Application = AbstractApplication.extend({
     },
     initApplication:function(){
         this.audioController = new AudioController();
+        
         this.cookieManager = new CookieManager();
         this.appModel = new AppModel();
         

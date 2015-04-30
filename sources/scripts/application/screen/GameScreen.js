@@ -483,8 +483,8 @@ var GameScreen = AbstractScreen.extend({
     setAudioButtons:function(){
 
         var self = this;
-        APP.mute = true;
-        Howler.mute();
+        // APP.mute = false;
+        // Howler.mute();
 
         this.audioOn = new DefaultButton('volume_on.png', 'volume_on_over.png');
         this.audioOn.build();

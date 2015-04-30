@@ -596,20 +596,52 @@ var Application = AbstractApplication.extend({
     }
 }), AudioController = Class.extend({
     init: function() {
-        this.ambientSound1 = new Howl({
-            urls: [ "dist/audio/trilha.mp3", "dist/audio/trilha.ogg" ],
+        function end() {
+            self.updateAudioList(this);
+        }
+        function load() {
+            self.currentLoaded++, self.currentLoaded >= self.audioList.length && (this.loadedAudioComplete = !0, 
+            console.log("all loaded"));
+        }
+        this.audioList = [ {
+            label: "ambient1",
+            urls: [ "dist/audio/trilhak.mp3" ],
             volume: .1,
             loop: !0
-        }), this.alcemar = new Howl({
-            urls: [ "dist/audio/aves_raras.mp3", "dist/audio/aves_raras.ogg" ],
-            volume: .8,
-            sprite: {
-                audio1: [ 0, 7e3 ]
-            }
+        } ], this.audios = [];
+        for (var self = this, i = this.audioList.length - 1; i >= 0; i--) this.audios.push({
+            label: this.audioList[i].label,
+            audio: new Howl({
+                urls: this.audioList[i].urls,
+                volume: this.audioList[i].volume,
+                loop: this.audioList[i].loop,
+                onend: end,
+                onload: load
+            })
         });
+        this.currentLoaded = 0, this.playingAudios = [], this.ambientLabel = "";
     },
-    playAmbientSound: function() {
-        this.ambientPlaying || (this.ambientPlaying = !0, this.ambientSound1.play());
+    updateAudioList: function(target) {
+        if (this.ambientPlaying !== target) {
+            for (var j = this.playingAudios.length - 1; j >= 0; j--) this.playingAudios[j] === target && this.playingAudios.splice(j, 1);
+            console.log(this.playingAudios);
+        }
+    },
+    playSound: function(id) {
+        for (var audioP = null, i = this.audios.length - 1; i >= 0; i--) this.audios[i].label === id && (audioP = this.audios[i].audio, 
+        audioP.play(), this.playingAudios.push(audioP));
+        return console.log(audioP), audioP;
+    },
+    stopSound: function(id) {
+        for (var audioP = null, i = this.audios.length - 1; i >= 0; i--) if (this.audios[i].label === id) {
+            audioP = this.audios[i].audio, audioP.stop();
+            for (var j = this.playingAudios.length - 1; j >= 0; j--) this.playingAudios[j] === audioP && this.playingAudios.splice(j, 1);
+        }
+        return audioP;
+    },
+    playAmbientSound: function(id) {
+        this.ambientLabel !== id && (this.ambientPlaying && this.stopSound(this.ambientLabel), 
+        this.ambientLabel = id, this.ambientPlaying = this.playSound(id));
     }
 }), Coin = Entity.extend({
     init: function(screen) {
@@ -1227,24 +1259,24 @@ var Application = AbstractApplication.extend({
         var high = 0, coins = parseInt(APP.cookieManager.getCookie("coins"));
         this.highScore = high ? high : 0, this.totalPoints = coins ? coins : 0, this.currentPoints = this.totalPoints, 
         this.playerModels = [], this.envModels = [], this.envModels.push(new EnvironmentModel({
-            cover: "uni_horn1.png",
-            source: "dist/img/fundo1.png",
+            cover: "thumb_castle.png",
+            source: "dist/img/cenario1b.png",
             label: "Normal"
         }, {
             id: 750 * this.envModels.length,
             enabled: !0,
             coast: getBalanceCoast(this.envModels.length)
         })), this.envModels.push(new EnvironmentModel({
-            cover: "uni_horn1.png",
-            source: "dist/img/fundo2.png",
+            cover: "thumb_ocean.png",
+            source: "dist/img/cenario2b.png",
             label: "Normal 2"
         }, {
             id: 750 * this.envModels.length,
             enabled: !1,
             coast: getBalanceCoast(this.envModels.length) * getBalanceCoast(this.envModels.length)
         })), this.envModels.push(new EnvironmentModel({
-            cover: "uni_horn1.png",
-            source: "fundo1.png",
+            cover: "thumb_desert.png",
+            source: "dist/img/cenario3b.png",
             label: "Normal 3"
         }, {
             id: 750 * this.envModels.length,
@@ -2030,8 +2062,8 @@ var Application = AbstractApplication.extend({
     renderLevel: function() {},
     setAudioButtons: function() {
         var self = this;
-        APP.mute = !0, Howler.mute(), this.audioOn = new DefaultButton("volume_on.png", "volume_on_over.png"), 
-        this.audioOn.build(), scaleConverter(this.audioOn.height, this.pauseButton.getContent().height, 1, this.audioOn), 
+        this.audioOn = new DefaultButton("volume_on.png", "volume_on_over.png"), this.audioOn.build(), 
+        scaleConverter(this.audioOn.height, this.pauseButton.getContent().height, 1, this.audioOn), 
         this.audioOn.setPosition(windowWidth - this.audioOn.getContent().width - .1 * this.pauseButton.getContent().height, .1 * this.pauseButton.getContent().height), 
         this.audioOff = new DefaultButton("volume_off.png", "volume_off_over.png"), this.audioOff.build(), 
         scaleConverter(this.audioOff.height, this.pauseButton.getContent().height, 1, this.audioOff), 
@@ -2209,8 +2241,9 @@ var Application = AbstractApplication.extend({
         this.container.addChild(this.logo.getContent()), this.loaderContainer = new PIXI.DisplayObjectContainer(), 
         this.addChild(this.loaderContainer), this.backLoader = new SimpleSprite("dist/img/loader.png"), 
         this.loaderContainer.addChild(this.backLoader.getContent());
-        var assetsToLoader = [ "dist/img/atlas.json", "dist/img/fundo1.png", "dist/img/fundo2.png" ];
-        assetsToLoader.length > 0 && !this.isLoaded ? this.loader = new PIXI.AssetLoader(assetsToLoader) : this.onAssetsLoaded();
+        var assetsToLoader = [ "dist/img/atlas.json", "dist/img/cenario1b.png", "dist/img/cenario2b.png", "dist/img/cenario3b.png" ];
+        assetsToLoader.length > 0 && !this.isLoaded ? this.loader = new PIXI.AssetLoader(assetsToLoader) : this.onAssetsLoaded(), 
+        this.HUDContainer = null;
     },
     update: function() {
         this.logo && this.logo.getContent().width > 1 && 1 === this.logo.getContent().scale.x && (scaleConverter(this.logo.getContent().width, windowWidth, 1.3, this.logo), 
@@ -2218,7 +2251,8 @@ var Application = AbstractApplication.extend({
         this.logo.getContent().position.y = windowHeight - 1.1 * this.logo.getContent().height), 
         this.fundo && this.fundo.getContent().width > 1 && 1 === this.fundo.getContent().scale.x && this.logo.getContent().width > 1 && (this.fundo.getContent().alpha = 1, 
         scaleConverter(this.fundo.getContent().height, windowHeight, 1, this.fundo), this.fundo.getContent().position.x = windowWidth / 2 - this.fundo.getContent().width / 2), 
-        this.backLoader && this.backLoader.getContent().width > 1 && 1 === this.backLoader.getContent().scale.x && (this.backLoader.getContent().position.x = windowWidth / 2 - this.backLoader.getContent().width / 2, 
+        this.ready && this.fundo && this.fundo.getContent().width > 1 && 1 === this.fundo.getContent().scale.x && this.logo.getContent().width > 1 && null === this.HUDContainer && (this.HUDContainer = new PIXI.DisplayObjectContainer(), 
+        this.addChild(this.HUDContainer), this.setAudioButtons()), this.backLoader && this.backLoader.getContent().width > 1 && 1 === this.backLoader.getContent().scale.x && (this.backLoader.getContent().position.x = windowWidth / 2 - this.backLoader.getContent().width / 2, 
         this.backLoader.getContent().position.y = windowHeight - 1.8 * this.backLoader.getContent().height, 
         this.initInit || this.initLoad());
     },
@@ -2233,6 +2267,21 @@ var Application = AbstractApplication.extend({
             fill: "#FFFFFF"
         });
         this.addChild(text), text.alpha = 0;
+    },
+    setAudioButtons: function() {
+        var self = this;
+        APP.mute = !1, this.audioOn = new DefaultButton("volume_on.png", "volume_on_over.png"), 
+        this.audioOn.build(), this.audioOn.setPosition(windowWidth - this.audioOn.getContent().width - .1 * this.audioOn.getContent().height, .1 * this.audioOn.getContent().height), 
+        this.audioOff = new DefaultButton("volume_off.png", "volume_off_over.png"), this.audioOff.build(), 
+        this.audioOff.setPosition(windowWidth - this.audioOn.getContent().width - .1 * this.audioOn.getContent().height, .1 * this.audioOn.getContent().height), 
+        this.HUDContainer.addChild(APP.mute ? this.audioOff.getContent() : this.audioOn.getContent()), 
+        this.audioOn.clickCallback = function() {
+            APP.mute = !0, Howler.mute(), self.audioOn.getContent().parent && self.audioOn.getContent().parent.removeChild(self.audioOn.getContent()), 
+            self.audioOff.getContent() && self.HUDContainer.addChild(self.audioOff.getContent());
+        }, this.audioOff.clickCallback = function() {
+            APP.mute = !1, Howler.unmute(), self.audioOff.getContent().parent && self.audioOff.getContent().parent.removeChild(self.audioOff.getContent()), 
+            self.audioOn.getContent() && self.HUDContainer.addChild(self.audioOn.getContent());
+        };
     },
     onProgress: function() {
         this._super(), this.loaderBar.updateBar(Math.floor(100 * this.loadPercent), 100);
@@ -2249,7 +2298,7 @@ var Application = AbstractApplication.extend({
         });
     },
     initApplication: function() {
-        this.isLoaded = !0;
+        APP.audioController.playAmbientSound("ambient1"), this.isLoaded = !0;
         var self = this;
         APP.currentHornModel = APP.appModel.hornModels[0], APP.currentClothModel = APP.appModel.clothModels[0], 
         APP.currentEnvModel = APP.appModel.envModels[0], this.playContainer = new PIXI.DisplayObjectContainer(), 

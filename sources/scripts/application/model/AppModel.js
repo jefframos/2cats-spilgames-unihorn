@@ -32,8 +32,8 @@ var AppModel = Class.extend({
 		this.envModels = [];
 		this.envModels.push(new EnvironmentModel(
 			{
-				cover:'uni_horn1.png',
-				source:'dist/img/fundo1.png',
+				cover:'thumb_castle.png',
+				source:'dist/img/cenario1b.png',
 				label:'Normal'
 			},
 			{
@@ -45,8 +45,8 @@ var AppModel = Class.extend({
 
 		this.envModels.push(new EnvironmentModel(
 			{
-				cover:'uni_horn1.png',
-				source:'dist/img/fundo2.png',
+				cover:'thumb_ocean.png',
+				source:'dist/img/cenario2b.png',
 				label:'Normal 2'
 			},
 			{
@@ -58,8 +58,8 @@ var AppModel = Class.extend({
 
 		this.envModels.push(new EnvironmentModel(
 			{
-				cover:'uni_horn1.png',
-				source:'fundo1.png',
+				cover:'thumb_desert.png',
+				source:'dist/img/cenario3b.png',
 				label:'Normal 3'
 			},
 			{
