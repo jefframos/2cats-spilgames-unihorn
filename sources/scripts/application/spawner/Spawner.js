@@ -7,7 +7,9 @@ var Spawner = Class.extend({
         this.enemyList = [];
     },
     killAll: function(){
+        // console.log('killAll');
         for (var i = this.enemyList.length - 1; i >= 0; i--) {
+            this.enemyList[i].forceKill = true;
             this.enemyList[i].preKill();
         }
     },

@@ -16,7 +16,7 @@ var Enemy = Entity.extend({
         }else{
             this.hp = 1;
         }
-        console.log(this.model.hp,APP.accelGame);
+        // console.log(this.model.hp,APP.accelGame);
         this.behaviour = this.model.behaviour?this.model.behaviour.clone():null;
         this.resistance = this.model.resistance;
         this.subdivide = this.model.subdivide;
@@ -25,6 +25,7 @@ var Enemy = Entity.extend({
         this.stats = this.model.moreStats ? this.model.imgSource.length: 1;
         this.currentState = 0;
         this.invencible = 0;
+        this.forceKill = false;
     },
     build: function(){
         // console.log(this.model);
@@ -166,6 +167,9 @@ var Enemy = Entity.extend({
 
         }
 
+        if(this.forceKill){
+            this.subdivide = 0;
+        }
         for (var i = this.subdivide - 1; i >= 0; i--) {
             // console.log(APP.appModel.smallEnemyModel);
             var enemy = new Enemy(APP.appModel.smallEnemyModel, this.screen);

@@ -1,4 +1,4 @@
-/*! jefframos 29-04-2015 */
+/*! jefframos 30-04-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -674,10 +674,10 @@ var Application = AbstractApplication.extend({
         this._super(!0), this.updateable = !1, this.screen = screen, this.range = .05 * windowWidth, 
         this.width = 1, this.height = 1, this.type = "enemy", this.model = model, this.velocity.y = this.model.vel * (APP.accelGame / 2), 
         this.vel = this.model.vel, this.hp = this.model.hp > 1 ? this.model.hp + Math.floor(APP.accelGame - 1) : 1, 
-        console.log(this.model.hp, APP.accelGame), this.behaviour = this.model.behaviour ? this.model.behaviour.clone() : null, 
-        this.resistance = this.model.resistance, this.subdivide = this.model.subdivide, 
-        this.special = this.model.special, this.bounce = this.model.bounce, this.stats = this.model.moreStats ? this.model.imgSource.length : 1, 
-        this.currentState = 0, this.invencible = 0;
+        this.behaviour = this.model.behaviour ? this.model.behaviour.clone() : null, this.resistance = this.model.resistance, 
+        this.subdivide = this.model.subdivide, this.special = this.model.special, this.bounce = this.model.bounce, 
+        this.stats = this.model.moreStats ? this.model.imgSource.length : 1, this.currentState = 0, 
+        this.invencible = 0, this.forceKill = !1;
     },
     build: function() {
         this.thumb = new PIXI.Sprite(new PIXI.Texture.fromImage(this.model.thumb)), this.thumb.anchor.x = .5, 
@@ -735,7 +735,7 @@ var Application = AbstractApplication.extend({
     },
     preKill: function() {
         this.onList = !0, this.thumb.parent && this.thumb.parent.removeChild(this.thumb), 
-        this.screen.unihorn.killed(), this.special && this.screen.addSpecial();
+        this.screen.unihorn.killed(), this.special && this.screen.addSpecial(), this.forceKill && (this.subdivide = 0);
         for (var i = this.subdivide - 1; i >= 0; i--) {
             var enemy = new Enemy(APP.appModel.smallEnemyModel, this.screen);
             enemy.build(), enemy.setPosition(this.getPosition().x, this.getPosition().y);
@@ -1901,20 +1901,22 @@ var Application = AbstractApplication.extend({
         });
     },
     addSpecial: function() {
-        this.specAcc = this.specAccMax, this.specialLabel && this.specialLabel.getContent() && this.specialLabel.getContent().parent && this.specialLabel.getContent().parent.removeChild(this.specialLabel.getContent());
-        var type = APP.appModel.addRandonBehaviour();
-        APP.fireTint = type.color, this.specialLabel = new SimpleSprite(type.src, {
-            x: .5,
-            y: .5
-        }), this.specialLabel.getContent().anchor = {
-            x: .5,
-            y: .5
-        }, this.specialLabel.getContent().position.x = windowWidth / 2, this.specialLabel.getContent().position.y = this.HUDback.getContent().height + this.specialLabel.getContent().height / 2, 
-        TweenLite.from(this.specialLabel.getContent().scale, .8, {
-            x: 0,
-            y: 0,
-            ease: "easeOutElastic"
-        }), this.addChild(this.specialLabel.getContent());
+        if (!this.end) {
+            this.specAcc = this.specAccMax, this.specialLabel && this.specialLabel.getContent() && this.specialLabel.getContent().parent && this.specialLabel.getContent().parent.removeChild(this.specialLabel.getContent());
+            var type = APP.appModel.addRandonBehaviour();
+            APP.fireTint = type.color, this.specialLabel = new SimpleSprite(type.src, {
+                x: .5,
+                y: .5
+            }), this.specialLabel.getContent().anchor = {
+                x: .5,
+                y: .5
+            }, this.specialLabel.getContent().position.x = windowWidth / 2, this.specialLabel.getContent().position.y = this.HUDback.getContent().height + this.specialLabel.getContent().height / 2, 
+            TweenLite.from(this.specialLabel.getContent().scale, .8, {
+                x: 0,
+                y: 0,
+                ease: "easeOutElastic"
+            }), this.addChild(this.specialLabel.getContent());
+        }
     },
     updateCloudList: function() {
         for (var hasbad = !1, i = 0; i < this.spawner.enemyList.length; i++) if (this.spawner.enemyList[i].kill) this.thumbContainer.removeChild(this.spawner.enemyList[i].thumb), 
@@ -1941,35 +1943,36 @@ var Application = AbstractApplication.extend({
             tempCoin.getContent().position.x = target.position.x, tempCoin.getContent().position.y = target.position.y, 
             self.layer.addChild(tempCoin), self.arrayCoins.push(tempCoin), self.startCoinMonitore = !0;
         }
-        this.end = !0, this.spawner.killAll(), this.specialLabel && this.specialLabel.getContent() && (this.specialLabel.getContent().alpha = 0), 
-        APP.appModel.removeBehaviour();
-        var self = this;
-        self.arrayCoins = [], this.unihorn.sad(), TweenLite.to(this.darkShape, .5, {
-            alpha: 0
-        });
-        for (var times = [], j = this.badClouds.length - 1; j >= 0; j--) times.push(j);
-        times = shuffle(times);
-        for (var i = this.badClouds.length - 1; i >= 0; i--) TweenLite.to(this.badClouds[i], .3, {
-            delay: 1 + times[i] / 5,
-            alpha: 0
-        }), TweenLite.to(this.badClouds[i].scale, .3, {
-            delay: .5 + times[i] / 5,
-            x: this.badClouds[i].scale.x + .2,
-            y: this.badClouds[i].scale.y + .2,
-            ease: "easeOutElastic",
-            onCompleteParams: [ this.badClouds[i] ],
-            onComplete: onComplete
-        });
+        if (!this.end) {
+            this.end = !0, console.log("endGame", this.end), this.spawner.killAll(), this.specialLabel && this.specialLabel.getContent() && (this.specialLabel.getContent().alpha = 0), 
+            APP.appModel.removeBehaviour();
+            var self = this;
+            self.arrayCoins = [], this.unihorn.sad(), TweenLite.to(this.darkShape, .5, {
+                alpha: 0
+            });
+            for (var times = [], j = this.badClouds.length - 1; j >= 0; j--) times.push(j);
+            times = shuffle(times);
+            for (var i = this.badClouds.length - 1; i >= 0; i--) TweenLite.to(this.badClouds[i], .3, {
+                delay: 1 + times[i] / 5,
+                alpha: 0
+            }), TweenLite.to(this.badClouds[i].scale, .3, {
+                delay: .5 + times[i] / 5,
+                x: this.badClouds[i].scale.x + .2,
+                y: this.badClouds[i].scale.y + .2,
+                ease: "easeOutElastic",
+                onCompleteParams: [ this.badClouds[i] ],
+                onComplete: onComplete
+            });
+        }
     },
     update: function() {
         if (this.updateable) {
-            if (this._super(), this.end) {
-                if (this.startCoinMonitore) {
-                    for (var i = this.arrayCoins.length - 1; i >= 0; i--) this.arrayCoins[i].kill && this.arrayCoins.splice(i, 1);
-                    this.arrayCoins.length <= 0 && this.endModal.show();
-                }
-            } else this.unihorn.update(), this.spawner.update(), this.updateCloudList(), this.specialLabel && this.specialLabel.getContent() && this.specialLabel.getContent().parent && (this.specialLabel.getContent().alpha = this.specAcc / this.specAccMax), 
-            this.specAcc > 0 ? this.specAcc-- : APP.appModel.removeBehaviour();
+            if (this._super(), console.log("this.end", this.end), this.end === !1) this.unihorn.update(), 
+            this.spawner.update(), this.updateCloudList(), this.specialLabel && this.specialLabel.getContent() && this.specialLabel.getContent().parent && (this.specialLabel.getContent().alpha = this.specAcc / this.specAccMax), 
+            this.specAcc > 0 ? this.specAcc-- : APP.appModel.removeBehaviour(); else if (this.startCoinMonitore) {
+                for (var i = this.arrayCoins.length - 1; i >= 0; i--) this.arrayCoins[i].kill && this.arrayCoins.splice(i, 1);
+                this.arrayCoins.length <= 0 && this.endModal.show();
+            }
             this.fireAcum > 0 ? this.fireAcum-- : this.touchDown && (this.shoot(this.mouseAngle), 
             this.fireAcum = this.fireAcumMax), this.coinsLabel.setText(APP.appModel.totalPoints), 
             this.coinsLabel.position.x = windowWidth / 2 - this.coinsLabel.width / 2 - .1 * this.HUDback.getContent().height + this.star.getContent().width / 2, 
@@ -1979,7 +1982,7 @@ var Application = AbstractApplication.extend({
     shoot: function(angle) {
         if (!this.blockPause) {
             var timeLive = 100, vel = APP.currentHornModel.fireSpeed + APP.currentClothModel.fireSpeed, angleOpen = .3, totalFires = APP.currentHornModel.hasMultiple;
-            this.unihorn.shoot(), console.log(totalFires);
+            this.unihorn.shoot();
             for (var i = 0; totalFires > i; i++) {
                 var tempAngle = angle + angleOpen * (i - totalFires / 2);
                 1 === totalFires && (tempAngle = angle);
@@ -2662,7 +2665,8 @@ var Application = AbstractApplication.extend({
         this.maxAccum = 20, this.accum = 120, this.screen = screen, this.enemyList = [];
     },
     killAll: function() {
-        for (var i = this.enemyList.length - 1; i >= 0; i--) this.enemyList[i].preKill();
+        for (var i = this.enemyList.length - 1; i >= 0; i--) this.enemyList[i].forceKill = !0, 
+        this.enemyList[i].preKill();
     },
     build: function() {},
     update: function() {

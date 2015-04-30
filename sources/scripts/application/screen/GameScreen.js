@@ -292,6 +292,9 @@ var GameScreen = AbstractScreen.extend({
         }
     },
     addSpecial:function(){
+        if(this.end){
+            return;
+        }
         this.specAcc = this.specAccMax;
         if(this.specialLabel && this.specialLabel.getContent() && this.specialLabel.getContent().parent){
             this.specialLabel.getContent().parent.removeChild(this.specialLabel.getContent());
@@ -343,7 +346,11 @@ var GameScreen = AbstractScreen.extend({
         }
     },
     endGame:function(){
+        if(this.end){
+            return;
+        }
         this.end = true;
+        console.log('endGame', this.end);
         this.spawner.killAll();
         if(this.specialLabel && this.specialLabel.getContent()){
             this.specialLabel.getContent().alpha = 0;
@@ -383,7 +390,8 @@ var GameScreen = AbstractScreen.extend({
             return;
         }
         this._super();
-        if(!this.end){
+        console.log('this.end', this.end);
+        if(this.end === false){
             this.unihorn.update();
             this.spawner.update();
             this.updateCloudList();
@@ -443,7 +451,7 @@ var GameScreen = AbstractScreen.extend({
         var angleOpen = 0.3;
         var totalFires = APP.currentHornModel.hasMultiple;
         this.unihorn.shoot();
-        console.log(totalFires);
+        // console.log(totalFires);
         for (var i = 0; i < totalFires; i++) {
             var tempAngle = angle + angleOpen * (i - totalFires / 2);
             if(totalFires === 1){
