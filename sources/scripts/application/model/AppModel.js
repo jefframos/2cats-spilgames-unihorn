@@ -12,7 +12,7 @@ var AppModel = Class.extend({
 		// APP.cookieManager = new CookieManager();
 		// console.log(cookieManager.getCookie('totalPoints'));
 		// APP.cookieManager.setCookie('totalPoints', 0, 500);
-		console.log(APP);
+		// console.log(APP);
 
 		var points = 0;//parseInt(APP.cookieManager.getCookie('totalPoints'));
 		var high = 0;//parseInt(APP.cookieManager.getCookie('highScore'));
@@ -481,7 +481,7 @@ var AppModel = Class.extend({
 		// console.log(enableds.split(','));
 		var j = 0;
 		if(!enabledsHorns){
-			console.log('whata');
+			// console.log('whata');
 			enabledsHorns = '1';
 			for (j = 0; j < this.hornModels.length - 1; j++) {
 				enabledsHorns+=',0';
@@ -490,7 +490,7 @@ var AppModel = Class.extend({
 		}else{
 			enabledsHorns = enabledsHorns.split(',');
 			for (j = 0; j < this.hornModels.length - 1; j++) {
-				console.log(enabledsHorns[j]);
+				// console.log(enabledsHorns[j]);
 				if(enabledsHorns[j] === '1'){
 					this.hornModels[j].enabled = true;
 				}
@@ -504,7 +504,7 @@ var AppModel = Class.extend({
 		
 		// console.log(enableds.split(','));
 		if(!enabledsClothes){
-			console.log('whata');
+			// console.log('whata');
 			enabledsClothes = '1';
 			for (j = 0; j < this.clothModels.length - 1; j++) {
 				enabledsClothes+=',0';
@@ -513,7 +513,7 @@ var AppModel = Class.extend({
 		}else{
 			enabledsClothes = enabledsClothes.split(',');
 			for (j = 0; j < this.clothModels.length - 1; j++) {
-				console.log(enabledsClothes[j]);
+				// console.log(enabledsClothes[j]);
 				if(enabledsClothes[j] === '1'){
 					this.clothModels[j].enabled = true;
 				}
@@ -528,7 +528,7 @@ var AppModel = Class.extend({
 		
 		// console.log(enableds.split(','));
 		if(!enabledsLands){
-			console.log('whata');
+			// console.log('whata');
 			enabledsLands = '1';
 			for (j = 0; j < this.envModels.length - 1; j++) {
 				enabledsLands+=',0';
@@ -537,7 +537,7 @@ var AppModel = Class.extend({
 		}else{
 			enabledsLands = enabledsLands.split(',');
 			for (j = 0; j < this.envModels.length - 1; j++) {
-				console.log(enabledsLands[j]);
+				// console.log(enabledsLands[j]);
 				if(enabledsLands[j] === '1'){
 					this.envModels[j].enabled = true;
 				}
@@ -560,41 +560,41 @@ var AppModel = Class.extend({
 
 		var enabledsHorns = '1';
 		for (i = 1; i < this.hornModels.length; i++) {
-			console.log(this.hornModels[i].enabled);
+			// console.log(this.hornModels[i].enabled);
 			if(this.hornModels[i].enabled){
 				enabledsHorns+=',1';
 			}else{
 				enabledsHorns+=',0';
 			}
 		}
-		console.log(enabledsHorns);
+		// console.log(enabledsHorns);
 		APP.cookieManager.setCookie('enabledsHorns', enabledsHorns, 500);
 
 
 		var enabledsClothes = '1';
 		for (i = 1; i < this.clothModels.length; i++) {
-			console.log(this.clothModels[i].enabled);
+			// console.log(this.clothModels[i].enabled);
 			if(this.clothModels[i].enabled){
 				enabledsClothes+=',1';
 			}else{
 				enabledsClothes+=',0';
 			}
 		}
-		console.log(enabledsClothes);
+		// console.log(enabledsClothes);
 		APP.cookieManager.setCookie('enabledsClothes', enabledsClothes, 500);
 
 
 
 		var enabledsLands = '1';
 		for (i = 1; i < this.envModels.length; i++) {
-			console.log(this.envModels[i].enabled);
+			// console.log(this.envModels[i].enabled);
 			if(this.envModels[i].enabled){
 				enabledsLands+=',1';
 			}else{
 				enabledsLands+=',0';
 			}
 		}
-		console.log(enabledsLands);
+		// console.log(enabledsLands);
 		APP.cookieManager.setCookie('enabledsLands', enabledsLands, 500);
 
 

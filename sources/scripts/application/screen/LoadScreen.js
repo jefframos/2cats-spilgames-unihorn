@@ -156,7 +156,7 @@ var LoadScreen = AbstractScreen.extend({
     },
     onAssetsLoaded:function()
     {
-        console.log(APP.audioController.loadedAudioComplete);
+        // console.log(APP.audioController.loadedAudioComplete);
         if(!APP.audioController.loadedAudioComplete){
             APP.audioController.onCompleteCallback = this.onAssetsLoaded;
             APP.audioController.parent = this;

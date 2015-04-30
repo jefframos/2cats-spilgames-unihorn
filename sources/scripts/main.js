@@ -171,8 +171,23 @@ function fullscreen(){
 (function() {
 	var App = {
 		init: function () {
-			initialize();
+			if(window.intel !== undefined){
+				document.addEventListener('deviceready', function() {
+					initialize();
+				});
+			}else{
+				initialize();
+			}
 		}
 	};
 	App.init();
 })();
+
+// (function() {
+// 	var App = {
+// 		init: function () {
+// 			initialize();
+// 		}
+// 	};
+// 	App.init();
+// })();

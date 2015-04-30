@@ -601,7 +601,7 @@ var Application = AbstractApplication.extend({
         }
         function load() {
             self.currentLoaded++, self.currentLoaded >= self.audioList.length && (self.loadedAudioComplete = !0, 
-            console.log("all loaded"), self.onCompleteCallback && self.onCompleteCallback());
+            self.onCompleteCallback && self.onCompleteCallback());
         }
         this.audioList = [ {
             label: "ambient1",
@@ -634,20 +634,24 @@ var Application = AbstractApplication.extend({
             volume: .3,
             loop: !1
         } ], this.onCompleteCallback = null, this.loadedAudioComplete = !1, this.audios = [];
-        for (var self = this, i = this.audioList.length - 1; i >= 0; i--) this.audios.push({
-            label: this.audioList[i].label,
-            audio: new Howl({
-                urls: this.audioList[i].urls,
-                volume: this.audioList[i].volume,
-                loop: this.audioList[i].loop,
-                onend: end,
-                onload: load
-            })
-        });
+        for (var self = this, i = this.audioList.length - 1; i >= 0; i--) {
+            var tempObj = {
+                label: this.audioList[i].label,
+                audio: new Howl({
+                    urls: this.audioList[i].urls,
+                    volume: this.audioList[i].volume,
+                    loop: this.audioList[i].loop,
+                    onend: end,
+                    onload: load
+                })
+            };
+            this.audioList[i].loop || (tempObj.audio.onend = end), this.audios.push(tempObj);
+        }
         this.currentLoaded = 0, this.playingAudios = [], this.ambientLabel = "";
     },
     updateAudioList: function(target) {
-        if (this.ambientPlaying !== target) for (var j = this.playingAudios.length - 1; j >= 0; j--) this.playingAudios[j] === target && this.playingAudios.splice(j, 1);
+        if (this.ambientPlaying === target) return void this.playSound(this.ambientLabel);
+        for (var j = this.playingAudios.length - 1; j >= 0; j--) this.playingAudios[j] === target && this.playingAudios.splice(j, 1);
     },
     playSound: function(id) {
         for (var audioP = null, i = this.audios.length - 1; i >= 0; i--) this.audios[i].label === id && (audioP = this.audios[i].audio, 
@@ -1278,7 +1282,7 @@ var Application = AbstractApplication.extend({
         function getBalanceCoast(id) {
             return 5 * Math.floor(id * id * id / 5) * Math.floor(id * id / 5) * 5 + 25 * id;
         }
-        this.currentPlayerModel = {}, console.log(APP);
+        this.currentPlayerModel = {};
         var high = 0, coins = parseInt(APP.cookieManager.getCookie("coins"));
         this.highScore = high ? high : 0, this.totalPoints = coins ? coins : 0, this.currentPoints = this.totalPoints, 
         this.playerModels = [], this.envModels = [], this.envModels.push(new EnvironmentModel({
@@ -1529,38 +1533,32 @@ var Application = AbstractApplication.extend({
         this.totalPlayers++);
         this.enemyProbs = [ 0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 3 ], this.currentHorde = 0, this.totalEnemy = 4;
         var enabledsHorns = APP.cookieManager.getCookie("enabledsHorns"), j = 0;
-        if (enabledsHorns) for (enabledsHorns = enabledsHorns.split(","), j = 0; j < this.hornModels.length - 1; j++) console.log(enabledsHorns[j]), 
-        "1" === enabledsHorns[j] && (this.hornModels[j].enabled = !0); else {
-            for (console.log("whata"), enabledsHorns = "1", j = 0; j < this.hornModels.length - 1; j++) enabledsHorns += ",0";
+        if (enabledsHorns) for (enabledsHorns = enabledsHorns.split(","), j = 0; j < this.hornModels.length - 1; j++) "1" === enabledsHorns[j] && (this.hornModels[j].enabled = !0); else {
+            for (enabledsHorns = "1", j = 0; j < this.hornModels.length - 1; j++) enabledsHorns += ",0";
             APP.cookieManager.setCookie("enabledsHorns", enabledsHorns, 500);
         }
         var enabledsClothes = APP.cookieManager.getCookie("enabledsClothes");
-        if (enabledsClothes) for (enabledsClothes = enabledsClothes.split(","), j = 0; j < this.clothModels.length - 1; j++) console.log(enabledsClothes[j]), 
-        "1" === enabledsClothes[j] && (this.clothModels[j].enabled = !0); else {
-            for (console.log("whata"), enabledsClothes = "1", j = 0; j < this.clothModels.length - 1; j++) enabledsClothes += ",0";
+        if (enabledsClothes) for (enabledsClothes = enabledsClothes.split(","), j = 0; j < this.clothModels.length - 1; j++) "1" === enabledsClothes[j] && (this.clothModels[j].enabled = !0); else {
+            for (enabledsClothes = "1", j = 0; j < this.clothModels.length - 1; j++) enabledsClothes += ",0";
             APP.cookieManager.setCookie("enabledsClothes", enabledsClothes, 500);
         }
         var enabledsLands = APP.cookieManager.getCookie("enabledsLands");
-        if (enabledsLands) for (enabledsLands = enabledsLands.split(","), j = 0; j < this.envModels.length - 1; j++) console.log(enabledsLands[j]), 
-        "1" === enabledsLands[j] && (this.envModels[j].enabled = !0); else {
-            for (console.log("whata"), enabledsLands = "1", j = 0; j < this.envModels.length - 1; j++) enabledsLands += ",0";
+        if (enabledsLands) for (enabledsLands = enabledsLands.split(","), j = 0; j < this.envModels.length - 1; j++) "1" === enabledsLands[j] && (this.envModels[j].enabled = !0); else {
+            for (enabledsLands = "1", j = 0; j < this.envModels.length - 1; j++) enabledsLands += ",0";
             APP.cookieManager.setCookie("enabledsLands", enabledsLands, 500);
         }
     },
     save: function() {
         this.currentHorde = 0, APP.cookieManager.setCookie("coins", APP.appModel.totalPoints, 500);
         var i = 0, enabledsHorns = "1";
-        for (i = 1; i < this.hornModels.length; i++) console.log(this.hornModels[i].enabled), 
-        enabledsHorns += this.hornModels[i].enabled ? ",1" : ",0";
-        console.log(enabledsHorns), APP.cookieManager.setCookie("enabledsHorns", enabledsHorns, 500);
+        for (i = 1; i < this.hornModels.length; i++) enabledsHorns += this.hornModels[i].enabled ? ",1" : ",0";
+        APP.cookieManager.setCookie("enabledsHorns", enabledsHorns, 500);
         var enabledsClothes = "1";
-        for (i = 1; i < this.clothModels.length; i++) console.log(this.clothModels[i].enabled), 
-        enabledsClothes += this.clothModels[i].enabled ? ",1" : ",0";
-        console.log(enabledsClothes), APP.cookieManager.setCookie("enabledsClothes", enabledsClothes, 500);
+        for (i = 1; i < this.clothModels.length; i++) enabledsClothes += this.clothModels[i].enabled ? ",1" : ",0";
+        APP.cookieManager.setCookie("enabledsClothes", enabledsClothes, 500);
         var enabledsLands = "1";
-        for (i = 1; i < this.envModels.length; i++) console.log(this.envModels[i].enabled), 
-        enabledsLands += this.envModels[i].enabled ? ",1" : ",0";
-        console.log(enabledsLands), APP.cookieManager.setCookie("enabledsLands", enabledsLands, 500);
+        for (i = 1; i < this.envModels.length; i++) enabledsLands += this.envModels[i].enabled ? ",1" : ",0";
+        APP.cookieManager.setCookie("enabledsLands", enabledsLands, 500);
     },
     addRandonBehaviour: function() {
         this.removeBehaviour();
@@ -2321,7 +2319,7 @@ var Application = AbstractApplication.extend({
         this._super(), this.loaderBar.updateBar(Math.floor(90 * this.loadPercent), 100);
     },
     onAssetsLoaded: function() {
-        if (console.log(APP.audioController.loadedAudioComplete), !APP.audioController.loadedAudioComplete) return APP.audioController.onCompleteCallback = this.onAssetsLoaded, 
+        if (!APP.audioController.loadedAudioComplete) return APP.audioController.onCompleteCallback = this.onAssetsLoaded, 
         void (APP.audioController.parent = this);
         var self = APP.audioController.parent ? APP.audioController.parent : this;
         self.ready = !0, self.loaderBar && self.loaderBar.updateBar(100, 100), TweenLite.to(self.loaderContainer, .5, {
@@ -2823,13 +2821,39 @@ var Application = AbstractApplication.extend({
 }), CookieManager = Class.extend({
     init: function() {},
     setCookie: function(cname, cvalue, exdays) {
+        window.intel && this.setSafeCookie(cname, cvalue);
         var d = new Date();
         d.setTime(d.getTime() + 24 * exdays * 60 * 60 * 1e3);
         var expires = "expires=" + d.toUTCString();
         document.cookie = cname + "=" + cvalue + "; " + expires;
     },
     getCookie: function(name) {
-        return (name = new RegExp("(?:^|;\\s*)" + ("" + name).replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&") + "=([^;]*)").exec(document.cookie)) && name[1];
+        return window.intel ? this.getSafeCookie(name) : (name = new RegExp("(?:^|;\\s*)" + ("" + name).replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&") + "=([^;]*)").exec(document.cookie)) && name[1];
+    },
+    setSafeCookie: function(key, value) {
+        window.intel.security.secureStorage.write(function() {
+            console.log("success");
+        }, function(errorObj) {
+            console.log("fail: code = " + errorObj.code + ", message = " + errorObj.message);
+        }, {
+            id: key,
+            data: value
+        });
+    },
+    getSafeCookie: function(key, callback) {
+        window.intel.security.secureStorage.read(function(instanceID) {
+            window.intel.security.secureData.getData(function(data) {
+                callback(data);
+            }, function(errorObj) {
+                console.log("fail: code = " + errorObj.code + ", message = " + errorObj.message), 
+                callback(null);
+            }, instanceID);
+        }, function(errorObj) {
+            console.log("fail: code = " + errorObj.code + ", message = " + errorObj.message), 
+            callback(null);
+        }, {
+            id: key
+        });
     }
 }), Environment = Class.extend({
     init: function(maxWidth, maxHeight) {
@@ -2928,7 +2952,9 @@ var ratio = 1, init = !1, renderer, APP, retina = 1, initialize = function() {
 !function() {
     var App = {
         init: function() {
-            initialize();
+            void 0 !== window.intel ? document.addEventListener("deviceready", function() {
+                initialize();
+            }) : initialize();
         }
     };
     App.init();

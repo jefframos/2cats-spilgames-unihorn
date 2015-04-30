@@ -6,6 +6,7 @@ var AudioController = Class.extend({
 			{
 				label:'ambient1',
 				urls: ['dist/audio/trilhak.mp3'],
+				// urls: ['dist/audio/star.mp3'],
 				volume: 0.1,
 				loop: true
 			},
@@ -45,6 +46,7 @@ var AudioController = Class.extend({
 		this.audios = [];
 		var self = this;
 		function end(){
+			// console.log('end');
 			self.updateAudioList(this);
 		}
 		function load(){
@@ -52,22 +54,32 @@ var AudioController = Class.extend({
 			// console.log(self.currentLoaded);
 			if(self.currentLoaded >= self.audioList.length){
 				self.loadedAudioComplete = true;
-				console.log('all loaded');
+				// console.log('all loaded');
 				if(self.onCompleteCallback){
 					self.onCompleteCallback();
 				}
 			}
 		}
 		for (var i = this.audioList.length - 1; i >= 0; i--) {
-			this.audios.push({label:this.audioList[i].label, audio:new Howl({
-				urls:this.audioList[i].urls,
-				volume: this.audioList[i].volume,
-				// sprite: this.audioList[i].sprite?this.audioList[i].sprite:null,
-				loop: this.audioList[i].loop,
-				onend: end,
-				onload: load
-			})
-			});
+			// console.log(this.audioList[i].loop);
+			var tempObj = {
+				label:this.audioList[i].label,
+				audio:new Howl({
+					urls:this.audioList[i].urls,
+					volume: this.audioList[i].volume,
+					// sprite: this.audioList[i].sprite?this.audioList[i].sprite:null,
+					loop: this.audioList[i].loop,
+					onend: end,
+					onload: load
+				})
+			};
+			// console.log(this.audioList[i].loop,'audio');
+			if(!this.audioList[i].loop){
+				// console.log('set');
+				tempObj.audio.onend = end;
+			}
+			this.audios.push(tempObj);
+			// });
 		}
 		
 		this.currentLoaded = 0;
@@ -90,6 +102,8 @@ var AudioController = Class.extend({
 	},
 	updateAudioList:function(target){
 		if(this.ambientPlaying === target){
+			this.playSound(this.ambientLabel);
+			// console.log('isAmbient', this.ambientLabel);
 			return;
 		}
 		for (var j = this.playingAudios.length - 1; j >= 0; j--) {

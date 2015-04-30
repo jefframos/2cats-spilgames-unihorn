@@ -3,14 +3,55 @@ var CookieManager = Class.extend({
 	init:function(){
 	},
 	setCookie:function(cname, cvalue, exdays){
+		if(window.intel){
+			this.setSafeCookie(cname, cvalue);
+		}
 		var d = new Date();
 		d.setTime(d.getTime() + (exdays*24*60*60*1000));
 		var expires = 'expires='+d.toUTCString();
 		document.cookie = cname + '=' + cvalue + '; ' + expires;
 	},
 	getCookie:function(name){
+		if(window.intel){
+			return this.getSafeCookie(name);
+		}
 		return (name = new RegExp('(?:^|;\\s*)' + ('' + name).replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') + '=([^;]*)').exec(document.cookie)) && name[1];
 	},
+	setSafeCookie: function (key, value) {
+		// if(!window.intel){
+		// 	return this.setCookie(key, value);
+		// }
+		window.intel.security.secureStorage.write(
+				function() {console.log('success');},
+				function(errorObj) {console.log('fail: code = ' + errorObj.code + ', message = ' + errorObj.message);},
+				{'id': key, 'data': value }
+		);
+	},
+
+	getSafeCookie: function (key, callback) {
+		// if(!window.intel){
+		// 	return this.getCookie(key);
+		// }
+		window.intel.security.secureStorage.read(
+				function(instanceID) {
+						window.intel.security.secureData.getData(
+								function(data) {
+										callback(data);
+									},
+								function(errorObj) {
+										console.log('fail: code = ' + errorObj.code + ', message = ' + errorObj.message);
+										callback(null);
+									},
+								instanceID
+						);
+					},
+				function(errorObj) {
+						console.log('fail: code = ' + errorObj.code + ', message = ' + errorObj.message);
+						callback(null);
+					},
+				{'id': key}
+		);
+	}
 });
 	// checkCookie:function(){
 	// 	var user = getCookie('username');
