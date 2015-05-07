@@ -393,7 +393,7 @@ var AppModel = Class.extend({
 					toNext: 85,
 					behaviour: new BirdBehaviourSinoid({sinAcc:0.05}),
 					money:5,
-					hp:2,
+					hp:1,
 					resistance: 1.5,
 					subdivide:2
 				}

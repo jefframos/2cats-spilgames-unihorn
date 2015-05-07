@@ -27,7 +27,7 @@ var PauseModal = Class.extend({
 
 		this.backButton = new DefaultButton('menu.png', 'menu_over.png');
 		this.backButton.build();
-		this.backButton.setPosition(thirdPart * 1 - thirdPart /2 - this.backButton.getContent().width/2,this.back.height / 2 - this.backButton.getContent().height / 2);//this.backBars.getContent().height / 2 - this.continueButton.height / 2 - 10);
+		this.backButton.setPosition(30+thirdPart * 1 - thirdPart /2 - this.backButton.getContent().width/2,this.back.height / 2 - this.backButton.getContent().height / 2);//this.backBars.getContent().height / 2 - this.continueButton.height / 2 - 10);
 		this.backButton.clickCallback = function(){
 			self.hide(function(){
 				// self.screen.hideBars();
@@ -38,26 +38,27 @@ var PauseModal = Class.extend({
 
 		this.continueButton = new DefaultButton('play.png', 'play_over.png');
 		this.continueButton.build();
-		scaleConverter(this.continueButton.getContent().width, this.back.width, 0.3, this.continueButton);
-		this.continueButton.setPosition(thirdPart * 2 - thirdPart /2 -  this.continueButton.getContent().width/2,this.back.height / 2 - this.continueButton.getContent().height / 2);
+		// scaleConverter(this.continueButton.getContent().width, this.back.width, 0.3, this.continueButton);
+		// this.continueButton.setPosition(thirdPart * 2 - thirdPart /2 -  this.continueButton.getContent().width/2,this.back.height / 2 - this.continueButton.getContent().height / 2);
+		this.continueButton.setPosition(-30+thirdPart * 3 - thirdPart /2 -  this.continueButton.getContent().width/2,this.back.height / 2 - this.continueButton.getContent().height / 2);//this.backBars.getContent().height / 2 - this.continueButton.height / 2 - 10);
 		this.continueButton.clickCallback = function(){
 			self.hide(function(){self.screen.updateable = true;});
 		};
 		this.back.addChild(this.continueButton.getContent());
 
-		this.restartButton = new DefaultButton('replay.png', 'replay_over.png');
-		this.restartButton.build();
-		this.restartButton.setPosition(thirdPart * 3 - thirdPart /2 -  this.restartButton.getContent().width/2,this.back.height / 2 - this.restartButton.getContent().height / 2);//this.backBars.getContent().height / 2 - this.continueButton.height / 2 - 10);
+		// this.restartButton = new DefaultButton('replay.png', 'replay_over.png');
+		// this.restartButton.build();
+		// this.restartButton.setPosition(thirdPart * 3 - thirdPart /2 -  this.restartButton.getContent().width/2,this.back.height / 2 - this.restartButton.getContent().height / 2);//this.backBars.getContent().height / 2 - this.continueButton.height / 2 - 10);
 
-		this.restartButton.clickCallback = function(){
-			self.hide(function(){
-				self.screen.updateable = true;
-				self.screen.reset();
-			});
-		};
-		this.back.addChild(this.restartButton.getContent());
+		// this.restartButton.clickCallback = function(){
+		// 	self.hide(function(){
+		// 		self.screen.updateable = true;
+		// 		self.screen.reset();
+		// 	});
+		// };
+		// this.back.addChild(this.restartButton.getContent());
 
-		scaleConverter(this.boxContainer.width, windowWidth, 0.8, this.boxContainer);
+		scaleConverter(this.boxContainer.width, windowWidth, 0.9, this.boxContainer);
 
 
 

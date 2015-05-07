@@ -35,7 +35,7 @@ var EndModal = Class.extend({
             });
         };
 
-        this.barraTop = new SimpleSprite('barra_bottom2.png');
+        this.barraTop = new SimpleSprite('barra_bottom.png');
         this.topHUD.addChild(this.barraTop.getContent());
         // this.barraTop.getContent().scale.y = -1;
         // this.barraTop.getContent().position.y = this.barraTop.getContent().height * -1;//this.barraTop.getContent().height;
@@ -46,15 +46,16 @@ var EndModal = Class.extend({
         // scaleConverter(this.barraTop.getContent().width, windowHeight, 0.1, this.barraTop);
         scaleConverter(this.closeButton.getContent().height, this.barraTop.getContent().height, 0.8, this.closeButton);
 
-        this.closeButton.getContent().position.x = this.topHUD.width - this.closeButton.getContent().width - this.barraTop.getContent().height * 0.1;
+        this.closeButton.getContent().position.x = this.topHUD.width / 2 - this.closeButton.getContent().width / 2;// - this.barraTop.getContent().height * 0.1;
         this.closeButton.getContent().position.y = this.barraTop.getContent().height * 0.1;
 
 
         var thirdPart = this.backScroll.width / 3;
-        this.textScreen = new PIXI.Text(APP.appModel.totalPoints, {align:'center',font:'32px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500, stroke:'#352745', strokeThickness:5});
-        scaleConverter(this.textScreen.height, this.closeButton.getContent().height, 1, this.textScreen);
+        this.textScreen = new PIXI.Text(APP.appModel.totalPoints, {align:'center',font:'50px Vagron', fill:'#FFF', wordWrap:true, wordWrapWidth:500, stroke:'#352745', strokeThickness:5});
+        scaleConverter(this.textScreen.height, this.closeButton.getContent().height, 0.5, this.textScreen);
+        // this.textScreen.position.x = this.topHUD.width - this.textScreen.width - this.barraTop.getContent().height * 0.1;
         this.textScreen.position.x = this.topHUD.width - this.textScreen.width - this.barraTop.getContent().height * 0.1;
-        this.textScreen.position.y = this.closeButton.getContent().position.y;
+        this.textScreen.position.y = this.closeButton.getContent().position.y + this.closeButton.getContent().height / 2 -this.textScreen.height/2 ;
 
         this.topHUD.addChild(this.textScreen);
         
@@ -166,8 +167,8 @@ var EndModal = Class.extend({
         APP.appModel.save();
 
         this.textScreen.setText(APP.appModel.totalPoints);
-        this.textScreen.position.x = this.topHUD.width / 2 - this.textScreen.width / 2;// - this.barraTop.getContent().height * 0.1;
-        this.textScreen.position.y = this.closeButton.getContent().position.y;
+        this.textScreen.position.x = this.barraTop.getContent().height * 0.2 + this.star.getContent().width;//his.topHUD.width / 2 - this.textScreen.width / 2;// - this.barraTop.getContent().height * 0.1;
+        this.textScreen.position.y = this.closeButton.getContent().position.y + this.closeButton.getContent().height / 2 -this.textScreen.height/2 ;
 
         this.star.getContent().position.x = this.textScreen.position.x -this.star.getContent().width * 1.1;
         this.star.getContent().position.y = this.textScreen.position.y + this.textScreen.height / 2 -this.star.getContent().height / 2;

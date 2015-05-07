@@ -45,12 +45,14 @@ var LoadScreen = AbstractScreen.extend({
             scaleConverter(this.logo.getContent().width, windowWidth, 1.3, this.logo);
             this.logo.getContent().position.x = windowWidth / 2 - this.logo.getContent().width / 2;
             this.logo.getContent().position.y = windowHeight - this.logo.getContent().height * 1.1;
+            TweenLite.from(this.logo.getContent().position, 4, {y:this.logo.getContent().position.y + 50, ease:'easeOutElastic'});
         }
         if(this.fundo && this.fundo.getContent().width > 1 && this.fundo.getContent().scale.x === 1 && this.logo.getContent().width > 1){
             this.fundo.getContent().alpha = 1;
             scaleConverter(this.fundo.getContent().height, windowHeight, 1, this.fundo);
             this.fundo.getContent().position.x = windowWidth / 2 - this.fundo.getContent().width / 2;
 
+            // TweenLite.from(this.fundo.getContent().position, 4, {y:- 50, ease:'easeOutElastic'});
             
             // this.fundo.getContent().position.y = -this.fundo.getContent().height * 0.02;
         }

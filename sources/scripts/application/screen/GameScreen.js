@@ -269,7 +269,7 @@ var GameScreen = AbstractScreen.extend({
         this.startCoinMonitore = false;
         this.blockPause = false;
 
-        this.specAccMax = 350;
+        this.specAccMax = 500;
         this.specAcc = 0;
 
 
@@ -361,7 +361,7 @@ var GameScreen = AbstractScreen.extend({
         var self = this;
         self.arrayCoins = [];
         this.unihorn.sad();
-        TweenLite.to(this.darkShape, 0.5, {alpha:0});
+        // TweenLite.to(this.darkShape, 0.5, {alpha:0});
         function onComplete(target){
             if(target && target.parent){
                 target.parent.removeChild(target);
@@ -373,6 +373,17 @@ var GameScreen = AbstractScreen.extend({
             tempCoin.getContent().position.y = target.position.y;
             self.layer.addChild(tempCoin);
             self.arrayCoins.push(tempCoin);
+
+
+            tempCoin = new Coin(self);
+            tempCoin.build();
+            scaleConverter(tempCoin.getContent().height, target.height, 0.8, tempCoin);
+            tempCoin.getContent().position.x = target.position.x;
+            tempCoin.getContent().position.y = target.position.y - tempCoin.getContent().height*2;
+            self.layer.addChild(tempCoin);
+            self.arrayCoins.push(tempCoin);
+
+
             self.startCoinMonitore = true;
         }
         var times = [];
