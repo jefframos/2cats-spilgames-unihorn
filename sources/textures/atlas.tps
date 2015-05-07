@@ -285,11 +285,11 @@
             <filename>katy_thumb.png</filename>
             <filename>witch_thumb.png</filename>
             <filename>pelado_thumb.png</filename>
-            <filename>thumb_ocean.png</filename>
             <filename>thumb_castle.png</filename>
             <filename>thumb_desert.png</filename>
             <filename>uni_corpo_torcedor.png</filename>
             <filename>torcedor_thumb.png</filename>
+            <filename>../../../../../Users/jefferson.ramos/Dropbox/2cats/Unihorn/Bases/thumb_ocean.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

@@ -29,7 +29,7 @@ var LoadScreen = AbstractScreen.extend({
 
         
 
-        var assetsToLoader = ['dist/img/atlas.json', 'dist/img/cenario1b.png','dist/img/cenario2b.png','dist/img/cenario3b.png'];
+        var assetsToLoader = ['dist/img/atlas.json', 'dist/img/cenario1b.png','dist/img/cenario2b.png','dist/img/cenario3b.png','dist/img/neblina.png'];
         if(assetsToLoader.length > 0 && !this.isLoaded){
             this.loader = new PIXI.AssetLoader(assetsToLoader);
             // this.initLoad();
@@ -46,6 +46,16 @@ var LoadScreen = AbstractScreen.extend({
             this.logo.getContent().position.x = windowWidth / 2 - this.logo.getContent().width / 2;
             this.logo.getContent().position.y = windowHeight - this.logo.getContent().height * 1.1;
             TweenLite.from(this.logo.getContent().position, 4, {y:this.logo.getContent().position.y + 50, ease:'easeOutElastic'});
+
+            var self = this;
+            var playTimeline = null;
+            var repeatPlay = function(){
+                playTimeline.append(TweenLite.to(self.logo.getContent(), 5,{y:windowHeight - self.logo.getContent().height * 1.1 + 20, ease:'easeInOutCubic'}));
+                playTimeline.append(TweenLite.to(self.logo.getContent(), 5,{y:windowHeight - self.logo.getContent().height * 1.1, ease:'easeInOutCubic'}));
+            };
+            playTimeline = new TimelineLite({delay:4, onComplete:repeatPlay});
+            repeatPlay();
+
         }
         if(this.fundo && this.fundo.getContent().width > 1 && this.fundo.getContent().scale.x === 1 && this.logo.getContent().width > 1){
             this.fundo.getContent().alpha = 1;
@@ -208,8 +218,19 @@ var LoadScreen = AbstractScreen.extend({
         this.playContainer.alpha = 0;
         var playScale = scaleConverter(this.playContainer.height, this.logo.getContent().height, 0.1);
         this.playContainer.position.y = windowHeight - (this.playButton.getContent().height / 1.6);
+
         TweenLite.to(this.playContainer, 0.3,{delay:0.3, alpha:1});
         TweenLite.to(this.playContainer.scale, 0.8,{delay:0.3, x:playScale, y:playScale, ease:'easeOutElastic'});
+
+        var playTimeline = null;
+
+        function repeatPlay(){
+            playTimeline.append(TweenLite.to(self.playContainer, 5,{y:windowHeight - (self.playButton.getContent().height / 1.6) - 20, ease:'easeInOutCubic'}));
+            playTimeline.append(TweenLite.to(self.playContainer, 5,{y:windowHeight - (self.playButton.getContent().height / 1.6), ease:'easeInOutCubic'}));
+        }
+        playTimeline = new TimelineLite({delay:0.8, onComplete:repeatPlay});
+        repeatPlay();
+
         this.playButton.clickCallback = function(){
             APP.audioController.playSound('pop');
             if(possibleFullscreen() && !isfull && testMobile()){
@@ -247,17 +268,16 @@ var LoadScreen = AbstractScreen.extend({
         TweenLite.to(this.creditsContainer.scale, 0.8,{delay:0.2, x:creditsScale, y:creditsScale, ease:'easeOutElastic'});
         this.creditsButton.clickCallback = function(){
             APP.audioController.playSound('pop');
-            // if(possibleFullscreen() && !isfull && testMobile()){
-            //     fullscreen();
-            // }
-            // self.updateable = false;
-            // self.toTween(function(){
-            //     self.screenManager.change('Game');
-
-            // });
         };
 
+        var creditsTimeline = null;
 
+        function repeatCredits(){
+            creditsTimeline.append(TweenLite.to(self.creditsContainer.scale, 5,{x:1.2, y:1.2, ease:'easeInOutCubic'}));
+            creditsTimeline.append(TweenLite.to(self.creditsContainer.scale, 5,{x:1, y:1, ease:'easeInOutCubic'}));
+        }
+        creditsTimeline = new TimelineLite({delay:0.5, onComplete:repeatPlay});
+        repeatCredits();
 
         this.moreContainer = new PIXI.DisplayObjectContainer();
 
@@ -287,6 +307,14 @@ var LoadScreen = AbstractScreen.extend({
             }
         };
 
+        var moreTimeline = null;
+
+        function repeatMore(){
+            moreTimeline.append(TweenLite.to(self.moreContainer.scale, 5,{x:1.2, y:1.2, ease:'easeInOutCubic'}));
+            moreTimeline.append(TweenLite.to(self.moreContainer.scale, 5,{x:1, y:1, ease:'easeInOutCubic'}));
+        }
+        moreTimeline = new TimelineLite({delay:0.8, onComplete:repeatPlay});
+        repeatMore();
         // this.screenManager.change('Init');
     },
     toTween:function(callback){

@@ -11,8 +11,38 @@ var AudioController = Class.extend({
 				loop: true
 			},
 			{
+				label:'god',
+				urls: ['dist/audio/god.mp3'],
+				volume: 0.3,
+				loop: false
+			},
+			{
 				label:'pop',
 				urls: ['dist/audio/pop.mp3'],
+				volume: 0.3,
+				loop: false
+			},
+			{
+				label:'bubble1',
+				urls: ['dist/audio/bubble1.mp3'],
+				volume: 0.3,
+				loop: false
+			},
+			{
+				label:'bubble2',
+				urls: ['dist/audio/bubble2.mp3'],
+				volume: 0.3,
+				loop: false
+			},
+			{
+				label:'bubble3',
+				urls: ['dist/audio/bubble3.mp3'],
+				volume: 0.3,
+				loop: false
+			},
+			{
+				label:'grunhido',
+				urls: ['dist/audio/grunhido.mp3'],
 				volume: 0.3,
 				loop: false
 			},
@@ -31,7 +61,7 @@ var AudioController = Class.extend({
 			{
 				label:'bublenoize',
 				urls: ['dist/audio/bublenoize.mp3'],
-				volume: 0.3,
+				volume: 0.2,
 				loop: false
 			},
 			{

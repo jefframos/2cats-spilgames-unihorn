@@ -97,7 +97,8 @@ var Enemy = Entity.extend({
             return;
         }
         this.hp -= demage;
-        APP.audioController.playSound('shoot2');
+
+        
         // console.log(this.spritesheet.currentAnimation.label);
         if(this.bounce && this.spritesheet.currentAnimation.label !== 'state2'){
 
@@ -115,6 +116,9 @@ var Enemy = Entity.extend({
             }
 
             this.bounce = false;
+            APP.audioController.playSound('bubble1');
+        }else{
+            APP.audioController.playSound('bubble3');
         }
 
         this.currentState ++;//Math.floor(this.stats / this.hp);
@@ -127,7 +131,7 @@ var Enemy = Entity.extend({
             this.vel *= 1.5;
             this.velocity.y  *= 1.5;
             this.invencible = 20;
-
+            APP.audioController.playSound('grunhido');
             this.scaleMax *= 1.2;
 
             this.getContent().scale.x = this.getContent().scale.y = this.scaleMax;
@@ -188,6 +192,8 @@ var Enemy = Entity.extend({
             this.screen.spawner.enemyList.push(enemy);
             this.screen.addEnemyThumb(enemy);
             this.screen.layer.addChild(enemy);
+
+            APP.audioController.playSound('bubble2');
         }
 
 
