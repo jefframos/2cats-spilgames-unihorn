@@ -5,6 +5,8 @@ var Spawner = Class.extend({
         this.accum = 120;
         this.screen = screen;
         this.enemyList = [];
+        this.accCompare = 2;
+        APP.accelGame = 1;
     },
     killAll: function(){
         // console.log('killAll');
@@ -21,6 +23,13 @@ var Spawner = Class.extend({
             var enemy = APP.appModel.getNewEnemy(null, this.screen);
             enemy.build();
             this.accum = enemy.model.toNext / (APP.accelGame);
+            if(APP.accelGame < 6){
+                APP.accelGame += APP.appModel.currentHorde / 500;
+            }
+            if(APP.accelGame > this.accCompare){
+                this.accCompare ++;
+                this.screen.improveClouds();
+            }
             if(this.accum < 50){
                 this.accum = 50;
             }

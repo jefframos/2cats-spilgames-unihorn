@@ -27,9 +27,11 @@ var LoadScreen = AbstractScreen.extend({
         this.backLoader = new SimpleSprite('dist/img/loader.png');
         this.loaderContainer.addChild(this.backLoader.getContent());
 
+
+
         
 
-        var assetsToLoader = ['dist/img/atlas.json', 'dist/img/cenario1b.png','dist/img/cenario2b.png','dist/img/cenario3b.png','dist/img/neblina.png'];
+        var assetsToLoader = ['dist/img/atlas.json', 'dist/img/creditoMenor.png', 'dist/img/cenario1b.png','dist/img/cenario2b.png','dist/img/cenario3b.png','dist/img/neblina.png'];
         if(assetsToLoader.length > 0 && !this.isLoaded){
             this.loader = new PIXI.AssetLoader(assetsToLoader);
             // this.initLoad();
@@ -245,40 +247,6 @@ var LoadScreen = AbstractScreen.extend({
 
 
 
-        this.creditsContainer = new PIXI.DisplayObjectContainer();
-
-        this.addChild(this.creditsContainer);
-        this.creditsButton = new DefaultButton('creditos.png', 'creditos_over.png');
-        this.creditsButton.build();
-        // this.creditsButton.addLabel(new PIXI.Text('PLAY', {font:'50px Vagron', fill:'#FFFFFF'}), 45,2);
-        // scaleConverter(this.creditsButton.getContent().width, this.playButton.getContent().width, 0.9, this.creditsButton);
-
-        this.creditsButton.setPosition( - this.creditsButton.getContent().width/2,
-            - this.creditsButton.getContent().height / 2);
-
-        this.creditsContainer.addChild(this.creditsButton.getContent());
-
-        this.creditsContainer.position.x = windowWidth / 2 - this.creditsButton.getContent().width * 2;
-      
-        this.creditsContainer.scale.x = this.creditsContainer.scale.y = 0.5;
-        this.creditsContainer.alpha = 0;
-        var creditsScale = scaleConverter(this.creditsContainer.height, this.logo.getContent().height, 0.09);
-        this.creditsContainer.position.y = this.playContainer.position.y  - this.creditsContainer.height / 2;//windowHeight - (this.creditsButton.getContent().height / 1.6);
-        TweenLite.to(this.creditsContainer, 0.3,{delay:0.2, alpha:1});
-        TweenLite.to(this.creditsContainer.scale, 0.8,{delay:0.2, x:creditsScale, y:creditsScale, ease:'easeOutElastic'});
-        this.creditsButton.clickCallback = function(){
-            APP.audioController.playSound('pop');
-        };
-
-        var creditsTimeline = null;
-
-        function repeatCredits(){
-            creditsTimeline.append(TweenLite.to(self.creditsContainer.scale, 5,{x:1.2, y:1.2, ease:'easeInOutCubic'}));
-            creditsTimeline.append(TweenLite.to(self.creditsContainer.scale, 5,{x:1, y:1, ease:'easeInOutCubic'}));
-        }
-        creditsTimeline = new TimelineLite({delay:0.5, onComplete:repeatPlay});
-        repeatCredits();
-
         this.moreContainer = new PIXI.DisplayObjectContainer();
 
         this.addChild(this.moreContainer);
@@ -315,6 +283,63 @@ var LoadScreen = AbstractScreen.extend({
         }
         moreTimeline = new TimelineLite({delay:0.8, onComplete:repeatPlay});
         repeatMore();
+
+
+        this.darks = new PIXI.Graphics();
+        this.darks.beginFill(0);
+        this.darks.drawRect(0,0,windowWidth, windowHeight);
+        this.addChild(this.darks);
+        this.darks.alpha = 0;
+
+        this.creditsImage = new SimpleSprite('dist/img/creditoMenor.png');
+        this.addChild(this.creditsImage.getContent());
+        this.creditsImage.getContent().alpha = 0;
+        this.creditsImage.getContent().position.x = windowWidth / 2 - this.creditsImage.getContent().width / 2;
+        this.creditsImage.getContent().position.y = windowHeight / 2 - this.creditsImage.getContent().height / 2;
+
+
+        this.creditsContainer = new PIXI.DisplayObjectContainer();
+
+        this.addChild(this.creditsContainer);
+        this.creditsButton = new DefaultButton('creditos.png', 'creditos_over.png');
+        this.creditsButton.build();
+        // this.creditsButton.addLabel(new PIXI.Text('PLAY', {font:'50px Vagron', fill:'#FFFFFF'}), 45,2);
+        // scaleConverter(this.creditsButton.getContent().width, this.playButton.getContent().width, 0.9, this.creditsButton);
+
+        this.creditsButton.setPosition( - this.creditsButton.getContent().width/2,
+            - this.creditsButton.getContent().height / 2);
+
+        this.creditsContainer.addChild(this.creditsButton.getContent());
+
+        this.creditsContainer.position.x = windowWidth / 2 - this.creditsButton.getContent().width * 2;
+      
+        this.creditsContainer.scale.x = this.creditsContainer.scale.y = 0.5;
+        this.creditsContainer.alpha = 0;
+        var creditsScale = scaleConverter(this.creditsContainer.height, this.logo.getContent().height, 0.09);
+        this.creditsContainer.position.y = this.playContainer.position.y  - this.creditsContainer.height / 2;//windowHeight - (this.creditsButton.getContent().height / 1.6);
+        TweenLite.to(this.creditsContainer, 0.3,{delay:0.2, alpha:1});
+        TweenLite.to(this.creditsContainer.scale, 0.8,{delay:0.2, x:creditsScale, y:creditsScale, ease:'easeOutElastic'});
+        this.creditsButton.clickCallback = function(){
+            APP.audioController.playSound('pop');
+            if(self.darks.alpha >= 0.5){
+                TweenLite.to(self.creditsImage.getContent(), 0.5,{alpha:0});
+                TweenLite.to(self.darks, 0.5,{alpha:0});
+            }else{
+                TweenLite.to(self.creditsImage.getContent(), 0.5,{alpha:1});
+                TweenLite.to(self.darks, 0.5,{alpha:0.5});
+            }
+        };
+
+
+        var creditsTimeline = null;
+
+        function repeatCredits(){
+            creditsTimeline.append(TweenLite.to(self.creditsContainer.scale, 5,{x:1.2, y:1.2, ease:'easeInOutCubic'}));
+            creditsTimeline.append(TweenLite.to(self.creditsContainer.scale, 5,{x:1, y:1, ease:'easeInOutCubic'}));
+        }
+        creditsTimeline = new TimelineLite({delay:0.5, onComplete:repeatPlay});
+        repeatCredits();
+
         // this.screenManager.change('Init');
     },
     toTween:function(callback){

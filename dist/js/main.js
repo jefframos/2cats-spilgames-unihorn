@@ -1,4 +1,4 @@
-/*! jefframos 07-05-2015 */
+/*! jefframos 08-05-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -1618,7 +1618,7 @@ var Application = AbstractApplication.extend({
         return obs;
     },
     getNewEnemy: function(player, screen) {
-        this.currentHorde++, APP.accelGame < 6 && (APP.accelGame += this.currentHorde / 500);
+        this.currentHorde++;
         var max = this.enemyProbs.length;
         this.currentHorde < max && (max = this.currentHorde);
         for (var id = 99999; id > this.totalEnemy - 1; ) id = this.enemyProbs[Math.floor(max * Math.random())];
@@ -1956,14 +1956,18 @@ var Application = AbstractApplication.extend({
         }), this.layerManager = new LayerManager(), this.layerManager.build("Main"), this.addChild(this.layerManager), 
         this.layer = new Layer(), this.layer.build("EntityLayer"), this.layerManager.addLayer(this.layer), 
         this.spawner = new Spawner(this), this.unihorn = new Unihorn(), this.unihorn.build(), 
-        this.addChild(this.unihorn), this.unihorn.felling = 1;
+        this.unihorn.felling = 1;
         var scl = scaleConverter(this.unihorn.neck.height, windowHeight, .3, this.unihorn);
         this.unihorn.getContent().position.y = windowHeight - this.unihorn.neck.height * scl, 
         this.unihorn.getContent().position.x = windowWidth / 2 - (this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl, 
         this.hornPos = {
             x: this.unihorn.getContent().position.x + (this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl,
             y: this.unihorn.getContent().position.y + this.unihorn.head.position.y * scl
-        }, TweenLite.from(this.unihorn.getContent().position, .3, {
+        };
+        var darkBase = new PIXI.Graphics();
+        darkBase.beginFill(0), darkBase.drawRect(0, 0, windowWidth, windowHeight), darkBase.alpha = .3, 
+        this.addChild(darkBase), darkBase.position.y = windowHeight - 3.2 * (windowHeight - this.hornPos.y), 
+        this.addChild(this.unihorn), TweenLite.from(this.unihorn.getContent().position, .3, {
             delay: .3,
             x: windowWidth / 2 - 2 * (this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl,
             y: this.unihorn.getContent().position.y + this.unihorn.neck.height * scl,
@@ -2005,8 +2009,8 @@ var Application = AbstractApplication.extend({
             delay: .7,
             alpha: 0
         }), this.end = !1, this.startCoinMonitore = !1, this.blockPause = !1, this.specAccMax = 500, 
-        this.specAcc = 0, this.pauseModal = new PauseModal(this), this.endModal = new EndModal(this), 
-        this.setAudioButtons();
+        this.specAcc = 0, this.pauseModal = new PauseModal(this), this.pauseModal2 = new PauseModal2(this), 
+        this.endModal = new EndModal(this), this.setAudioButtons();
     },
     addEnemyThumb: function(enemy) {
         this.thumbContainer.addChild(enemy.thumb);
@@ -2015,6 +2019,27 @@ var Application = AbstractApplication.extend({
         for (var i = 0; i < this.badClouds.length; i++) TweenLite.to(this.badClouds[i].position, .3, {
             x: windowWidth - this.badClouds[i].width / 4 - i * windowWidth / this.maxClouds
         });
+    },
+    improveClouds: function() {
+        var tempLAbel = new PIXI.Text("CLOUDS ARE\nGETTING STRONGER!", {
+            align: "center",
+            font: "30px Vagron",
+            fill: "#ffe63e",
+            stroke: "#665c18",
+            strokeThickness: 3
+        });
+        tempLAbel.position.x = windowWidth / 2 - tempLAbel.width / 2, tempLAbel.position.y = windowHeight / 2 - tempLAbel.height / 2, 
+        TweenLite.from(tempLAbel, .5, {
+            alpha: 0,
+            y: tempLAbel.position.y - 50
+        }), TweenLite.to(tempLAbel, 1, {
+            delay: 1.5,
+            alpha: 0,
+            y: tempLAbel.position.y - 50,
+            onComplete: function() {
+                tempLAbel.parent.removeChild(tempLAbel);
+            }
+        }), this.addChild(tempLAbel);
     },
     addSpecial: function() {
         if (!this.end) {
@@ -2092,7 +2117,8 @@ var Application = AbstractApplication.extend({
             this.specAcc > 0 ? this.specAcc-- : APP.appModel.removeBehaviour(); else if (this.specialLabel && this.specialLabel.getContent() && this.specialLabel.getContent().parent && (this.specialLabel.getContent().alpha = 0), 
             this.startCoinMonitore) {
                 for (var i = this.arrayCoins.length - 1; i >= 0; i--) this.arrayCoins[i].kill && this.arrayCoins.splice(i, 1);
-                this.arrayCoins.length <= 0 && this.endModal.show();
+                this.arrayCoins.length <= 0 && (this.pauseModal2.show(), this.unihorn.getContent().parent.setChildIndex(this.unihorn.getContent(), this.unihorn.getContent().parent.children.length - 1), 
+                this.unihorn.head.rotation = 0);
             }
             this.fireAcum > 0 ? this.fireAcum-- : this.touchDown && (this.shoot(this.mouseAngle), 
             this.fireAcum = this.fireAcumMax), this.coinsLabel.setText(APP.appModel.totalPoints), 
@@ -2304,7 +2330,7 @@ var Application = AbstractApplication.extend({
         this.container.addChild(this.logo.getContent()), this.loaderContainer = new PIXI.DisplayObjectContainer(), 
         this.addChild(this.loaderContainer), this.backLoader = new SimpleSprite("dist/img/loader.png"), 
         this.loaderContainer.addChild(this.backLoader.getContent());
-        var assetsToLoader = [ "dist/img/atlas.json", "dist/img/cenario1b.png", "dist/img/cenario2b.png", "dist/img/cenario3b.png", "dist/img/neblina.png" ];
+        var assetsToLoader = [ "dist/img/atlas.json", "dist/img/creditoMenor.png", "dist/img/cenario1b.png", "dist/img/cenario2b.png", "dist/img/cenario3b.png", "dist/img/neblina.png" ];
         assetsToLoader.length > 0 && !this.isLoaded ? this.loader = new PIXI.AssetLoader(assetsToLoader) : this.onAssetsLoaded(), 
         this.HUDContainer = null;
     },
@@ -2389,23 +2415,23 @@ var Application = AbstractApplication.extend({
                 ease: "easeInOutCubic"
             }));
         }
-        function repeatCredits() {
-            creditsTimeline.append(TweenLite.to(self.creditsContainer.scale, 5, {
-                x: 1.2,
-                y: 1.2,
-                ease: "easeInOutCubic"
-            })), creditsTimeline.append(TweenLite.to(self.creditsContainer.scale, 5, {
-                x: 1,
-                y: 1,
-                ease: "easeInOutCubic"
-            }));
-        }
         function repeatMore() {
             moreTimeline.append(TweenLite.to(self.moreContainer.scale, 5, {
                 x: 1.2,
                 y: 1.2,
                 ease: "easeInOutCubic"
             })), moreTimeline.append(TweenLite.to(self.moreContainer.scale, 5, {
+                x: 1,
+                y: 1,
+                ease: "easeInOutCubic"
+            }));
+        }
+        function repeatCredits() {
+            creditsTimeline.append(TweenLite.to(self.creditsContainer.scale, 5, {
+                x: 1.2,
+                y: 1.2,
+                ease: "easeInOutCubic"
+            })), creditsTimeline.append(TweenLite.to(self.creditsContainer.scale, 5, {
                 x: 1,
                 y: 1,
                 ease: "easeInOutCubic"
@@ -2439,29 +2465,7 @@ var Application = AbstractApplication.extend({
             self.updateable = !1, self.toTween(function() {
                 self.screenManager.change("Game");
             });
-        }, this.creditsContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.creditsContainer), 
-        this.creditsButton = new DefaultButton("creditos.png", "creditos_over.png"), this.creditsButton.build(), 
-        this.creditsButton.setPosition(-this.creditsButton.getContent().width / 2, -this.creditsButton.getContent().height / 2), 
-        this.creditsContainer.addChild(this.creditsButton.getContent()), this.creditsContainer.position.x = windowWidth / 2 - 2 * this.creditsButton.getContent().width, 
-        this.creditsContainer.scale.x = this.creditsContainer.scale.y = .5, this.creditsContainer.alpha = 0;
-        var creditsScale = scaleConverter(this.creditsContainer.height, this.logo.getContent().height, .09);
-        this.creditsContainer.position.y = this.playContainer.position.y - this.creditsContainer.height / 2, 
-        TweenLite.to(this.creditsContainer, .3, {
-            delay: .2,
-            alpha: 1
-        }), TweenLite.to(this.creditsContainer.scale, .8, {
-            delay: .2,
-            x: creditsScale,
-            y: creditsScale,
-            ease: "easeOutElastic"
-        }), this.creditsButton.clickCallback = function() {
-            APP.audioController.playSound("pop");
-        };
-        var creditsTimeline = null;
-        creditsTimeline = new TimelineLite({
-            delay: .5,
-            onComplete: repeatPlay
-        }), repeatCredits(), this.moreContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.moreContainer), 
+        }, this.moreContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.moreContainer), 
         this.moreGamesButton = new DefaultButton("moregames.png", "moregames_over.png"), 
         this.moreGamesButton.build(), this.moreGamesButton.setPosition(-this.moreGamesButton.getContent().width / 2, -this.moreGamesButton.getContent().height / 2), 
         this.moreContainer.addChild(this.moreGamesButton.getContent()), this.moreContainer.position.x = windowWidth / 2 + 2 * this.moreGamesButton.getContent().width, 
@@ -2483,7 +2487,42 @@ var Application = AbstractApplication.extend({
         moreTimeline = new TimelineLite({
             delay: .8,
             onComplete: repeatPlay
-        }), repeatMore();
+        }), repeatMore(), this.darks = new PIXI.Graphics(), this.darks.beginFill(0), this.darks.drawRect(0, 0, windowWidth, windowHeight), 
+        this.addChild(this.darks), this.darks.alpha = 0, this.creditsImage = new SimpleSprite("dist/img/creditoMenor.png"), 
+        this.addChild(this.creditsImage.getContent()), this.creditsImage.getContent().alpha = 0, 
+        this.creditsImage.getContent().position.x = windowWidth / 2 - this.creditsImage.getContent().width / 2, 
+        this.creditsImage.getContent().position.y = windowHeight / 2 - this.creditsImage.getContent().height / 2, 
+        this.creditsContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.creditsContainer), 
+        this.creditsButton = new DefaultButton("creditos.png", "creditos_over.png"), this.creditsButton.build(), 
+        this.creditsButton.setPosition(-this.creditsButton.getContent().width / 2, -this.creditsButton.getContent().height / 2), 
+        this.creditsContainer.addChild(this.creditsButton.getContent()), this.creditsContainer.position.x = windowWidth / 2 - 2 * this.creditsButton.getContent().width, 
+        this.creditsContainer.scale.x = this.creditsContainer.scale.y = .5, this.creditsContainer.alpha = 0;
+        var creditsScale = scaleConverter(this.creditsContainer.height, this.logo.getContent().height, .09);
+        this.creditsContainer.position.y = this.playContainer.position.y - this.creditsContainer.height / 2, 
+        TweenLite.to(this.creditsContainer, .3, {
+            delay: .2,
+            alpha: 1
+        }), TweenLite.to(this.creditsContainer.scale, .8, {
+            delay: .2,
+            x: creditsScale,
+            y: creditsScale,
+            ease: "easeOutElastic"
+        }), this.creditsButton.clickCallback = function() {
+            APP.audioController.playSound("pop"), self.darks.alpha >= .5 ? (TweenLite.to(self.creditsImage.getContent(), .5, {
+                alpha: 0
+            }), TweenLite.to(self.darks, .5, {
+                alpha: 0
+            })) : (TweenLite.to(self.creditsImage.getContent(), .5, {
+                alpha: 1
+            }), TweenLite.to(self.darks, .5, {
+                alpha: .5
+            }));
+        };
+        var creditsTimeline = null;
+        creditsTimeline = new TimelineLite({
+            delay: .5,
+            onComplete: repeatPlay
+        }), repeatCredits();
     },
     toTween: function(callback) {
         TweenLite.to(this.creditsContainer, .3, {
@@ -2824,6 +2863,60 @@ var Application = AbstractApplication.extend({
     getContent: function() {
         return this.container;
     }
+}), PauseModal2 = Class.extend({
+    init: function(screen) {
+        this.screen = screen, this.container = new PIXI.DisplayObjectContainer(), this.boxContainer = new PIXI.DisplayObjectContainer(), 
+        this.bg = new PIXI.Graphics(), this.bg.beginFill(1383495), this.bg.drawRect(0, 0, windowWidth, windowHeight), 
+        this.bg.alpha = .8, this.container.addChild(this.bg), this.container.addChild(this.boxContainer);
+        var self = this;
+        this.backB = new SimpleSprite("UI_modal_back_1.png"), this.back = new PIXI.DisplayObjectContainer(), 
+        this.backB.getContent().alpha = 0, this.back.addChild(this.backB.getContent()), 
+        this.boxContainer.addChild(this.back);
+        var thirdPart = this.back.width / 3;
+        this.backButton = new DefaultButton("menu.png", "menu_over.png"), this.backButton.build(), 
+        this.backButton.setPosition(30 + 1 * thirdPart - thirdPart / 2 - this.backButton.getContent().width / 2, this.back.height / 2 - this.backButton.getContent().height / 2), 
+        this.backButton.clickCallback = function() {
+            self.hide(function() {
+                self.screen.endModal.show();
+            });
+        }, this.back.addChild(this.backButton.getContent()), this.continueButton = new DefaultButton("replay.png", "replay_over.png"), 
+        this.continueButton.build(), this.continueButton.setPosition(-30 + 3 * thirdPart - thirdPart / 2 - this.continueButton.getContent().width / 2, this.back.height / 2 - this.continueButton.getContent().height / 2), 
+        this.continueButton.clickCallback = function() {
+            self.hide(function() {
+                self.screen.updateable = !0, self.screen.reset();
+            });
+        }, this.back.addChild(this.continueButton.getContent()), scaleConverter(this.boxContainer.width, windowWidth, .9, this.boxContainer);
+    },
+    show: function() {
+        this.screen.addChild(this), this.screen.blockPause = !0, this.boxContainer.visible = !0, 
+        this.container.parent.setChildIndex(this.container, this.container.parent.children.length - 1), 
+        this.screen.updateable = !1, this.boxContainer.position.x = windowWidth / 2 - this.boxContainer.width / 2, 
+        this.boxContainer.position.y = windowHeight / 2 - this.boxContainer.height / 2, 
+        this.boxContainer.alpha = 1, TweenLite.from(this.bg, .5, {
+            alpha: 0
+        }), TweenLite.from(this.boxContainer, .5, {
+            y: -this.boxContainer.height
+        });
+    },
+    hide: function(callback) {
+        var self = this;
+        this.screen.blockPause = !1, this.screen.updateable = !0, TweenLite.to(this.bg, .5, {
+            delay: .1,
+            alpha: 0,
+            onComplete: function() {
+                self.container.parent && self.container.parent.removeChild(self.container), callback && callback(), 
+                self.kill = !0;
+            }
+        }), TweenLite.to(this.boxContainer.position, .5, {
+            y: -this.boxContainer.height,
+            ease: "easeInBack"
+        }), TweenLite.to(this.boxContainer, .5, {
+            alpha: 0
+        });
+    },
+    getContent: function() {
+        return this.container;
+    }
 }), RankinkgModal = Class.extend({
     init: function(screen) {
         this.screen = screen, this.container = new PIXI.DisplayObjectContainer();
@@ -2860,7 +2953,8 @@ var Application = AbstractApplication.extend({
     }
 }), Spawner = Class.extend({
     init: function(screen) {
-        this.maxAccum = 20, this.accum = 120, this.screen = screen, this.enemyList = [];
+        this.maxAccum = 20, this.accum = 120, this.screen = screen, this.enemyList = [], 
+        this.accCompare = 2, APP.accelGame = 1;
     },
     killAll: function() {
         for (var i = this.enemyList.length - 1; i >= 0; i--) this.enemyList[i].forceKill = !0, 
@@ -2870,7 +2964,9 @@ var Application = AbstractApplication.extend({
     update: function() {
         if (this.accum < 0) {
             var enemy = APP.appModel.getNewEnemy(null, this.screen);
-            enemy.build(), this.accum = enemy.model.toNext / APP.accelGame, this.accum < 50 && (this.accum = 50);
+            enemy.build(), this.accum = enemy.model.toNext / APP.accelGame, APP.accelGame < 6 && (APP.accelGame += APP.appModel.currentHorde / 500), 
+            APP.accelGame > this.accCompare && (this.accCompare++, this.screen.improveClouds()), 
+            this.accum < 50 && (this.accum = 50);
             var part10 = .1 * windowWidth;
             enemy.setPosition(part10 + (windowWidth - 2 * part10) * Math.random(), this.screen.HUDContainer.height), 
             this.enemyList.push(enemy), this.screen.addEnemyThumb(enemy), this.screen.layer.addChild(enemy);

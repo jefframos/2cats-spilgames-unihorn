@@ -163,7 +163,6 @@ var GameScreen = AbstractScreen.extend({
 
         this.unihorn = new Unihorn();
         this.unihorn.build();
-        this.addChild(this.unihorn);
         this.unihorn.felling = 1;
         // console.log(this.unihorn.sprite.height);
         var scl = scaleConverter(this.unihorn.neck.height, windowHeight, 0.3, this.unihorn);
@@ -184,6 +183,16 @@ var GameScreen = AbstractScreen.extend({
         y:(this.unihorn.getContent().position.y)+ (this.unihorn.head.position.y * scl)};// - this.unihorn.head.position.y * scl};
         // y:windowHeight - (this.unihorn.head.position.y * this.unihorn.head.anchor.y) * scl};// - this.unihorn.head.position.y * scl};
         
+        var darkBase = new PIXI.Graphics();
+        darkBase.beginFill(0);
+        darkBase.drawRect(0,0,windowWidth, windowHeight);
+        darkBase.alpha = 0.3;
+        this.addChild(darkBase);
+        darkBase.position.y = windowHeight - (windowHeight - this.hornPos.y) * 3.2;
+
+
+        this.addChild(this.unihorn);
+
         TweenLite.from(this.unihorn.getContent().position, 0.3, {delay: 0.3, x: windowWidth / 2 - 2 * ((this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl),y:this.unihorn.getContent().position.y + (this.unihorn.neck.height * scl), ease:'easeOutCubic'});
         // test = new PIXI.Graphics();
         // test.beginFill(0);
@@ -283,6 +292,7 @@ var GameScreen = AbstractScreen.extend({
 
         //MODAIS
         this.pauseModal = new PauseModal(this);
+        this.pauseModal2 = new PauseModal2(this);
         this.endModal = new EndModal(this);
 
         // this.updateable = false;
@@ -299,6 +309,25 @@ var GameScreen = AbstractScreen.extend({
             // this.badClouds[i].position.x = i * windowWidth / this.maxClouds;
             TweenLite.to(this.badClouds[i].position, 0.3, {x : windowWidth - this.badClouds[i].width / 4 -  i * windowWidth / this.maxClouds});
         }
+    },
+    improveClouds:function(){
+        var tempLAbel = new PIXI.Text('CLOUDS ARE\nGETTING STRONGER!', {align:'center', font:'30px Vagron', fill:'#ffe63e', stroke:'#665c18', strokeThickness:3});
+        // scaleConverter(tempLAbel.width, windowWidth, 0.06, tempLAbel);
+        // var mascadasLabel = new Particles({x:0, y:-(Math.random() * 0.2 + 0.3)}, 120,
+        //     tempLAbel,
+        //     0);
+        // mascadasLabel.build();
+        // mascadasLabel.setPosition(windowWidth/2 - mascadasLabel.getContent().width / 2,
+        //     windowHeight/2 - tempLAbel.height / 2);
+        // mascadasLabel.alphadecress = 0.01;
+        // mascadasLabel.maxScale = tempLAbel.scale.x * 4;
+        tempLAbel.position.x = windowWidth/2 -tempLAbel.width / 2;
+        tempLAbel.position.y = windowHeight/2 -tempLAbel.height / 2;
+        TweenLite.from(tempLAbel, 0.5, {alpha:0, y:tempLAbel.position.y - 50});
+        TweenLite.to(tempLAbel, 1, {delay:1.5, alpha:0, y:tempLAbel.position.y - 50, onComplete:function(){
+            tempLAbel.parent.removeChild(tempLAbel);
+        }});
+        this.addChild(tempLAbel);
     },
     addSpecial:function(){
         if(this.end){
@@ -438,7 +467,11 @@ var GameScreen = AbstractScreen.extend({
                     }
                 }
                 if(this.arrayCoins.length <= 0){
-                    this.endModal.show();
+                    this.pauseModal2.show();
+
+                    this.unihorn.getContent().parent.setChildIndex(this.unihorn.getContent(), this.unihorn.getContent().parent.children.length - 1);
+                    this.unihorn.head.rotation = 0;
+
                 }
             }
 
