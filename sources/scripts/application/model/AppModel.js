@@ -27,7 +27,9 @@ var AppModel = Class.extend({
 		this.playerModels = [];
 
 		function getBalanceCoast(id){
-			return Math.floor((id * id * id) / 5) * 5 * Math.floor((id * id) / 5) * 5 + (5 * 5 * id);
+			var ret = Math.floor((id * id * id) / 4) * 5 * Math.floor((id * id) / 5) * 5 + (5 * 5 * id) * id*id + 300;
+			console.log(ret);
+			return ret;
 		}
 		this.envModels = [];
 		this.envModels.push(new EnvironmentModel(
@@ -52,7 +54,7 @@ var AppModel = Class.extend({
 			{
 				id:this.envModels.length * 750,
 				enabled: false,
-				coast: getBalanceCoast(this.envModels.length) * getBalanceCoast(this.envModels.length)
+				coast: 10000//Math.floor((getBalanceCoast(this.envModels.length) * getBalanceCoast(this.envModels.length))/ 3)
 			}
 		));
 
@@ -65,7 +67,7 @@ var AppModel = Class.extend({
 			{
 				id:this.envModels.length * 750,
 				enabled: false,
-				coast: getBalanceCoast(this.envModels.length) * getBalanceCoast(this.envModels.length)
+				coast: 20000//Math.floor((getBalanceCoast(this.envModels.length) * getBalanceCoast(this.envModels.length) )/ 3)
 			}
 		));
 
@@ -599,6 +601,49 @@ var AppModel = Class.extend({
 
 
 		// console.log(APP.cookieManager.getCookie('enableds'));
+	},
+	clearShop:function(){
+		var enabledsHorns = '1';
+		for (i = 1; i < this.hornModels.length; i++) {
+			// console.log(this.hornModels[i].enabled);
+			this.hornModels[i].enabled = false;
+			if(this.hornModels[i].enabled){
+				enabledsHorns+=',1';
+			}else{
+				enabledsHorns+=',0';
+			}
+		}
+		// console.log(enabledsHorns);
+		APP.cookieManager.setCookie('enabledsHorns', enabledsHorns, 500);
+
+
+		var enabledsClothes = '1';
+		for (i = 1; i < this.clothModels.length; i++) {
+			// console.log(this.clothModels[i].enabled);
+			this.clothModels[i].enabled = false;
+			if(this.clothModels[i].enabled){
+				enabledsClothes+=',1';
+			}else{
+				enabledsClothes+=',0';
+			}
+		}
+		// console.log(enabledsClothes);
+		APP.cookieManager.setCookie('enabledsClothes', enabledsClothes, 500);
+
+
+
+		var enabledsLands = '1';
+		for (i = 1; i < this.envModels.length; i++) {
+			// console.log(this.envModels[i].enabled);
+			this.envModels[i].enabled = false;
+			if(this.envModels[i].enabled){
+				enabledsLands+=',1';
+			}else{
+				enabledsLands+=',0';
+			}
+		}
+		// console.log(enabledsLands);
+		APP.cookieManager.setCookie('enabledsLands', enabledsLands, 500);
 	},
 	addRandonBehaviour:function(){
 		this.removeBehaviour();

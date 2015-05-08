@@ -1306,7 +1306,8 @@ var Application = AbstractApplication.extend({
 }), AppModel = Class.extend({
     init: function() {
         function getBalanceCoast(id) {
-            return 5 * Math.floor(id * id * id / 5) * Math.floor(id * id / 5) * 5 + 25 * id;
+            var ret = 5 * Math.floor(id * id * id / 4) * Math.floor(id * id / 5) * 5 + 25 * id * id * id + 300;
+            return console.log(ret), ret;
         }
         this.currentPlayerModel = {};
         var high = 0, coins = parseInt(APP.cookieManager.getCookie("coins"));
@@ -1326,7 +1327,7 @@ var Application = AbstractApplication.extend({
         }, {
             id: 750 * this.envModels.length,
             enabled: !1,
-            coast: getBalanceCoast(this.envModels.length) * getBalanceCoast(this.envModels.length)
+            coast: 1e4
         })), this.envModels.push(new EnvironmentModel({
             cover: "thumb_desert.png",
             source: "dist/img/cenario3b.png",
@@ -1334,7 +1335,7 @@ var Application = AbstractApplication.extend({
         }, {
             id: 750 * this.envModels.length,
             enabled: !1,
-            coast: getBalanceCoast(this.envModels.length) * getBalanceCoast(this.envModels.length)
+            coast: 2e4
         })), this.clothModels = [], this.clothModels.push(new ClothModel({
             cover: "pelado_thumb.png",
             source: "uni_corpo.png",
@@ -1584,6 +1585,18 @@ var Application = AbstractApplication.extend({
         APP.cookieManager.setCookie("enabledsClothes", enabledsClothes, 500);
         var enabledsLands = "1";
         for (i = 1; i < this.envModels.length; i++) enabledsLands += this.envModels[i].enabled ? ",1" : ",0";
+        APP.cookieManager.setCookie("enabledsLands", enabledsLands, 500);
+    },
+    clearShop: function() {
+        var enabledsHorns = "1";
+        for (i = 1; i < this.hornModels.length; i++) this.hornModels[i].enabled = !1, enabledsHorns += this.hornModels[i].enabled ? ",1" : ",0";
+        APP.cookieManager.setCookie("enabledsHorns", enabledsHorns, 500);
+        var enabledsClothes = "1";
+        for (i = 1; i < this.clothModels.length; i++) this.clothModels[i].enabled = !1, 
+        enabledsClothes += this.clothModels[i].enabled ? ",1" : ",0";
+        APP.cookieManager.setCookie("enabledsClothes", enabledsClothes, 500);
+        var enabledsLands = "1";
+        for (i = 1; i < this.envModels.length; i++) this.envModels[i].enabled = !1, enabledsLands += this.envModels[i].enabled ? ",1" : ",0";
         APP.cookieManager.setCookie("enabledsLands", enabledsLands, 500);
     },
     addRandonBehaviour: function() {
@@ -2118,7 +2131,8 @@ var Application = AbstractApplication.extend({
             this.startCoinMonitore) {
                 for (var i = this.arrayCoins.length - 1; i >= 0; i--) this.arrayCoins[i].kill && this.arrayCoins.splice(i, 1);
                 this.arrayCoins.length <= 0 && (this.pauseModal2.show(), this.unihorn.getContent().parent.setChildIndex(this.unihorn.getContent(), this.unihorn.getContent().parent.children.length - 1), 
-                this.unihorn.head.rotation = 0);
+                this.thumbContainer.parent.setChildIndex(this.thumbContainer, this.thumbContainer.parent.children.length - 1), 
+                this.unihorn.head.rotation = 0, APP.appModel.save());
             }
             this.fireAcum > 0 ? this.fireAcum-- : this.touchDown && (this.shoot(this.mouseAngle), 
             this.fireAcum = this.fireAcumMax), this.coinsLabel.setText(APP.appModel.totalPoints), 
@@ -2907,9 +2921,6 @@ var Application = AbstractApplication.extend({
                 self.container.parent && self.container.parent.removeChild(self.container), callback && callback(), 
                 self.kill = !0;
             }
-        }), TweenLite.to(this.boxContainer.position, .5, {
-            y: -this.boxContainer.height,
-            ease: "easeInBack"
         }), TweenLite.to(this.boxContainer, .5, {
             alpha: 0
         });

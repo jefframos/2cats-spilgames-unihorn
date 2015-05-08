@@ -468,9 +468,10 @@ var GameScreen = AbstractScreen.extend({
                 }
                 if(this.arrayCoins.length <= 0){
                     this.pauseModal2.show();
-
                     this.unihorn.getContent().parent.setChildIndex(this.unihorn.getContent(), this.unihorn.getContent().parent.children.length - 1);
+                    this.thumbContainer.parent.setChildIndex(this.thumbContainer, this.thumbContainer.parent.children.length - 1);
                     this.unihorn.head.rotation = 0;
+                    APP.appModel.save();
 
                 }
             }

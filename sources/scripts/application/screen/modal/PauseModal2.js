@@ -94,7 +94,7 @@ var PauseModal2 = Class.extend({
 			}
 			self.kill = true;
 		}});
-		TweenLite.to(this.boxContainer.position, 0.5, {y:-this.boxContainer.height, ease:'easeInBack'});
+		// TweenLite.to(this.boxContainer.position, 0.5, {y:-this.boxContainer.height, ease:'easeInBack'});
 		TweenLite.to(this.boxContainer, 0.5, {alpha:0});
 		// TweenLite.to(this.bg, 0.5, {alpha:0});
 	},
