@@ -1,4 +1,4 @@
-/*! jefframos 08-05-2015 */
+/*! jefframos 12-05-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -301,7 +301,7 @@ var DungeonGenerator = Class.extend({
     setReadCallback: function(callback) {
         this.readCallback = callback;
     },
-    socketError: function() {
+    socketError: function(error) {
         this.trigger(SmartSocket.SOCKET_ERROR, obj);
     },
     setObj: function(obj) {
@@ -417,11 +417,11 @@ var Application = AbstractApplication.extend({
     },
     build: function(width, height) {
         var self = this;
-        this.width = width ? width : this.shapeButton.width, this.height = height ? height : this.shapeButton.height, 
+        width ? this.width = width : this.width = this.shapeButton.width, height ? this.height = height : this.height = this.shapeButton.height, 
         this.background.width = this.width, this.background.height = this.height, this.shapeButton.buttonMode = !0, 
         this.shapeButton.position.x = 0, this.shapeButton.position.y = 0, width && (this.shapeButton.width = this.width), 
         height && (this.shapeButton.height = this.height), this.shapeButton.interactive = !0, 
-        this.shapeButton.mousedown = this.shapeButton.touchstart = function() {
+        this.shapeButton.mousedown = this.shapeButton.touchstart = function(data) {
             self.isBlocked || (self.selectedFunction(), null !== self.mouseUpCallback && self.mouseUpCallback(), 
             null !== self.clickCallback && self.clickCallback());
         };
@@ -750,7 +750,7 @@ var Application = AbstractApplication.extend({
     init: function(model, screen) {
         this._super(!0), this.updateable = !1, this.screen = screen, this.range = .05 * windowWidth, 
         this.width = 1, this.height = 1, this.type = "enemy", this.model = model, this.velocity.y = this.model.vel * (APP.accelGame / 2), 
-        this.vel = this.model.vel, this.hp = this.model.hp > 1 ? this.model.hp + Math.floor(APP.accelGame - 1) : 1, 
+        this.vel = this.model.vel, this.model.hp > 1 ? this.hp = this.model.hp + Math.floor(APP.accelGame - 1) : this.hp = 1, 
         this.behaviour = this.model.behaviour ? this.model.behaviour.clone() : null, this.resistance = this.model.resistance, 
         this.subdivide = this.model.subdivide, this.special = this.model.special, this.bounce = this.model.bounce, 
         this.stats = this.model.moreStats ? this.model.imgSource.length : 1, this.currentState = 0, 
@@ -857,7 +857,7 @@ var Application = AbstractApplication.extend({
         }), this.collidable = !1, APP.appModel.totalPoints += this.model.money + APP.currentClothModel.extraCoins;
     }
 }), Unihorn = Entity.extend({
-    init: function() {
+    init: function(screen) {
         this._super(!0), this.updateable = !1, this.range = .05 * windowWidth, this.width = 1, 
         this.height = 1, this.neck = new PIXI.Sprite(new PIXI.Texture.fromImage(APP.currentClothModel.imgSource)), 
         this.horn = new PIXI.Sprite(new PIXI.Texture.fromImage(APP.currentHornModel.imgSource)), 
@@ -900,7 +900,7 @@ var Application = AbstractApplication.extend({
         this.horn.position.y = -70, this.horn.position.x = -20;
     },
     update: function() {
-        this.vecExpressions = this.fellingMaster + this.felling < 9 ? this.sadArray : this.fellingMaster + this.felling > 12 ? this.happyArray : this.normalArray, 
+        this.fellingMaster + this.felling < 9 ? this.vecExpressions = this.sadArray : this.fellingMaster + this.felling > 12 ? this.vecExpressions = this.happyArray : this.vecExpressions = this.normalArray, 
         this.nonKillOnus > 0 ? this.nonKillOnus-- : this.felling > -10 && (this.felling--, 
         this.nonKillOnus = this.nonKillOnusMax), this.lastKillAccum > 0 ? this.lastKillAccum-- : this.lastKillCounter = 0;
     }
@@ -964,7 +964,7 @@ var Application = AbstractApplication.extend({
     clone: function() {
         return new BirdBehaviourDefault(this.props);
     },
-    update: function() {},
+    update: function(entity) {},
     build: function() {},
     destroy: function() {},
     serialize: function() {}
@@ -1013,7 +1013,7 @@ var Application = AbstractApplication.extend({
         return new BirdBehaviourSinoid(this.props);
     },
     update: function(entity) {
-        entity.velocity.x = this.props.velY ? Math.sin(this.sin) * this.props.velY : Math.sin(this.sin) * entity.vel, 
+        this.props.velY ? entity.velocity.x = Math.sin(this.sin) * this.props.velY : entity.velocity.x = Math.sin(this.sin) * entity.vel, 
         this.sin += this.props.sinAcc;
     },
     build: function() {},
@@ -1030,7 +1030,7 @@ var Application = AbstractApplication.extend({
         return new BirdBehaviourSinoid2(this.props);
     },
     update: function(entity) {
-        entity.velocity.y = this.props.velY ? Math.sin(this.sin) * this.props.velY : Math.sin(this.sin) * entity.vel, 
+        this.props.velY ? entity.velocity.y = Math.sin(this.sin) * this.props.velY : entity.velocity.y = Math.sin(this.sin) * entity.vel, 
         this.sin += this.props.sinAcc;
     },
     build: function() {},
@@ -1619,12 +1619,12 @@ var Application = AbstractApplication.extend({
     zerarTudo: function() {
         this.currentHorde = 0, this.totalPoints = 0, this.totalEnemy = 1, this.totalPlayers = 1, 
         APP.cookieManager.setCookie("totalPoints", 0, 500), APP.cookieManager.setCookie("totalEnemy", 1, 500);
-        for (var i = this.playerModels.length - 1; i >= 0; i--) this.playerModels[i].able = this.playerModels[i].toAble <= this.totalPoints ? !0 : !1;
+        for (var i = this.playerModels.length - 1; i >= 0; i--) this.playerModels[i].toAble <= this.totalPoints ? this.playerModels[i].able = !0 : this.playerModels[i].able = !1;
     },
     maxPoints: function() {
         this.currentHorde = 0, this.totalPoints = 999999, this.totalEnemy = 8, APP.cookieManager.setCookie("totalPoints", this.totalPoints, 500), 
         APP.cookieManager.setCookie("totalEnemy", this.totalEnemy, 500);
-        for (var i = this.playerModels.length - 1; i >= 0; i--) this.playerModels[i].able = this.playerModels[i].toAble <= this.totalPoints ? !0 : !1;
+        for (var i = this.playerModels.length - 1; i >= 0; i--) this.playerModels[i].toAble <= this.totalPoints ? this.playerModels[i].able = !0 : this.playerModels[i].able = !1;
     },
     getNewObstacle: function(screen) {
         var id = Math.floor(this.obstacleModels.length * Math.random()), obs = new Obstacle(this.obstacleModels[id], screen);
@@ -1691,7 +1691,7 @@ var Application = AbstractApplication.extend({
     init: function() {
         this.highscore = APP.cookieManager.getCookie("highScore"), console.log("highscore", this.highscore.points);
     },
-    saveScore: function() {
+    saveScore: function(id) {
         var i = 0, tempBirds = [ [ "caralinhoDaTerra", 0 ], [ "caralhoBelga", 0 ], [ "lambecuFrances", 0 ], [ "papacuDeCabecaRoxa", 0 ], [ "galinhoPapoDeBago", 0 ], [ "nocututinha", 0 ], [ "calopsuda", 0 ], [ "picudaoAzulNigeriano", 0 ] ];
         for (i = APP.getGameModel().killedBirds.length - 1; i >= 0; i--) tempBirds[APP.getGameModel().killedBirds[i]][1]++;
         var sendObject = '{\n"character":"' + APP.getGameModel().playerModels[APP.getGameModel().currentID].label + '",\n"points":"' + APP.getGameModel().currentPoints + '",\n"birds":{\n';
@@ -1759,7 +1759,7 @@ var Application = AbstractApplication.extend({
         this.toSpec = statsObject.toSpec ? statsObject.toSpec : 1e3, this.bulletBehaviour = statsObject.bulletBehaviour ? statsObject.bulletBehaviour : new MultipleBehaviour(), 
         this.able = !1;
     },
-    reset: function() {
+    reset: function(id) {
         this.currentEnergy = this.maxEnergy, this.currentBulletEnergy = this.maxBulletEnergy;
     },
     build: function() {},
@@ -2162,7 +2162,7 @@ var Application = AbstractApplication.extend({
     reset: function() {
         this.destroy(), this.build();
     },
-    renderLevel: function() {},
+    renderLevel: function(whereInit) {},
     setAudioButtons: function() {
         var self = this;
         this.audioOn = new DefaultButton("volume_on.png", "volume_on_over.png"), this.audioOn.build(), 
@@ -2578,7 +2578,7 @@ var Application = AbstractApplication.extend({
     init: function(screen) {
         this.screen = screen, this.container = new PIXI.DisplayObjectContainer();
         var self = this;
-        this.container.buttonMode = !0, this.container.interactive = !0, this.container.mousedown = this.container.touchstart = function() {
+        this.container.buttonMode = !0, this.container.interactive = !0, this.container.mousedown = this.container.touchstart = function(data) {
             self.hide();
         };
         var credits = new SimpleSprite("dist/img/UI/creditos.jpg");
@@ -2586,7 +2586,7 @@ var Application = AbstractApplication.extend({
         credits.getContent().position.x = windowWidth / 2 - credits.getContent().width / 2, 
         credits.getContent().position.y = windowHeight / 2 - credits.getContent().height / 2;
     },
-    show: function() {
+    show: function(points) {
         this.screen.addChild(this), this.container.parent.setChildIndex(this.container, this.container.parent.children.length - 1);
         var self = this;
         this.screen.updateable = !1, this.container.alpha = 0, TweenLite.to(this.container, .5, {
@@ -2735,7 +2735,7 @@ var Application = AbstractApplication.extend({
                 var posDest = verifyPos(mouseData.global.y - container.initGlobalY);
                 container.position.y = posDest, TweenLite.killTweensOf(container.position);
             }
-        }, container.mouseup = container.touchend = function() {
+        }, container.mouseup = container.touchend = function(mouseData) {
             container.mouseDown = !1;
             var posDest = verifyPos(container.position.y + 5 * container.lastVelY);
             TweenLite.to(container.position, Math.abs(container.lastVelY) / 120, {
@@ -2792,7 +2792,7 @@ var Application = AbstractApplication.extend({
             this.newCharContainer.position.x = windowWidth / 2 - this.newCharContainer.width / 2, 
             this.feito.getContent().parent.setChildIndex(this.feito.getContent(), this.feito.getContent().parent.children.length - 1), 
             setTimeout(function() {
-                self.container.buttonMode = !0, self.container.interactive = !0, self.container.mousedown = self.container.touchstart = function() {
+                self.container.buttonMode = !0, self.container.interactive = !0, self.container.mousedown = self.container.touchstart = function(data) {
                     self.hide(function() {
                         self.screen.updateable = !0;
                     });
@@ -2881,7 +2881,7 @@ var Application = AbstractApplication.extend({
     init: function(screen) {
         this.screen = screen, this.container = new PIXI.DisplayObjectContainer(), this.boxContainer = new PIXI.DisplayObjectContainer(), 
         this.bg = new PIXI.Graphics(), this.bg.beginFill(1383495), this.bg.drawRect(0, 0, windowWidth, windowHeight), 
-        this.bg.alpha = .8, this.container.addChild(this.bg), this.container.addChild(this.boxContainer);
+        this.container.addChild(this.bg), this.container.addChild(this.boxContainer);
         var self = this;
         this.backB = new SimpleSprite("UI_modal_back_1.png"), this.back = new PIXI.DisplayObjectContainer(), 
         this.backB.getContent().alpha = 0, this.back.addChild(this.backB.getContent()), 
@@ -2906,9 +2906,7 @@ var Application = AbstractApplication.extend({
         this.container.parent.setChildIndex(this.container, this.container.parent.children.length - 1), 
         this.screen.updateable = !1, this.boxContainer.position.x = windowWidth / 2 - this.boxContainer.width / 2, 
         this.boxContainer.position.y = windowHeight / 2 - this.boxContainer.height / 2, 
-        this.boxContainer.alpha = 1, TweenLite.from(this.bg, .5, {
-            alpha: 0
-        }), TweenLite.from(this.boxContainer, .5, {
+        this.bg.alpha = 0, this.boxContainer.alpha = 1, TweenLite.from(this.boxContainer, .5, {
             y: -this.boxContainer.height
         });
     },
@@ -2921,7 +2919,7 @@ var Application = AbstractApplication.extend({
                 self.container.parent && self.container.parent.removeChild(self.container), callback && callback(), 
                 self.kill = !0;
             }
-        }), TweenLite.to(this.boxContainer, .5, {
+        }), TweenLite.to(this.boxContainer, .1, {
             alpha: 0
         });
     },
@@ -2932,7 +2930,7 @@ var Application = AbstractApplication.extend({
     init: function(screen) {
         this.screen = screen, this.container = new PIXI.DisplayObjectContainer();
         var self = this;
-        this.container.buttonMode = !0, this.container.interactive = !0, this.container.mousedown = this.container.touchstart = function() {
+        this.container.buttonMode = !0, this.container.interactive = !0, this.container.mousedown = this.container.touchstart = function(data) {
             self.hide();
         };
         var credits = new SimpleSprite("dist/img/UI/creditos.jpg");
@@ -2940,7 +2938,7 @@ var Application = AbstractApplication.extend({
         credits.getContent().position.x = windowWidth / 2 - credits.getContent().width / 2, 
         credits.getContent().position.y = windowHeight / 2 - credits.getContent().height / 2;
     },
-    show: function() {
+    show: function(points) {
         this.screen.addChild(this), this.container.parent.setChildIndex(this.container, this.container.parent.children.length - 1);
         var self = this;
         this.screen.updateable = !1, this.container.alpha = 0, TweenLite.to(this.container, .5, {
@@ -2986,9 +2984,9 @@ var Application = AbstractApplication.extend({
 }), InputManager = Class.extend({
     init: function(parent) {
         var game = parent, self = this;
-        this.vecPositions = [], document.body.addEventListener("mouseup", function() {
+        this.vecPositions = [], document.body.addEventListener("mouseup", function(e) {
             game.player && (game.mouseDown = !1);
-        }), document.body.addEventListener("mousedown", function() {
+        }), document.body.addEventListener("mousedown", function(e) {
             game.player && APP.getMousePos().x < windowWidth && APP.getMousePos().y < windowHeight - 70 && (game.mouseDown = !0);
         }), document.body.addEventListener("keyup", function(e) {
             if (game.player) {
@@ -3117,7 +3115,7 @@ var Application = AbstractApplication.extend({
         this.maxScale = 1, this.growType = 1, this.maxInitScale = .2;
     },
     build: function() {
-        this.updateable = !0, this.sprite = this.imgSource instanceof PIXI.Text ? this.imgSource : new PIXI.Sprite.fromFrame(this.imgSource), 
+        this.updateable = !0, this.imgSource instanceof PIXI.Text ? this.sprite = this.imgSource : this.sprite = new PIXI.Sprite.fromFrame(this.imgSource), 
         this.sprite.anchor.x = .5, this.sprite.anchor.y = .5, this.sprite.alpha = 1, this.sprite.scale.x = this.maxScale * this.maxInitScale, 
         this.sprite.scale.y = this.maxScale * this.maxInitScale, -1 === this.growType && (this.sprite.scale.x = this.maxScale, 
         this.sprite.scale.y = this.maxScale), this.getContent().rotation = this.rotation;

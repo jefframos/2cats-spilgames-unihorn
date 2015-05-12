@@ -8,7 +8,7 @@ var PauseModal2 = Class.extend({
 		this.bg = new PIXI.Graphics();
 		this.bg.beginFill(0x151c47);
 		this.bg.drawRect(0,0,windowWidth, windowHeight);
-		this.bg.alpha = 0.8;
+		// this.bg.alpha = 0.8;
 		this.container.addChild(this.bg);
 		this.container.addChild(this.boxContainer);
 
@@ -75,10 +75,10 @@ var PauseModal2 = Class.extend({
 
 		this.boxContainer.position.x = windowWidth / 2 - this.boxContainer.width / 2;
 		this.boxContainer.position.y = windowHeight / 2 - this.boxContainer.height / 2;
-		// this.bg.alpha = 0.8;
+		this.bg.alpha = 0;
 		this.boxContainer.alpha = 1;
 
-		TweenLite.from(this.bg, 0.5, {alpha:0});
+		// TweenLite.from(this.bg, 0.5, {alpha:0});
 		TweenLite.from(this.boxContainer, 0.5, {y:-this.boxContainer.height});
 	},
 	hide:function(callback){
@@ -95,7 +95,7 @@ var PauseModal2 = Class.extend({
 			self.kill = true;
 		}});
 		// TweenLite.to(this.boxContainer.position, 0.5, {y:-this.boxContainer.height, ease:'easeInBack'});
-		TweenLite.to(this.boxContainer, 0.5, {alpha:0});
+		TweenLite.to(this.boxContainer, 0.1, {alpha:0});
 		// TweenLite.to(this.bg, 0.5, {alpha:0});
 	},
 	getContent:function(){
