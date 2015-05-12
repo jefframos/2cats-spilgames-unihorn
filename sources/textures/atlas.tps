@@ -290,6 +290,7 @@
             <filename>uni_corpo_torcedor.png</filename>
             <filename>torcedor_thumb.png</filename>
             <filename>../../../../../Users/jefferson.ramos/Dropbox/2cats/Unihorn/Bases/thumb_ocean.png</filename>
+            <filename>mira.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
