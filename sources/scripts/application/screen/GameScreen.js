@@ -499,6 +499,8 @@ var GameScreen = AbstractScreen.extend({
             }
         }
         this.coinsLabel.setText(APP.appModel.totalPoints);
+
+        
         //- this.textScreen.width - this.barraTop.getContent().height * 0.1;
         this.coinsLabel.position.x = windowWidth / 2 - this.coinsLabel.width / 2 - this.HUDback.getContent().height * 0.1 + this.star.getContent().width / 2;
         this.star.getContent().position.x = this.coinsLabel.position.x -this.star.getContent().width * 1.1;

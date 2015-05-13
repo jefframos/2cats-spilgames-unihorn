@@ -1,4 +1,4 @@
-/*! jefframos 12-05-2015 */
+/*! jefframos 13-05-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -572,9 +572,15 @@ var Application = AbstractApplication.extend({
                 APP.audioController.playSound("star"), APP.appModel.totalPoints -= self.model.coast;
                 var targetArray = [];
                 "horn" === self.type ? (APP.currentHornModel = self.model, APP.currentHornModel.enabled = !0, 
-                targetArray = self.screen.hornList) : "cloth" === self.type ? (APP.currentClothModel = self.model, 
-                APP.currentClothModel.enabled = !0, targetArray = self.screen.clothList) : "env" === self.type && (APP.currentEnvModel = self.model, 
-                APP.currentEnvModel.enabled = !0, targetArray = self.screen.envList);
+                targetArray = self.screen.hornList, GameAPI.Award.submit({
+                    award: "award1"
+                })) : "cloth" === self.type ? (APP.currentClothModel = self.model, APP.currentClothModel.enabled = !0, 
+                targetArray = self.screen.clothList, GameAPI.Award.submit({
+                    award: "award2"
+                })) : "env" === self.type && (APP.currentEnvModel = self.model, APP.currentEnvModel.enabled = !0, 
+                targetArray = self.screen.envList, GameAPI.Award.submit({
+                    award: "award3"
+                }));
                 for (var i = targetArray.length - 1; i >= 0; i--) targetArray[i].updateStats();
                 self.screen.updateCoins(), self.updateStats();
             }
@@ -1307,7 +1313,7 @@ var Application = AbstractApplication.extend({
     init: function() {
         function getBalanceCoast(id) {
             var ret = 5 * Math.floor(id * id * id / 4) * Math.floor(id * id / 5) * 5 + 25 * id * id * id + 300;
-            return console.log(ret), ret;
+            return ret;
         }
         this.currentPlayerModel = {};
         var high = 0, coins = parseInt(APP.cookieManager.getCookie("coins"));
@@ -1576,7 +1582,11 @@ var Application = AbstractApplication.extend({
         }
     },
     save: function() {
-        this.currentHorde = 0, APP.cookieManager.setCookie("coins", APP.appModel.totalPoints, 500);
+        this.currentHorde = 0, APP.appModel.totalPoints > 15e3 ? GameAPI.Award.submit({
+            award: "award5"
+        }) : APP.appModel.totalPoints > 2e3 && GameAPI.Award.submit({
+            award: "award4"
+        }), APP.cookieManager.setCookie("coins", APP.appModel.totalPoints, 500);
         var i = 0, enabledsHorns = "1";
         for (i = 1; i < this.hornModels.length; i++) enabledsHorns += this.hornModels[i].enabled ? ",1" : ",0";
         APP.cookieManager.setCookie("enabledsHorns", enabledsHorns, 500);

@@ -109,14 +109,18 @@ var ShopItem = Class.extend({
 				APP.currentHornModel = self.model;
 				APP.currentHornModel.enabled = true;
 				targetArray = self.screen.hornList;
+			    //submit the player's score
+			    GameAPI.Award.submit({award:'award1'});
 			}else if(self.type === 'cloth'){
 				APP.currentClothModel = self.model;
 				APP.currentClothModel.enabled = true;
 				targetArray = self.screen.clothList;
+				GameAPI.Award.submit({award:'award2'});
 			}else if(self.type === 'env'){
 				APP.currentEnvModel = self.model;
 				APP.currentEnvModel.enabled = true;
 				targetArray = self.screen.envList;
+				GameAPI.Award.submit({award:'award3'});
 			}
 			for (var i = targetArray.length - 1; i >= 0; i--) {
 				targetArray[i].updateStats();

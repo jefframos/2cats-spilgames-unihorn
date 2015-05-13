@@ -28,7 +28,7 @@ var AppModel = Class.extend({
 
 		function getBalanceCoast(id){
 			var ret = Math.floor((id * id * id) / 4) * 5 * Math.floor((id * id) / 5) * 5 + (5 * 5 * id) * id*id + 300;
-			console.log(ret);
+			// console.log(ret);
 			return ret;
 		}
 		this.envModels = [];
@@ -553,6 +553,12 @@ var AppModel = Class.extend({
 	save:function(){
 		this.currentHorde = 0;
 		// APP.cookieManager.getCookie('coins')
+		if(APP.appModel.totalPoints > 15000){
+            GameAPI.Award.submit({award:'award5'});
+		}
+		else if(APP.appModel.totalPoints > 2000){
+            GameAPI.Award.submit({award:'award4'});
+        }
         APP.cookieManager.setCookie('coins', APP.appModel.totalPoints, 500);
 		
 		var i = 0;
