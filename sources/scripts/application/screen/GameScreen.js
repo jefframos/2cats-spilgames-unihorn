@@ -45,10 +45,19 @@ var GameScreen = AbstractScreen.extend({
         this.darkShape.addChild(dark);
         this.darkShape.alpha = 0;
 
-        this.neblina = new SimpleSprite('dist/img/neblina.png');
+        this.neblina = new SimpleSprite('dist/img/nuvens_fundo.png');
         this.addChild(this.neblina.getContent());
-        scaleConverter(this.neblina.getContent().width, windowWidth, 1, this.neblina);
-        this.neblina.getContent().alpha = 0;
+
+        scaleConverter(this.neblina.getContent().height, windowHeight, 1, this.neblina);
+        this.neblina.getContent().position.x = - this.neblina.getContent().width;
+        // this.neblina.getContent().alpha = 0.8;
+
+        this.neblina2 = new SimpleSprite('dist/img/nuvens_fundo2.png');
+        this.addChild(this.neblina2.getContent());
+        scaleConverter(this.neblina2.getContent().height, windowHeight, 1, this.neblina2);
+        // this.neblina2.getContent().alpha = 0;
+        this.neblina2.getContent().scale.x *= -1;
+        this.neblina2.getContent().position.x = windowWidth - this.neblina2.getContent().width;
         // this.darkShape.blendModes = PIXI.blendModes.OVERLAY;
 
 
@@ -183,14 +192,17 @@ var GameScreen = AbstractScreen.extend({
         y:(this.unihorn.getContent().position.y)+ (this.unihorn.head.position.y * scl)};// - this.unihorn.head.position.y * scl};
         // y:windowHeight - (this.unihorn.head.position.y * this.unihorn.head.anchor.y) * scl};// - this.unihorn.head.position.y * scl};
         
-        var darkBase = new PIXI.Graphics();
-        darkBase.beginFill(0);
-        darkBase.drawRect(0,0,windowWidth, windowHeight);
-        darkBase.alpha = 0.3;
-        this.addChild(darkBase);
-        darkBase.position.y = windowHeight - (windowHeight - this.hornPos.y) * 3.2;
+        // var darkBase = new PIXI.Graphics();
+        // darkBase.beginFill(0);
+        // darkBase.drawRect(0,0,windowWidth, windowHeight);
+        // darkBase.alpha = 0.3;
+        // this.addChild(darkBase);
+        // darkBase.position.y = windowHeight - (windowHeight - this.hornPos.y) * 3.2;
 
-
+        this.baseMira = new SimpleSprite('mira.png');
+        this.addChild(this.baseMira.getContent());
+        scaleConverter(this.baseMira.getContent().width, windowWidth, 1, this.baseMira);
+        this.baseMira.getContent().position.y = windowHeight - this.baseMira.getContent().height;
         this.addChild(this.unihorn);
 
         TweenLite.from(this.unihorn.getContent().position, 0.3, {delay: 0.3, x: windowWidth / 2 - 2 * ((this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl),y:this.unihorn.getContent().position.y + (this.unihorn.neck.height * scl), ease:'easeOutCubic'});
@@ -377,7 +389,8 @@ var GameScreen = AbstractScreen.extend({
                     APP.audioController.playSound('bublenoize');
                     hasbad = true;
                     TweenLite.to(this.darkShape, 0.5, {alpha:0.5 * this.badClouds.length / this.maxClouds});
-                    TweenLite.to(this.neblina.getContent(), 0.5, {alpha:0.8 * this.badClouds.length / this.maxClouds});
+                    TweenLite.to(this.neblina.getContent(), 3.5, {x:(this.badClouds.length / this.maxClouds) * this.neblina.getContent().width - this.neblina.getContent().width});
+                    TweenLite.to(this.neblina2.getContent(), 3.5, {x:windowWidth - this.neblina2.getContent().width + this.neblina2.getContent().width * ((this.badClouds.length / this.maxClouds))});
                 }
             }
         }

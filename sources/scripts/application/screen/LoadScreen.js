@@ -31,7 +31,7 @@ var LoadScreen = AbstractScreen.extend({
 
         
 
-        var assetsToLoader = ['dist/img/atlas.json', 'dist/img/creditoMenor.png', 'dist/img/cenario1b.png','dist/img/cenario2b.png','dist/img/cenario3b.png','dist/img/neblina.png'];
+        var assetsToLoader = ['dist/img/atlas.json', 'dist/img/nuvens_fundo.png', 'dist/img/nuvens_fundo2.png', 'dist/img/creditoMenor.png', 'dist/img/cenario1b.png','dist/img/cenario2b.png','dist/img/cenario3b.png','dist/img/neblina.png'];
         if(assetsToLoader.length > 0 && !this.isLoaded){
             this.loader = new PIXI.AssetLoader(assetsToLoader);
             // this.initLoad();

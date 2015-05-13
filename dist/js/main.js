@@ -1944,10 +1944,13 @@ var Application = AbstractApplication.extend({
         this.darkShape = new PIXI.DisplayObjectContainer(), this.addChild(this.darkShape);
         var dark = new PIXI.Graphics();
         dark.beginFill(0), dark.drawRect(0, 0, windowWidth, windowHeight), this.darkShape.addChild(dark), 
-        this.darkShape.alpha = 0, this.neblina = new SimpleSprite("dist/img/neblina.png"), 
-        this.addChild(this.neblina.getContent()), scaleConverter(this.neblina.getContent().width, windowWidth, 1, this.neblina), 
-        this.neblina.getContent().alpha = 0, APP.accelGame = 1, this.renderLevel(), this.hitTouch = new PIXI.Graphics(), 
-        this.hitTouch.interactive = !0, this.hitTouch.beginFill(0), this.hitTouch.drawRect(0, 0, windowWidth, windowHeight), 
+        this.darkShape.alpha = 0, this.neblina = new SimpleSprite("dist/img/nuvens_fundo.png"), 
+        this.addChild(this.neblina.getContent()), scaleConverter(this.neblina.getContent().height, windowHeight, 1, this.neblina), 
+        this.neblina.getContent().position.x = -this.neblina.getContent().width, this.neblina2 = new SimpleSprite("dist/img/nuvens_fundo2.png"), 
+        this.addChild(this.neblina2.getContent()), scaleConverter(this.neblina2.getContent().height, windowHeight, 1, this.neblina2), 
+        this.neblina2.getContent().scale.x *= -1, this.neblina2.getContent().position.x = windowWidth - this.neblina2.getContent().width, 
+        APP.accelGame = 1, this.renderLevel(), this.hitTouch = new PIXI.Graphics(), this.hitTouch.interactive = !0, 
+        this.hitTouch.beginFill(0), this.hitTouch.drawRect(0, 0, windowWidth, windowHeight), 
         this.addChild(this.hitTouch), this.hitTouch.alpha = 0, this.hitTouch.hitArea = new PIXI.Rectangle(0, 0, windowWidth, windowHeight), 
         this.mouseAngle = 0, testMobile() || (this.hitTouch.mousemove = function(touchData) {
             updateVel(touchData);
@@ -1976,10 +1979,9 @@ var Application = AbstractApplication.extend({
         this.hornPos = {
             x: this.unihorn.getContent().position.x + (this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl,
             y: this.unihorn.getContent().position.y + this.unihorn.head.position.y * scl
-        };
-        var darkBase = new PIXI.Graphics();
-        darkBase.beginFill(0), darkBase.drawRect(0, 0, windowWidth, windowHeight), darkBase.alpha = .3, 
-        this.addChild(darkBase), darkBase.position.y = windowHeight - 3.2 * (windowHeight - this.hornPos.y), 
+        }, this.baseMira = new SimpleSprite("mira.png"), this.addChild(this.baseMira.getContent()), 
+        scaleConverter(this.baseMira.getContent().width, windowWidth, 1, this.baseMira), 
+        this.baseMira.getContent().position.y = windowHeight - this.baseMira.getContent().height, 
         this.addChild(this.unihorn), TweenLite.from(this.unihorn.getContent().position, .3, {
             delay: .3,
             x: windowWidth / 2 - 2 * (this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl,
@@ -2086,8 +2088,10 @@ var Application = AbstractApplication.extend({
             this.badClouds.push(thumbEnemy), this.unihorn.deaded(), APP.audioController.playSound("bublenoize"), 
             hasbad = !0, TweenLite.to(this.darkShape, .5, {
                 alpha: .5 * this.badClouds.length / this.maxClouds
-            }), TweenLite.to(this.neblina.getContent(), .5, {
-                alpha: .8 * this.badClouds.length / this.maxClouds
+            }), TweenLite.to(this.neblina.getContent(), 3.5, {
+                x: this.badClouds.length / this.maxClouds * this.neblina.getContent().width - this.neblina.getContent().width
+            }), TweenLite.to(this.neblina2.getContent(), 3.5, {
+                x: windowWidth - this.neblina2.getContent().width + this.neblina2.getContent().width * (this.badClouds.length / this.maxClouds)
             }));
         }
         hasbad && this.updateBadClouds();
@@ -2344,7 +2348,7 @@ var Application = AbstractApplication.extend({
         this.container.addChild(this.logo.getContent()), this.loaderContainer = new PIXI.DisplayObjectContainer(), 
         this.addChild(this.loaderContainer), this.backLoader = new SimpleSprite("dist/img/loader.png"), 
         this.loaderContainer.addChild(this.backLoader.getContent());
-        var assetsToLoader = [ "dist/img/atlas.json", "dist/img/creditoMenor.png", "dist/img/cenario1b.png", "dist/img/cenario2b.png", "dist/img/cenario3b.png", "dist/img/neblina.png" ];
+        var assetsToLoader = [ "dist/img/atlas.json", "dist/img/nuvens_fundo.png", "dist/img/nuvens_fundo2.png", "dist/img/creditoMenor.png", "dist/img/cenario1b.png", "dist/img/cenario2b.png", "dist/img/cenario3b.png", "dist/img/neblina.png" ];
         assetsToLoader.length > 0 && !this.isLoaded ? this.loader = new PIXI.AssetLoader(assetsToLoader) : this.onAssetsLoaded(), 
         this.HUDContainer = null;
     },
