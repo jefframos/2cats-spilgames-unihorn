@@ -1,4 +1,4 @@
-/*! jefframos 13-05-2015 */
+/*! jefframos 18-05-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -324,7 +324,20 @@ var Application = AbstractApplication.extend({
             font: "15px Arial",
             fill: "#FFF"
         }), this.labelDebug.position.y = 20, this.labelDebug.position.x = 20, this.mute = !1, 
-        this.accelGame = 1, this.withAPI = !0, "#withoutAPI" === window.location.hash && (this.withAPI = !1);
+        this.accelGame = 1, this.withAPI = !0, "#withoutAPI" === window.location.hash && (this.withAPI = !1), 
+        document.body.addEventListener("keydown", function(e) {
+            console.log(e.keyCode), 49 === e.keyCode ? GameAPI.Award.submit({
+                award: "award1"
+            }) : 50 === e.keyCode ? GameAPI.Award.submit({
+                award: "award2"
+            }) : 51 === e.keyCode ? GameAPI.Award.submit({
+                award: "award3"
+            }) : 52 === e.keyCode ? GameAPI.Award.submit({
+                award: "award4"
+            }) : 53 === e.keyCode && GameAPI.Award.submit({
+                award: "award5"
+            });
+        });
     },
     update: function() {
         this._super(), this.withAPI && this.apiLogo && this.apiLogo.getContent().height > 1 && 0 === this.apiLogo.getContent().position.x && (scaleConverter(this.apiLogo.getContent().width, windowWidth, .5, this.apiLogo), 
