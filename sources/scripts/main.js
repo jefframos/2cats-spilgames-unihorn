@@ -35,7 +35,7 @@ var ratio = 1;
 var init = false;
 
 var renderer;
-var APP;
+var APP = {};
 
 var retina = 1;//window.devicePixelRatio >= 2 ? 2 : 1;
 
@@ -53,18 +53,18 @@ function updateResolution(orientation, scale){
 		if(screen.height > screen.width){
 			windowWidth = screen.width * scale;
 			windowWidthVar = screen.width;
-			
+
 			if(possibleFullscreen()){
 				windowHeight =  screen.height * scale;
 				windowHeightVar =  screen.height;
-				
+
 			}else{
 				windowHeight =  window.devicePixelRatio >= 2 ? window.innerHeight * scale : window.outerHeight * scale;//window.outerHeight * scale;
-				
+
 				// windowHeight =  window.outerHeight * scale;
 				windowHeightVar =  window.outerHeight;
 			}
-			
+
 
 		}else{
 			windowWidth = screen.height * scale;
@@ -107,7 +107,7 @@ function update() {
 		}else{
 			renderer = PIXI.autoDetectRenderer(realWindowWidth, realWindowHeight, {antialias:true, resolution:retina, view:gameView});
 		}
-		
+
 		renderer.view.style.width = windowWidth+'px';
 		renderer.view.style.height = windowHeight+'px';
 		APP = new Application();
@@ -115,7 +115,7 @@ function update() {
 		APP.show();
 		init = true;
 	}
-	
+
 	// meter.tickStart();
 	var tempRation =  (window.innerHeight/windowHeight);
 	var ratioRez = resizeProportional ? tempRation < (window.innerWidth/realWindowWidth)?tempRation:(window.innerWidth/realWindowWidth) : 1;
@@ -135,7 +135,7 @@ function update() {
 		renderer.view.style.width = windowWidthVar+'px';
 		renderer.view.style.height = windowHeightVar+'px';
 
-		
+
 		APP.update();
 		renderer.render(APP.stage);
 	}
@@ -182,6 +182,23 @@ function fullscreen(){
 	};
 	App.init();
 })();
+
+window.addEventListener('blur', function(){
+	Howler.mute();
+	APP.mute = true;
+});
+
+window.addEventListener('focus', function(){
+	Howler.unmute();
+	APP.mute = false;
+});
+
+window.addEventListener('scroll', function () {
+    // Do not scroll when keyboard is visible
+    if (document.activeElement === document.body && window.scrollY > 0) {
+        document.body.scrollTop = 0;
+    }
+}, true);
 
 // (function() {
 // 	var App = {

@@ -2,13 +2,13 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> 
+<!--[if gt IE 8]><!-->
 <html class="no-js"> <!--<![endif]-->
 	<head>
 		<title>2C</title>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	
+
 		<!-- Include the HTML5 API files -->
 	    <script type="text/javascript" src="http://cdn.gameplayer.io/api/js/game.js"></script>
 	    <script type="text/javascript" src="http://cdn.gameplayer.io/api/js/developer.js"></script>
@@ -20,7 +20,7 @@
 	    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0, minimal-ui">
 
 		<link rel="stylesheet" href="dist/css/main.css">
-		<style type="text/css">	
+		<style type="text/css">
 			html{
 				overflow: hidden;
 			}
@@ -58,7 +58,7 @@
 			}
 		</style>
 	</head>
-	<body class='mobile'>		
+	<body class='mobile'>
 		<canvas id='game'></canvas>
 		<script src="dist/js/lib/plugins.js"></script>
 		<script src="dist/js/main.js"></script>
@@ -68,12 +68,12 @@
 	    var SpilData = {
 	        id: '576742227280294490' // Replace with the value you receive from Spil Games
 	    };
-	     
+
 	    <!-- Initialise the Spil HTML5 API -->
 	    GameAPI.loadAPI (function (apiInstance) {
 	        // The API is ready for use.
 	        if (window.console && window.console.log) {
-	            console.log('GameAPI version ' + apiInstance.version + ' loaded!');
+	            // console.log('GameAPI version ' + apiInstance.version + ' loaded!');
 	            APP.apiLoaded(apiInstance);
 	        }
 	    }, SpilData);

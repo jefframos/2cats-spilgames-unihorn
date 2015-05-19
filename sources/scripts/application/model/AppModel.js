@@ -23,7 +23,7 @@ var AppModel = Class.extend({
 		this.totalPoints = coins?coins:0;
 		this.currentPoints = this.totalPoints;
 
-		
+
 		this.playerModels = [];
 
 		function getBalanceCoast(id){
@@ -35,7 +35,7 @@ var AppModel = Class.extend({
 		this.envModels.push(new EnvironmentModel(
 			{
 				cover:'thumb_castle.png',
-				source:'dist/img/cenario1b.png',
+				source:'dist/img/cenario1b.jpg',
 				label:'Normal'
 			},
 			{
@@ -48,7 +48,7 @@ var AppModel = Class.extend({
 		this.envModels.push(new EnvironmentModel(
 			{
 				cover:'thumb_ocean.png',
-				source:'dist/img/cenario2b.png',
+				source:'dist/img/cenario2b.jpg',
 				label:'Normal 2'
 			},
 			{
@@ -61,7 +61,7 @@ var AppModel = Class.extend({
 		this.envModels.push(new EnvironmentModel(
 			{
 				cover:'thumb_desert.png',
-				source:'dist/img/cenario3b.png',
+				source:'dist/img/cenario3b.jpg',
 				label:'Normal 3'
 			},
 			{
@@ -140,7 +140,7 @@ var AppModel = Class.extend({
 				coast: getBalanceCoast(this.clothModels.length)
 			}
 		));
-		
+
 		this.clothModels.push(new ClothModel(
 			{
 				cover:'katy_thumb.png',
@@ -177,7 +177,7 @@ var AppModel = Class.extend({
 			}
 		));
 
-		
+
 
 		this.hornModels = [];
 		this.hornModels.push(new HornModel(
@@ -479,7 +479,7 @@ var AppModel = Class.extend({
 
 
 		var enabledsHorns = APP.cookieManager.getCookie('enabledsHorns');
-		
+
 		// console.log(enableds.split(','));
 		var j = 0;
 		if(!enabledsHorns){
@@ -503,7 +503,7 @@ var AppModel = Class.extend({
 
 
 		var enabledsClothes = APP.cookieManager.getCookie('enabledsClothes');
-		
+
 		// console.log(enableds.split(','));
 		if(!enabledsClothes){
 			// console.log('whata');
@@ -527,7 +527,7 @@ var AppModel = Class.extend({
 
 
 		var enabledsLands = APP.cookieManager.getCookie('enabledsLands');
-		
+
 		// console.log(enableds.split(','));
 		if(!enabledsLands){
 			// console.log('whata');
@@ -560,7 +560,7 @@ var AppModel = Class.extend({
             GameAPI.Award.submit({award:'award4'});
         }
         APP.cookieManager.setCookie('coins', APP.appModel.totalPoints, 500);
-		
+
 		var i = 0;
 
 		// this.updateTowels();
@@ -724,7 +724,7 @@ var AppModel = Class.extend({
 	},
 	getNewEnemy:function(player, screen){
 		this.currentHorde ++;
-		
+
 		var max = this.enemyProbs.length;
 
 		if(this.currentHorde < max){
@@ -780,6 +780,7 @@ var AppModel = Class.extend({
 			this.highScore = this.currentPoints;
 			APP.cookieManager.setCookie('highScore', this.highScore, 500);
 			APP.dataManager.saveScore();
+			GameAPI.Score.submit(this.highScore);
 		}
 		APP.cookieManager.setCookie('totalPoints', this.totalPoints, 500);
 		if(this.maxPoints < this.currentPoints){
@@ -805,6 +806,6 @@ var AppModel = Class.extend({
 
 	},
 	serialize:function(){
-		
+
 	}
 });

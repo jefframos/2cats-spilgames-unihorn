@@ -20,7 +20,7 @@ var Application = AbstractApplication.extend({
         }
 
         document.body.addEventListener('keydown', function(e){
-            console.log((e.keyCode));
+            // console.log((e.keyCode));
 
             if(e.keyCode === 49){
                 GameAPI.Award.submit({award:'award1'});

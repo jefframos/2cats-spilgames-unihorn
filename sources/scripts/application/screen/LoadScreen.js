@@ -19,7 +19,7 @@ var LoadScreen = AbstractScreen.extend({
         this.container.addChild(this.logo.getContent());
 
         // scaleConverter(this.logo.getContent().width, windowWidth, 0.5, this.logo);
-        
+
 
         this.loaderContainer = new PIXI.DisplayObjectContainer();
         this.addChild(this.loaderContainer);
@@ -29,9 +29,9 @@ var LoadScreen = AbstractScreen.extend({
 
 
 
-        
 
-        var assetsToLoader = ['dist/img/atlas.json', 'dist/img/nuvens_fundo.png', 'dist/img/nuvens_fundo2.png', 'dist/img/creditoMenor.png', 'dist/img/cenario1b.png','dist/img/cenario2b.png','dist/img/cenario3b.png','dist/img/neblina.png'];
+
+        var assetsToLoader = ['dist/img/atlas.json', 'dist/img/nuvens_fundo.png', 'dist/img/nuvens_fundo2.png', 'dist/img/creditoMenor.png', 'dist/img/cenario1b.jpg','dist/img/cenario2b.jpg','dist/img/cenario3b.jpg'];
         if(assetsToLoader.length > 0 && !this.isLoaded){
             this.loader = new PIXI.AssetLoader(assetsToLoader);
             // this.initLoad();
@@ -65,7 +65,7 @@ var LoadScreen = AbstractScreen.extend({
             this.fundo.getContent().position.x = windowWidth / 2 - this.fundo.getContent().width / 2;
 
             // TweenLite.from(this.fundo.getContent().position, 4, {y:- 50, ease:'easeOutElastic'});
-            
+
             // this.fundo.getContent().position.y = -this.fundo.getContent().height * 0.02;
         }
         if(this.ready && this.fundo && this.fundo.getContent().width > 1){
@@ -87,10 +87,10 @@ var LoadScreen = AbstractScreen.extend({
     initLoad:function(){
         this.initInit = true;
         var barHeight = 20;
-        
 
-        
-        
+
+
+
 
         this.loaderBar = new LifeBarHUD(this.backLoader.getContent().width * 0.9, this.backLoader.getContent().height * 0.45, 0, 0xff0d87, 0x5cc1ff);
         this.loaderContainer.addChild(this.loaderBar.getContent());
@@ -129,7 +129,7 @@ var LoadScreen = AbstractScreen.extend({
         // scaleConverter(this.audioOff.height, this.pauseButton.getContent().height, 1, this.audioOff);
         this.audioOff.setPosition(windowWidth - this.audioOn.getContent().width - this.audioOn.getContent().height*0.1, this.audioOn.getContent().height*0.1);
 
-       
+
 
         if(!APP.mute){
             this.HUDContainer.addChild(this.audioOn.getContent());
@@ -215,7 +215,7 @@ var LoadScreen = AbstractScreen.extend({
         this.playContainer.addChild(this.playButton.getContent());
 
         this.playContainer.position.x = windowWidth / 2;
-      
+
         this.playContainer.scale.x = this.playContainer.scale.y = 0.5;
         this.playContainer.alpha = 0;
         var playScale = scaleConverter(this.playContainer.height, this.logo.getContent().height, 0.1);
@@ -261,7 +261,7 @@ var LoadScreen = AbstractScreen.extend({
         this.moreContainer.addChild(this.moreGamesButton.getContent());
 
         this.moreContainer.position.x = windowWidth / 2 + this.moreGamesButton.getContent().width * 2;
-      
+
         this.moreContainer.scale.x = this.moreContainer.scale.y = 0.5;
         this.moreContainer.alpha = 0;
         var moreScale = scaleConverter(this.moreContainer.height, this.logo.getContent().height, 0.09);
@@ -312,7 +312,7 @@ var LoadScreen = AbstractScreen.extend({
         this.creditsContainer.addChild(this.creditsButton.getContent());
 
         this.creditsContainer.position.x = windowWidth / 2 - this.creditsButton.getContent().width * 2;
-      
+
         this.creditsContainer.scale.x = this.creditsContainer.scale.y = 0.5;
         this.creditsContainer.alpha = 0;
         var creditsScale = scaleConverter(this.creditsContainer.height, this.logo.getContent().height, 0.09);
@@ -349,7 +349,7 @@ var LoadScreen = AbstractScreen.extend({
 
         TweenLite.to(this.moreContainer, 0.3,{alpha:0});
         TweenLite.to(this.moreContainer.scale, 0.6,{x:0.5, y:0.5});
-        
+
         TweenLite.to(this.playContainer, 0.3,{delay:0.3, alpha:0});
         TweenLite.to(this.playContainer.scale, 0.6,{delay:0.3,x:0.5, y:0.5, onComplete:function(){
             callback();

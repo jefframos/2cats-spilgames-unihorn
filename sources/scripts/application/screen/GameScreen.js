@@ -84,7 +84,7 @@ var GameScreen = AbstractScreen.extend({
                 fullscreen();
             }
             var angle = Math.atan2(touchData.global.y - self.hornPos.y, (touchData.global.x) - self.hornPos.x);
-            
+
             var tempCompare = angle* 180 / Math.PI;
             var change = false;
             if(tempCompare > -45){
@@ -114,7 +114,7 @@ var GameScreen = AbstractScreen.extend({
             }
             //self.shoot(angle);
         }
-        
+
         if(!testMobile()){
             this.hitTouch.mousemove = function(touchData){
                 updateVel(touchData);
@@ -153,8 +153,14 @@ var GameScreen = AbstractScreen.extend({
         if(APP.withAPI){
             GameAPI.GameBreak.request(function(){
                 self.pauseModal.show();
+                Howler.mute();
+                APP.mute = true;
+                self.updateAudioButtons();
             }, function(){
                 self.pauseModal.hide();
+                Howler.unmute();
+                APP.mute = false;
+                self.updateAudioButtons();
             });
         }
 
@@ -191,7 +197,7 @@ var GameScreen = AbstractScreen.extend({
         this.hornPos = {x:(this.unihorn.getContent().position.x)+ ((this.unihorn.head.position.x + this.unihorn.horn.position.x) * scl),//  + (this.unihorn.horn.position.x),
         y:(this.unihorn.getContent().position.y)+ (this.unihorn.head.position.y * scl)};// - this.unihorn.head.position.y * scl};
         // y:windowHeight - (this.unihorn.head.position.y * this.unihorn.head.anchor.y) * scl};// - this.unihorn.head.position.y * scl};
-        
+
         // var darkBase = new PIXI.Graphics();
         // darkBase.beginFill(0);
         // darkBase.drawRect(0,0,windowWidth, windowHeight);
@@ -211,11 +217,11 @@ var GameScreen = AbstractScreen.extend({
         // test.drawRect(this.hornPos.x - 5,this.hornPos.y - 5,10, 10);
         // this.addChild(test);
 
-        
+
 
         this.HUDback = new SimpleSprite('barra_bottom2.png');
-        
-        
+
+
 
 
         this.pauseButton = new DefaultButton('pause2.png', 'pause2_over.png', 'pause2_over.png');
@@ -224,7 +230,7 @@ var GameScreen = AbstractScreen.extend({
 
         scaleConverter(this.pauseButton.getContent().height, this.HUDback.getContent().height, 0.8, this.pauseButton);
         // this.pauseButton.setPosition(20,windowHeight - this.pauseButton.getContent().height - 20);
-      
+
         this.pauseButton.clickCallback = function(){
             APP.audioController.playSound('pop');
             if(!self.updateable){
@@ -284,7 +290,7 @@ var GameScreen = AbstractScreen.extend({
         scaleConverter(this.arcoiris.getContent().width, windowWidth, 1.4, this.arcoiris);
         this.arcoiris.getContent().position.x = -windowWidth * 0.2;
 
-        
+
         // this.neblina.getContent().position.x = -windowWidth * 0.2;
 
         TweenLite.from(this.arcoiris.getContent().position, 0.3, {delay:0.7, y:-20});
@@ -500,7 +506,7 @@ var GameScreen = AbstractScreen.extend({
         }
         this.coinsLabel.setText(APP.appModel.totalPoints);
 
-        
+
         //- this.textScreen.width - this.barraTop.getContent().height * 0.1;
         this.coinsLabel.position.x = windowWidth / 2 - this.coinsLabel.width / 2 - this.HUDback.getContent().height * 0.1 + this.star.getContent().width / 2;
         this.star.getContent().position.x = this.coinsLabel.position.x -this.star.getContent().width * 1.1;
@@ -557,6 +563,19 @@ var GameScreen = AbstractScreen.extend({
     renderLevel:function(whereInit){
 
     },
+    updateAudioButtons:function(){
+        if(this.audioOn.getContent() && this.audioOn.getContent().parent){
+            this.audioOn.getContent().parent.addChild(this.audioOn.getContent());
+        }
+        if(this.audioOff.getContent() && this.audioOff.getContent().parent){
+            this.audioOff.getContent().parent.addChild(this.audioOff.getContent());
+        }
+        if(!APP.mute){
+            this.HUDContainer.addChild(this.audioOn.getContent());
+        }else{
+            this.HUDContainer.addChild(this.audioOff.getContent());
+        }
+    },
     setAudioButtons:function(){
 
         var self = this;
@@ -576,7 +595,7 @@ var GameScreen = AbstractScreen.extend({
         scaleConverter(this.audioOff.height, this.pauseButton.getContent().height, 1, this.audioOff);
         this.audioOff.setPosition(windowWidth - this.audioOn.getContent().width - this.pauseButton.getContent().height*0.1, this.pauseButton.getContent().height*0.1);
 
-       
+
 
         if(!APP.mute){
             this.HUDContainer.addChild(this.audioOn.getContent());
@@ -622,7 +641,7 @@ var GameScreen = AbstractScreen.extend({
         //         callback();
         //     }
         // }});
-       
+
         // if(this.audioOn){
         //     TweenLite.to(this.audioOn.getContent(), 0.5, {delay:0.4,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
         // }
@@ -642,7 +661,7 @@ var GameScreen = AbstractScreen.extend({
         //         callback();
         //     }
         // }});
-       
+
         // if(this.audioOn){
         //     TweenLite.from(this.audioOn.getContent(), 0.5, {delay:0.3,y:-this.audioOn.getContent().height, ease:'easeOutBack'});
         // }
@@ -680,6 +699,6 @@ var GameScreen = AbstractScreen.extend({
             nextScreen.transitionIn();
         }
 
-        
+
     },
 });

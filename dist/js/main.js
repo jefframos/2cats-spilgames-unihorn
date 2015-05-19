@@ -1,4 +1,4 @@
-/*! jefframos 18-05-2015 */
+/*! jefframos 19-05-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -326,7 +326,7 @@ var Application = AbstractApplication.extend({
         }), this.labelDebug.position.y = 20, this.labelDebug.position.x = 20, this.mute = !1, 
         this.accelGame = 1, this.withAPI = !0, "#withoutAPI" === window.location.hash && (this.withAPI = !1), 
         document.body.addEventListener("keydown", function(e) {
-            console.log(e.keyCode), 49 === e.keyCode ? GameAPI.Award.submit({
+            49 === e.keyCode ? GameAPI.Award.submit({
                 award: "award1"
             }) : 50 === e.keyCode ? GameAPI.Award.submit({
                 award: "award2"
@@ -1333,7 +1333,7 @@ var Application = AbstractApplication.extend({
         this.highScore = high ? high : 0, this.totalPoints = coins ? coins : 0, this.currentPoints = this.totalPoints, 
         this.playerModels = [], this.envModels = [], this.envModels.push(new EnvironmentModel({
             cover: "thumb_castle.png",
-            source: "dist/img/cenario1b.png",
+            source: "dist/img/cenario1b.jpg",
             label: "Normal"
         }, {
             id: 750 * this.envModels.length,
@@ -1341,7 +1341,7 @@ var Application = AbstractApplication.extend({
             coast: getBalanceCoast(this.envModels.length)
         })), this.envModels.push(new EnvironmentModel({
             cover: "thumb_ocean.png",
-            source: "dist/img/cenario2b.png",
+            source: "dist/img/cenario2b.jpg",
             label: "Normal 2"
         }, {
             id: 750 * this.envModels.length,
@@ -1349,7 +1349,7 @@ var Application = AbstractApplication.extend({
             coast: 1e4
         })), this.envModels.push(new EnvironmentModel({
             cover: "thumb_desert.png",
-            source: "dist/img/cenario3b.png",
+            source: "dist/img/cenario3b.jpg",
             label: "Normal 3"
         }, {
             id: 750 * this.envModels.length,
@@ -1678,8 +1678,9 @@ var Application = AbstractApplication.extend({
     },
     addPoints: function() {
         this.currentHorde = 0, this.totalPoints += this.currentPoints, this.highScore < this.currentPoints && (this.highScore = this.currentPoints, 
-        APP.cookieManager.setCookie("highScore", this.highScore, 500), APP.dataManager.saveScore()), 
-        APP.cookieManager.setCookie("totalPoints", this.totalPoints, 500), this.maxPoints < this.currentPoints && (this.maxPoints = this.currentPoints);
+        APP.cookieManager.setCookie("highScore", this.highScore, 500), APP.dataManager.saveScore(), 
+        GameAPI.Score.submit(this.highScore)), APP.cookieManager.setCookie("totalPoints", this.totalPoints, 500), 
+        this.maxPoints < this.currentPoints && (this.maxPoints = this.currentPoints);
         var tempReturn = [];
         this.totalPlayers = 0;
         for (var i = this.playerModels.length - 1; i >= 0; i--) this.playerModels[i].toAble <= this.totalPoints && !this.playerModels[i].able && (this.playerModels[i].able = !0, 
@@ -1989,9 +1990,9 @@ var Application = AbstractApplication.extend({
             self.touchDown = !1, updateVel(touchData);
         }, this.updateable = !0, this.fireAcumMax = APP.currentHornModel.fireAcumMax - APP.currentClothModel.fireAcumMax, 
         this.fireAcum = this.fireAcumMax, APP.withAPI && GameAPI.GameBreak.request(function() {
-            self.pauseModal.show();
+            self.pauseModal.show(), Howler.mute(), APP.mute = !0, self.updateAudioButtons();
         }, function() {
-            self.pauseModal.hide();
+            self.pauseModal.hide(), Howler.unmute(), APP.mute = !1, self.updateAudioButtons();
         }), this.layerManager = new LayerManager(), this.layerManager.build("Main"), this.addChild(this.layerManager), 
         this.layer = new Layer(), this.layer.build("EntityLayer"), this.layerManager.addLayer(this.layer), 
         this.spawner = new Spawner(this), this.unihorn = new Unihorn(), this.unihorn.build(), 
@@ -2190,6 +2191,11 @@ var Application = AbstractApplication.extend({
         this.destroy(), this.build();
     },
     renderLevel: function(whereInit) {},
+    updateAudioButtons: function() {
+        this.audioOn.getContent() && this.audioOn.getContent().parent && this.audioOn.getContent().parent.addChild(this.audioOn.getContent()), 
+        this.audioOff.getContent() && this.audioOff.getContent().parent && this.audioOff.getContent().parent.addChild(this.audioOff.getContent()), 
+        this.HUDContainer.addChild(APP.mute ? this.audioOff.getContent() : this.audioOn.getContent());
+    },
     setAudioButtons: function() {
         var self = this;
         this.audioOn = new DefaultButton("volume_on.png", "volume_on_over.png"), this.audioOn.build(), 
@@ -2371,7 +2377,7 @@ var Application = AbstractApplication.extend({
         this.container.addChild(this.logo.getContent()), this.loaderContainer = new PIXI.DisplayObjectContainer(), 
         this.addChild(this.loaderContainer), this.backLoader = new SimpleSprite("dist/img/loader.png"), 
         this.loaderContainer.addChild(this.backLoader.getContent());
-        var assetsToLoader = [ "dist/img/atlas.json", "dist/img/nuvens_fundo.png", "dist/img/nuvens_fundo2.png", "dist/img/creditoMenor.png", "dist/img/cenario1b.png", "dist/img/cenario2b.png", "dist/img/cenario3b.png", "dist/img/neblina.png" ];
+        var assetsToLoader = [ "dist/img/atlas.json", "dist/img/nuvens_fundo.png", "dist/img/nuvens_fundo2.png", "dist/img/creditoMenor.png", "dist/img/cenario1b.jpg", "dist/img/cenario2b.jpg", "dist/img/cenario3b.jpg" ];
         assetsToLoader.length > 0 && !this.isLoaded ? this.loader = new PIXI.AssetLoader(assetsToLoader) : this.onAssetsLoaded(), 
         this.HUDContainer = null;
     },
@@ -3166,7 +3172,7 @@ testMobile() || (document.body.className = ""), console.log(gameView), window.ad
     window.scrollTo(0, 0);
 }, !1);
 
-var ratio = 1, init = !1, renderer, APP, retina = 1, initialize = function() {
+var ratio = 1, init = !1, renderer, APP = {}, retina = 1, initialize = function() {
     PIXI.BaseTexture.SCALE_MODE = PIXI.scaleModes.NEAREST, requestAnimFrame(update);
 }, isfull = !1;
 
@@ -3179,4 +3185,10 @@ var ratio = 1, init = !1, renderer, APP, retina = 1, initialize = function() {
         }
     };
     App.init();
-}();
+}(), window.addEventListener("blur", function() {
+    Howler.mute(), APP.mute = !0;
+}), window.addEventListener("focus", function() {
+    Howler.unmute(), APP.mute = !1;
+}), window.addEventListener("scroll", function() {
+    document.activeElement === document.body && window.scrollY > 0 && (document.body.scrollTop = 0);
+}, !0);
