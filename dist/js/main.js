@@ -326,17 +326,21 @@ var Application = AbstractApplication.extend({
         }), this.labelDebug.position.y = 20, this.labelDebug.position.x = 20, this.mute = !1, 
         this.accelGame = 1, this.withAPI = !0, "#withoutAPI" === window.location.hash && (this.withAPI = !1), 
         document.body.addEventListener("keydown", function(e) {
-            49 === e.keyCode ? GameAPI.Award.submit({
+            49 === e.keyCode ? (console.log('GameAPI.Award.submit({award:"award1"})'), GameAPI.Award.submit({
                 award: "award1"
-            }) : 50 === e.keyCode ? GameAPI.Award.submit({
+            })) : 50 === e.keyCode ? (console.log('GameAPI.Award.submit({award:"award2"})'), 
+            GameAPI.Award.submit({
                 award: "award2"
-            }) : 51 === e.keyCode ? GameAPI.Award.submit({
+            })) : 51 === e.keyCode ? (console.log('GameAPI.Award.submit({award:"award3"})'), 
+            GameAPI.Award.submit({
                 award: "award3"
-            }) : 52 === e.keyCode ? GameAPI.Award.submit({
+            })) : 52 === e.keyCode ? (console.log('GameAPI.Award.submit({award:"award4"})'), 
+            GameAPI.Award.submit({
                 award: "award4"
-            }) : 53 === e.keyCode && GameAPI.Award.submit({
+            })) : 53 === e.keyCode && (console.log('GameAPI.Award.submit({award:"award5"})'), 
+            GameAPI.Award.submit({
                 award: "award5"
-            });
+            }));
         });
     },
     update: function() {

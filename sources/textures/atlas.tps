@@ -188,13 +188,8 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>fullscreen.png</filename>
-            <filename>normal/logo.png</filename>
             <filename>normal/UI_button_default_1.png</filename>
             <filename>normal/UI_button_default_2.png</filename>
-            <filename>normal/UI_button_facebook_1.png</filename>
-            <filename>normal/UI_button_ranking_1.png</filename>
-            <filename>normal/UI_button_twitter_1.png</filename>
             <filename>normal/UI_modal_back_1.png</filename>
             <filename>retina/UI_button_play_1_retina.png</filename>
             <filename>retina/UI_button_play_1_over_retina.png</filename>
@@ -206,7 +201,6 @@
             <filename>uni_horn1.png</filename>
             <filename>arcoiris_redondo.png</filename>
             <filename>top_degrade.png</filename>
-            <filename>back_shop_button.png</filename>
             <filename>moeda.png</filename>
             <filename>uni_corpo_bruxa.png</filename>
             <filename>uni_corpo_cowboy.png</filename>

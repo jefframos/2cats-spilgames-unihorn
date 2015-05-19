@@ -23,18 +23,23 @@ var Application = AbstractApplication.extend({
             // console.log((e.keyCode));
 
             if(e.keyCode === 49){
+                console.log('GameAPI.Award.submit({award:"award1"})');
                 GameAPI.Award.submit({award:'award1'});
             }
             else if(e.keyCode === 50){
+                console.log('GameAPI.Award.submit({award:"award2"})');
                 GameAPI.Award.submit({award:'award2'});
             }
             else if(e.keyCode === 51){
+                console.log('GameAPI.Award.submit({award:"award3"})');
                 GameAPI.Award.submit({award:'award3'});
             }
             else if(e.keyCode === 52){
+                console.log('GameAPI.Award.submit({award:"award4"})');
                 GameAPI.Award.submit({award:'award4'});
             }
             else if(e.keyCode === 53){
+                console.log('GameAPI.Award.submit({award:"award5"})');
                 GameAPI.Award.submit({award:'award5'});
             }
         });
