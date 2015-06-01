@@ -1,4 +1,4 @@
-/*! jefframos 19-05-2015 */
+/*! jefframos 01-06-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -353,12 +353,16 @@ var Application = AbstractApplication.extend({
     apiLoaded: function(apiInstance) {
         if (this.withAPI) {
             this.apiInstance = apiInstance;
-            var logoData = apiInstance.Branding.getLogo();
-            this.apiLogo = new DefaultButton(logoData.image, logoData.image), this.apiLogo.build(), 
-            this.apiLogo.clickCallback = function() {
-                logoData.action();
-            }, this.stage.addChild(this.apiLogo.getContent()), this.buttonProperties = apiInstance.Branding.getLink("more_games"), 
-            this.apiInstance.Branding.displaySplashScreen(function() {
+            try {
+                var logoData = apiInstance.Branding.getLogo();
+                logoData && (this.apiLogo = new DefaultButton(logoData.image, logoData.image), this.apiLogo.build(), 
+                this.apiLogo.clickCallback = function() {
+                    logoData.action();
+                }, this.stage.addChild(this.apiLogo.getContent()));
+            } catch (error) {
+                console.log(error);
+            }
+            this.buttonProperties = apiInstance.Branding.getLink("more_games"), this.apiInstance.Branding.displaySplashScreen(function() {
                 APP.initApplication();
             });
         }

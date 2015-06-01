@@ -74,14 +74,19 @@ var Application = AbstractApplication.extend({
 
 
         //added logo api functions
-        var logoData = apiInstance.Branding.getLogo();
-        this.apiLogo = new DefaultButton(logoData.image,logoData.image);
-        this.apiLogo.build();
-        this.apiLogo.clickCallback = function(){
-            logoData.action();
-        };
-        this.stage.addChild(this.apiLogo.getContent());
-
+        try{
+            var logoData = apiInstance.Branding.getLogo();
+            if(logoData){
+                this.apiLogo = new DefaultButton(logoData.image,logoData.image);
+                this.apiLogo.build();
+                this.apiLogo.clickCallback = function(){
+                    logoData.action();
+                };
+                this.stage.addChild(this.apiLogo.getContent());
+            }
+        }catch(error){
+            console.log(error);
+        }
         //more games function
         this.buttonProperties = apiInstance.Branding.getLink('more_games');
 
