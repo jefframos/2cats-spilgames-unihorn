@@ -51,14 +51,16 @@ function possibleFullscreen(){
 function updateResolution(orientation, scale){
 	if(orientation === 'portait'){
 		if(screen.height > screen.width){
-			windowWidth = window.outerWidth * scale;
+			windowWidth = window.innerWidth * scale;
 			// windowWidth = screen.width * scale;
 			// windowWidthVar = screen.width;
-			windowWidthVar = window.outerWidth;
+			windowWidthVar = window.innerWidth;
 
 			if(possibleFullscreen()){
-				windowHeight =  screen.height * scale;
-				windowHeightVar =  screen.height;
+				// windowHeight =  screen.height * scale;
+				// windowHeightVar =  screen.height;
+				windowHeight =  window.innerHeight * scale;
+				windowHeightVar =  window.innerHeight;
 
 			}else{
 				windowHeight =  window.devicePixelRatio >= 2 ? window.innerHeight * scale : window.outerHeight * scale;//window.outerHeight * scale;
