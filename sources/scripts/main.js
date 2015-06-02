@@ -51,8 +51,10 @@ function possibleFullscreen(){
 function updateResolution(orientation, scale){
 	if(orientation === 'portait'){
 		if(screen.height > screen.width){
-			windowWidth = screen.width * scale;
-			windowWidthVar = screen.width;
+			windowWidth = window.innerWidth * scale;
+			// windowWidth = screen.width * scale;
+			// windowWidthVar = screen.width;
+			windowWidthVar = window.innerWidth;
 
 			if(possibleFullscreen()){
 				windowHeight =  screen.height * scale;

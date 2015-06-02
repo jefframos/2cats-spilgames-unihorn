@@ -1,4 +1,4 @@
-/*! jefframos 01-06-2015 */
+/*! jefframos 02-06-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -109,8 +109,8 @@ function possibleFullscreen() {
 }
 
 function updateResolution(orientation, scale) {
-    "portait" === orientation ? screen.height > screen.width ? (windowWidth = screen.width * scale, 
-    windowWidthVar = screen.width, possibleFullscreen() ? (windowHeight = screen.height * scale, 
+    "portait" === orientation ? screen.height > screen.width ? (windowWidth = window.innerWidth * scale, 
+    windowWidthVar = window.innerWidth, possibleFullscreen() ? (windowHeight = screen.height * scale, 
     windowHeightVar = screen.height) : (windowHeight = window.devicePixelRatio >= 2 ? window.innerHeight * scale : window.outerHeight * scale, 
     windowHeightVar = window.outerHeight)) : (windowWidth = screen.height * scale, windowHeight = screen.width * scale, 
     windowWidthVar = screen.height, windowHeightVar = screen.width) : screen.height < screen.width ? (windowWidth = screen.width * scale, 
