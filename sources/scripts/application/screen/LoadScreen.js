@@ -44,7 +44,7 @@ var LoadScreen = AbstractScreen.extend({
     update:function(){
         // console.log('update');
         if(this.logo && this.logo.getContent().width > 1 && this.logo.getContent().scale.x === 1){
-            scaleConverter(this.logo.getContent().width, windowWidth, 1.3, this.logo);
+            scaleConverter(this.logo.getContent().width, windowWidth, 1.1, this.logo);
             this.logo.getContent().position.x = windowWidth / 2 - this.logo.getContent().width / 2;
             this.logo.getContent().position.y = windowHeight - this.logo.getContent().height * 1.1;
             TweenLite.from(this.logo.getContent().position, 4, {y:this.logo.getContent().position.y + 50, ease:'easeOutElastic'});

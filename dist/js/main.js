@@ -2391,7 +2391,7 @@ var Application = AbstractApplication.extend({
     },
     update: function() {
         if (this.logo && this.logo.getContent().width > 1 && 1 === this.logo.getContent().scale.x) {
-            scaleConverter(this.logo.getContent().width, windowWidth, 1.3, this.logo), this.logo.getContent().position.x = windowWidth / 2 - this.logo.getContent().width / 2, 
+            scaleConverter(this.logo.getContent().width, windowWidth, 1.1, this.logo), this.logo.getContent().position.x = windowWidth / 2 - this.logo.getContent().width / 2, 
             this.logo.getContent().position.y = windowHeight - 1.1 * this.logo.getContent().height, 
             TweenLite.from(this.logo.getContent().position, 4, {
                 y: this.logo.getContent().position.y + 50,
