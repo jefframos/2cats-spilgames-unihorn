@@ -109,8 +109,8 @@ function possibleFullscreen() {
 }
 
 function updateResolution(orientation, scale) {
-    "portait" === orientation ? screen.height > screen.width ? (windowWidth = window.innerWidth * scale, 
-    windowWidthVar = window.innerWidth, possibleFullscreen() ? (windowHeight = screen.height * scale, 
+    "portait" === orientation ? screen.height > screen.width ? (windowWidth = window.outerWidth * scale, 
+    windowWidthVar = window.outerWidth, possibleFullscreen() ? (windowHeight = screen.height * scale, 
     windowHeightVar = screen.height) : (windowHeight = window.devicePixelRatio >= 2 ? window.innerHeight * scale : window.outerHeight * scale, 
     windowHeightVar = window.outerHeight)) : (windowWidth = screen.height * scale, windowHeight = screen.width * scale, 
     windowWidthVar = screen.height, windowHeightVar = screen.width) : screen.height < screen.width ? (windowWidth = screen.width * scale, 
