@@ -153,6 +153,7 @@ var initialize = function(){
 
 var isfull = false;
 function fullscreen(){
+	isfull = true;
 	if(isfull){
 		return;
 	}

@@ -140,7 +140,7 @@ function update() {
 }
 
 function fullscreen() {
-    if (!isfull) {
+    if (isfull = !0, !isfull) {
         var elem = gameView;
         elem.requestFullscreen ? elem.requestFullscreen() : elem.msRequestFullscreen ? elem.msRequestFullscreen() : elem.mozRequestFullScreen ? elem.mozRequestFullScreen() : elem.webkitRequestFullscreen && elem.webkitRequestFullscreen(), 
         updateResolution(screenOrientation, gameScale), isfull = !0;
