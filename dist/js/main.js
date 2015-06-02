@@ -344,9 +344,12 @@ var Application = AbstractApplication.extend({
         });
     },
     update: function() {
-        this._super(), this.withAPI && this.apiLogo && this.apiLogo.getContent().height > 1 && 0 === this.apiLogo.getContent().position.x && (scaleConverter(this.apiLogo.getContent().width, windowWidth, .5, this.apiLogo), 
-        this.apiLogo.getContent().position.x = windowWidth / 2 - this.apiLogo.getContent().width / 2, 
-        this.apiLogo.getContent().position.y = windowHeight - this.apiLogo.getContent().height), 
+        if (this._super(), this.withAPI && this.apiLogo && this.apiLogo.getContent().height > 1 && 0 === this.apiLogo.getContent().position.x) {
+            var tempScale = scaleConverter(this.apiLogo.getContent().width, windowWidth, .5);
+            tempScale > 1 && (tempScale = 1), this.apiLogo.scale.x = this.apiLogo.scale.y = tempScale, 
+            this.apiLogo.getContent().position.x = windowWidth / 2 - this.apiLogo.getContent().width / 2, 
+            this.apiLogo.getContent().position.y = windowHeight - this.apiLogo.getContent().height;
+        }
         this.screenManager && this.screenManager.currentScreen && this.labelDebug && this.labelDebug.parent && (this.childsCounter = 1, 
         this.recursiveCounter(this.screenManager.currentScreen), this.labelDebug.setText(this.childsCounter));
     },
@@ -2501,7 +2504,7 @@ var Application = AbstractApplication.extend({
         this.playContainer.addChild(this.playButton.getContent()), this.playContainer.position.x = windowWidth / 2, 
         this.playContainer.scale.x = this.playContainer.scale.y = .5, this.playContainer.alpha = 0;
         var playScale = scaleConverter(this.playContainer.height, this.logo.getContent().height, .1);
-        this.playContainer.position.y = windowHeight - this.playButton.getContent().height / 1.6, 
+        playScale > 1.1 && (playScale = 1.1), this.playContainer.position.y = windowHeight - this.playButton.getContent().height / 1.6, 
         TweenLite.to(this.playContainer, .3, {
             delay: .3,
             alpha: 1

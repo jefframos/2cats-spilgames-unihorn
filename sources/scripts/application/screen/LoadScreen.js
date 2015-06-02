@@ -219,6 +219,9 @@ var LoadScreen = AbstractScreen.extend({
         this.playContainer.scale.x = this.playContainer.scale.y = 0.5;
         this.playContainer.alpha = 0;
         var playScale = scaleConverter(this.playContainer.height, this.logo.getContent().height, 0.1);
+        if(playScale > 1.1){
+            playScale = 1.1;
+        }
         this.playContainer.position.y = windowHeight - (this.playButton.getContent().height / 1.6);
 
         TweenLite.to(this.playContainer, 0.3,{delay:0.3, alpha:1});
