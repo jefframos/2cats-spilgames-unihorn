@@ -53,7 +53,11 @@ var Application = AbstractApplication.extend({
             if(tempScale > 1){
                 tempScale = 1;
             }
-            this.apiLogo.scale.x = this.apiLogo.scale.y = tempScale;
+            try{
+                this.apiLogo.getContent().scale.x = this.apiLogo.getContent().scale.y = tempScale;
+            }catch(error){
+
+            }
             this.apiLogo.getContent().position.x = windowWidth / 2 - this.apiLogo.getContent().width / 2;
             this.apiLogo.getContent().position.y = windowHeight - this.apiLogo.getContent().height;
         }

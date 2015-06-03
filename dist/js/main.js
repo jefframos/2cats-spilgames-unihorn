@@ -1,4 +1,4 @@
-/*! jefframos 02-06-2015 */
+/*! jefframos 03-06-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -346,7 +346,10 @@ var Application = AbstractApplication.extend({
     update: function() {
         if (this._super(), this.withAPI && this.apiLogo && this.apiLogo.getContent().height > 1 && 0 === this.apiLogo.getContent().position.x) {
             var tempScale = scaleConverter(this.apiLogo.getContent().width, windowWidth, .5);
-            tempScale > 1 && (tempScale = 1), this.apiLogo.scale.x = this.apiLogo.scale.y = tempScale, 
+            tempScale > 1 && (tempScale = 1);
+            try {
+                this.apiLogo.getContent().scale.x = this.apiLogo.getContent().scale.y = tempScale;
+            } catch (error) {}
             this.apiLogo.getContent().position.x = windowWidth / 2 - this.apiLogo.getContent().width / 2, 
             this.apiLogo.getContent().position.y = windowHeight - this.apiLogo.getContent().height;
         }
