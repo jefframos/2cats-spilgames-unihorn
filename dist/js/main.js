@@ -357,7 +357,11 @@ var Application = AbstractApplication.extend({
         this.recursiveCounter(this.screenManager.currentScreen), this.labelDebug.setText(this.childsCounter));
     },
     apiLoaded: function(apiInstance) {
-        this.apiInstance = apiInstance;
+        try {
+            this.apiInstance = apiInstance;
+        } catch (error) {
+            alert(error);
+        }
         try {
             var logoData = apiInstance.Branding.getLogo();
             logoData && (this.apiLogo = new DefaultButton(logoData.image, logoData.image), this.apiLogo.build(), 

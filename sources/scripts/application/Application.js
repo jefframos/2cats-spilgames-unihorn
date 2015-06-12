@@ -79,7 +79,11 @@ var Application = AbstractApplication.extend({
         // if(!this.withAPI){
         //     return;
         // }
-        this.apiInstance = apiInstance;
+        try{
+            this.apiInstance = apiInstance;
+        }catch(error){
+            alert(error);
+        }
 
 
         //added logo api functions
