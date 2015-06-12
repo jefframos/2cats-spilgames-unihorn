@@ -76,9 +76,9 @@ var Application = AbstractApplication.extend({
 
     },
     apiLoaded:function(apiInstance){
-        if(!this.withAPI){
-            return;
-        }
+        // if(!this.withAPI){
+        //     return;
+        // }
         this.apiInstance = apiInstance;
 
 

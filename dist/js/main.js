@@ -357,24 +357,22 @@ var Application = AbstractApplication.extend({
         this.recursiveCounter(this.screenManager.currentScreen), this.labelDebug.setText(this.childsCounter));
     },
     apiLoaded: function(apiInstance) {
-        if (this.withAPI) {
-            this.apiInstance = apiInstance;
-            try {
-                var logoData = apiInstance.Branding.getLogo();
-                logoData && (this.apiLogo = new DefaultButton(logoData.image, logoData.image), this.apiLogo.build(), 
-                this.apiLogo.clickCallback = function() {
-                    logoData.action();
-                }, this.stage.addChild(this.apiLogo.getContent()));
-            } catch (error) {
-                alert(error);
-            }
-            try {
-                this.buttonProperties = apiInstance.Branding.getLink("more_games"), this.apiInstance.Branding.displaySplashScreen(function() {
-                    APP.initApplication();
-                });
-            } catch (error) {
-                alert(error);
-            }
+        this.apiInstance = apiInstance;
+        try {
+            var logoData = apiInstance.Branding.getLogo();
+            logoData && (this.apiLogo = new DefaultButton(logoData.image, logoData.image), this.apiLogo.build(), 
+            this.apiLogo.clickCallback = function() {
+                logoData.action();
+            }, this.stage.addChild(this.apiLogo.getContent()));
+        } catch (error) {
+            alert(error);
+        }
+        try {
+            this.buttonProperties = apiInstance.Branding.getLink("more_games"), this.apiInstance.Branding.displaySplashScreen(function() {
+                APP.initApplication();
+            });
+        } catch (error) {
+            alert(error);
         }
     },
     recursiveCounter: function(obj) {
