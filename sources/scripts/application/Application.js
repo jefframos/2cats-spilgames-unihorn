@@ -82,7 +82,7 @@ var Application = AbstractApplication.extend({
         try{
             this.apiInstance = apiInstance;
         }catch(error){
-            alert(error);
+            // alert(error);
         }
 
 
@@ -98,7 +98,7 @@ var Application = AbstractApplication.extend({
                 this.stage.addChild(this.apiLogo.getContent());
             }
         }catch(error){
-            alert(error);
+            // alert(error);
         }
 
         try{
@@ -110,7 +110,7 @@ var Application = AbstractApplication.extend({
                 APP.initApplication();
             });
         }catch(error){
-            alert(error);
+            // alert(error);
         }
     },
     recursiveCounter:function(obj){
