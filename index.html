@@ -70,7 +70,9 @@
 			};
 
 			GameAPI.loadAPI (function (apiInstance) {
+				alert('before API loaded');
 				APP.apiLoaded(apiInstance);
+				alert('after API loaded');
 			}, SpilData);
 		</script>
 	</body>
