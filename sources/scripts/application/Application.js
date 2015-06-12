@@ -94,15 +94,20 @@ var Application = AbstractApplication.extend({
                 this.stage.addChild(this.apiLogo.getContent());
             }
         }catch(error){
-            console.log(error);
+            alert(error);
         }
-        //more games function
-        this.buttonProperties = apiInstance.Branding.getLink('more_games');
 
-        //call init application after splash screen
-        this.apiInstance.Branding.displaySplashScreen(function(){
-            APP.initApplication();
-        });
+        try{
+            //more games function
+            this.buttonProperties = apiInstance.Branding.getLink('more_games');
+
+            //call init application after splash screen
+            this.apiInstance.Branding.displaySplashScreen(function(){
+                APP.initApplication();
+            });
+        }catch(error){
+            alert(error);
+        }
     },
     recursiveCounter:function(obj){
         var j = 0;

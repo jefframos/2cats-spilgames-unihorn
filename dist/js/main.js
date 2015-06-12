@@ -1,4 +1,4 @@
-/*! jefframos 03-06-2015 */
+/*! jefframos 12-06-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -366,11 +366,15 @@ var Application = AbstractApplication.extend({
                     logoData.action();
                 }, this.stage.addChild(this.apiLogo.getContent()));
             } catch (error) {
-                console.log(error);
+                alert(error);
             }
-            this.buttonProperties = apiInstance.Branding.getLink("more_games"), this.apiInstance.Branding.displaySplashScreen(function() {
-                APP.initApplication();
-            });
+            try {
+                this.buttonProperties = apiInstance.Branding.getLink("more_games"), this.apiInstance.Branding.displaySplashScreen(function() {
+                    APP.initApplication();
+                });
+            } catch (error) {
+                alert(error);
+            }
         }
     },
     recursiveCounter: function(obj) {
