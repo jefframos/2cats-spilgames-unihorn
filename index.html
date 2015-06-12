@@ -65,27 +65,13 @@
 
 		<!-- declare the 'SpilData' object and the app ID property -->
 		<script type="text/javascript">
-		var SpilData = {
-			id: '576742227280294490' // Replace with the value you receive from Spil Games
-		};
+			var SpilData = {
+				id: '576742227280294490' // Replace with the value you receive from Spil Games
+			};
 
-		GameAPI.loadAPI (function (apiInstance) {
-				// The API is ready for use.
-			if (window.console && window.console.log) {
-				// console.log('GameAPI version ' + apiInstance.version + ' loaded!');
-			}
-
-			APP.apiLoaded(apiInstance);
-		}, SpilData);
-
-		// <!-- Initialise the Spil HTML5 API -->
-		// GameAPI.loadAPI (function (apiInstance) {
-		//     // The API is ready for use.
-		//     if (window.console && window.console.log) {
-		//         // console.log('GameAPI version ' + apiInstance.version + ' loaded!');
-		//         APP.apiLoaded(apiInstance);
-		//     }
-		// }, SpilData);
+			GameAPI.loadAPI (function (apiInstance) {
+				APP.apiLoaded(apiInstance);
+			}, SpilData);
 		</script>
 	</body>
 </html>
