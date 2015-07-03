@@ -11,15 +11,23 @@ var ShopItem = Class.extend({
 		this.model = model;
 
 
-        
+
 		this.backShopItem = new SimpleSprite('balao_nope.png');
 
 		this.backScroll = new PIXI.Graphics();
-        this.backScroll.lineStyle(2, 0xFFFFFF);
-        this.backScroll.beginFill(0x724d7c);
-        this.backScroll.drawRoundedRect (0,0,windowWidth * 0.9, this.backShopItem.getContent().height * 1.4, this.backShopItem.getContent().height * 0.25);
-        this.backScroll.alpha = 1;
-        this.container.addChild(this.backScroll);
+		this.backScroll.lineStyle(2, 0xFFFFFF);
+		this.backScroll.beginFill(0x724d7c);
+		// console.log(windowWidth,window.innerWidth,window.outerWidth,screen.width);
+
+		// this.backScroll.drawRoundedRect (0,0,window.innerWidth * 0.9, this.backShopItem.getContent().height * 1.4, this.backShopItem.getContent().height * 0.25);
+		if(windowWidth > 900){ //MUITA GAMBIARRA AQUI
+			// console.log(windowWidth * 0.9 / 2, windowWidth);
+			this.backScroll.drawRoundedRect (0,0,windowWidth * 0.9 / 2, this.backShopItem.getContent().height * 1.4, this.backShopItem.getContent().height * 0.25);
+		}else{
+			this.backScroll.drawRoundedRect (0,0,windowWidth * 0.9, this.backShopItem.getContent().height * 1.4, this.backShopItem.getContent().height * 0.25);
+		}
+		this.backScroll.alpha = 1;
+		this.container.addChild(this.backScroll);
 
 		this.container.addChild(this.backShopItem.getContent());
 		this.backShopItem.getContent().position.x = this.backShopItem.getContent().width * 0.1;
@@ -38,12 +46,12 @@ var ShopItem = Class.extend({
 		this.labelName.position.y = this.backShopItem.getContent().position.y;
 		// this.labelName.position.y = 20;
 		this.container.addChild(this.labelName);
-		
+
 		var self = this;
 
 		// alert(this.backShopItem.getContent().height);
 
-		
+
 
 		this.equipButton = new DefaultButton('botao_equip.png', 'botao_equip.png');
 		this.equipButton.build();
@@ -109,8 +117,8 @@ var ShopItem = Class.extend({
 				APP.currentHornModel = self.model;
 				APP.currentHornModel.enabled = true;
 				targetArray = self.screen.hornList;
-			    //submit the player's score
-			    GameAPI.Award.submit({award:'award1'});
+				//submit the player's score
+				GameAPI.Award.submit({award:'award1'});
 			}else if(self.type === 'cloth'){
 				APP.currentClothModel = self.model;
 				APP.currentClothModel.enabled = true;
@@ -125,18 +133,18 @@ var ShopItem = Class.extend({
 			for (var i = targetArray.length - 1; i >= 0; i--) {
 				targetArray[i].updateStats();
 			}
-			
+
 			self.screen.updateCoins();
 			self.updateStats();
 		};
 
 		this.updateStats();
 
-		
+
 	},
 	updateStats:function(){
-		
-		
+
+
 		if(this.equipped.getContent() && this.equipped.getContent().parent){
 			this.equipped.getContent().parent.removeChild(this.equipped.getContent());
 		}

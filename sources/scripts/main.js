@@ -24,7 +24,7 @@ var gameView = document.getElementById('game');
 if(!testMobile()){
 	document.body.className = '';
 }
-console.log(gameView);
+// console.log(gameView);
 
 window.addEventListener('orientationchange', function() {
 	window.scrollTo(0, 0);
@@ -186,6 +186,19 @@ function fullscreen(){
 		}
 	};
 	App.init();
+
+	setTimeout(function(){
+		var SpilData = {
+			id: '576742227280294490' // Replace with the value you receive from Spil Games
+		};
+
+		GameAPI.loadAPI (function (apiInstance) {
+			// console.log(APP);
+			APP.apiLoaded(apiInstance);
+			// alert('after API loaded');
+		}, SpilData);
+	},500);
+
 })();
 
 window.addEventListener('blur', function(){

@@ -1,4 +1,4 @@
-/*! jefframos 12-06-2015 */
+/*! jefframos 03-07-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -556,7 +556,7 @@ var Application = AbstractApplication.extend({
     },
     build: function(model) {
         this.model = model, this.backShopItem = new SimpleSprite("balao_nope.png"), this.backScroll = new PIXI.Graphics(), 
-        this.backScroll.lineStyle(2, 16777215), this.backScroll.beginFill(7490940), this.backScroll.drawRoundedRect(0, 0, .9 * windowWidth, 1.4 * this.backShopItem.getContent().height, .25 * this.backShopItem.getContent().height), 
+        this.backScroll.lineStyle(2, 16777215), this.backScroll.beginFill(7490940), windowWidth > 900 ? this.backScroll.drawRoundedRect(0, 0, .9 * windowWidth / 2, 1.4 * this.backShopItem.getContent().height, .25 * this.backShopItem.getContent().height) : this.backScroll.drawRoundedRect(0, 0, .9 * windowWidth, 1.4 * this.backShopItem.getContent().height, .25 * this.backShopItem.getContent().height), 
         this.backScroll.alpha = 1, this.container.addChild(this.backScroll), this.container.addChild(this.backShopItem.getContent()), 
         this.backShopItem.getContent().position.x = .1 * this.backShopItem.getContent().width, 
         this.backShopItem.getContent().position.y = .2 * this.backShopItem.getContent().height, 
@@ -2758,8 +2758,8 @@ var Application = AbstractApplication.extend({
     show: function() {
         this.updateCoins(), this.screen.addChild(this), this.screen.blockPause = !0, this.scrollContainer.visible = !0, 
         this.container.parent.setChildIndex(this.container, this.container.parent.children.length - 1), 
-        this.screen.updateable = !1, this.scrollContainer.position.x = windowWidth / 2 - this.scrollContainer.width / 2, 
-        this.bg.alpha = .7, this.scrollContainer.alpha = 1, TweenLite.from(this.getContent(), .3, {
+        this.screen.updateable = !1, this.scrollContainer.position.x = 0, this.bg.alpha = .7, 
+        this.scrollContainer.alpha = 1, TweenLite.from(this.getContent(), .3, {
             alpha: 0
         });
     },
@@ -3182,7 +3182,7 @@ var Application = AbstractApplication.extend({
     y: 667
 }, resizeProportional = !0, windowWidth = res.x, windowHeight = res.y, realWindowWidth = res.x, realWindowHeight = res.y, gameScale = 1.3, screenOrientation = "portait", windowWidthVar = window.innerHeight, windowHeightVar = window.innerWidth, gameView = document.getElementById("game");
 
-testMobile() || (document.body.className = ""), console.log(gameView), window.addEventListener("orientationchange", function() {
+testMobile() || (document.body.className = ""), window.addEventListener("orientationchange", function() {
     window.scrollTo(0, 0);
 }, !1);
 
@@ -3198,7 +3198,14 @@ var ratio = 1, init = !1, renderer, APP = {}, retina = 1, initialize = function(
             }) : initialize();
         }
     };
-    App.init();
+    App.init(), setTimeout(function() {
+        var SpilData = {
+            id: "576742227280294490"
+        };
+        GameAPI.loadAPI(function(apiInstance) {
+            APP.apiLoaded(apiInstance);
+        }, SpilData);
+    }, 500);
 }(), window.addEventListener("blur", function() {
     Howler.mute(), APP.mute = !0;
 }), window.addEventListener("focus", function() {

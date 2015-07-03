@@ -2,7 +2,7 @@
 var EndModal = Class.extend({
     init:function(screen){
         this.screen = screen;
-        
+
         this.container = new PIXI.DisplayObjectContainer();
         this.topHUD = new PIXI.DisplayObjectContainer();
         this.scrollContainer = new PIXI.DisplayObjectContainer();
@@ -13,7 +13,7 @@ var EndModal = Class.extend({
         this.container.addChild(this.bg);
         this.container.addChild(this.scrollContainer);
 
-        
+
         this.applyScroll(this.scrollContainer);
         var self = this;
 
@@ -58,7 +58,7 @@ var EndModal = Class.extend({
         this.textScreen.position.y = this.closeButton.getContent().position.y + this.closeButton.getContent().height / 2 -this.textScreen.height/2 ;
 
         this.topHUD.addChild(this.textScreen);
-        
+
         this.star = new SimpleSprite('star_coin.png');
         this.topHUD.addChild(this.star.getContent());
 
@@ -66,41 +66,6 @@ var EndModal = Class.extend({
         this.star.getContent().position.y = this.textScreen.position.y + this.textScreen.height / 2 -this.star.getContent().height / 2;
 
         this.addShopList();
-
-        // this.fbButton = new DefaultButton('UI_button_facebook_1.png', 'UI_button_facebook_1.png');
-        // this.fbButton.build();
-        // this.fbButton.setPosition(thirdPart * 1 - thirdPart /2 - this.fbButton.getContent().width/2,this.backScroll.height - this.fbButton.getContent().height - 20);//this.backBars.getContent().height - 20 - this.rankingButton.height / 2 - 10);
-        // this.fbButton.clickCallback = function(){
-            // APP.audioController.playSound('pop');
-        //     // self.hide(function(){
-        //     //  // self.screen.hideBars();
-        //     //  self.screen.screenManager.prevScreen();
-        //     // });
-        // };
-        // this.scrollContainer.addChild(this.fbButton.getContent());
-
-        // this.rankingButton = new DefaultButton('UI_button_ranking_1.png', 'UI_button_ranking_1.png');
-        // this.rankingButton.build();
-        // scaleConverter(this.rankingButton.getContent().width, this.backScroll.width, 0.3, this.rankingButton);
-        // this.rankingButton.setPosition(thirdPart * 2 - thirdPart /2 -  this.rankingButton.getContent().width/2,this.backScroll.height - this.rankingButton.getContent().height - 20);
-        // this.rankingButton.clickCallback = function(){
-            // APP.audioController.playSound('pop');
-        //     // self.hide(function(){self.screen.updateable = true;});
-        // };
-        // // this.scrollContainer.addChild(this.rankingButton.getContent());
-
-        // this.twitterButton = new DefaultButton('UI_button_twitter_1.png', 'UI_button_twitter_1.png');
-        // this.twitterButton.build();
-        // this.twitterButton.setPosition(thirdPart * 3 - thirdPart /2 -  this.twitterButton.getContent().width/2,this.backScroll.height - this.twitterButton.getContent().height - 20);//this.backBars.getContent().height / 2 - this.rankingButton.height / 2 - 10);
-
-        // this.twitterButton.clickCallback = function(){
-            // APP.audioController.playSound('pop');
-        //     // self.hide(function(){
-        //     //  self.screen.updateable = true;
-        //     //  self.screen.reset();
-        //     // });
-        // };
-        // this.scrollContainer.addChild(this.twitterButton.getContent());
 
         this.baseHUD = new PIXI.DisplayObjectContainer();
         this.barraBottom = new SimpleSprite('barra_bottom.png');
@@ -186,12 +151,12 @@ var EndModal = Class.extend({
 
         this.hornTitle = new SimpleSprite('titulo_magichorns.png');
         scaleConverter(this.hornTitle.getContent().width, windowWidth, 1, this.hornTitle);
-        
+
         // this.hornLabel = new PIXI.Text('HORNS', {align:'center',font:'50px Vagron', fill:'#c34c99', wordWrap:true, wordWrapWidth:500, stroke:'#FFFFFF', strokeThickness:3});
         // scaleConverter(this.hornLabel.height, this.closeButton.getContent().height, 1.2, this.hornLabel);
         this.hornTitle.getContent().position.x = windowWidth / 2 - this.hornTitle.getContent().width / 2 ;
         this.hornTitle.getContent().position.y = this.marginTopBottom;// * 2;
-        
+
         // this.backHorn = new PIXI.Graphics();
         // this.backHorn.beginFill(0x000000);
         // this.backHorn.drawRect(0,0,windowWidth, this.hornLabel.height * 1.4);
@@ -230,7 +195,7 @@ var EndModal = Class.extend({
 
         this.clothTitle = new SimpleSprite('titulo_coolclothes.png');
         scaleConverter(this.clothTitle.getContent().width, windowWidth, 1, this.clothTitle);
-        
+
         // this.hornLabel = new PIXI.Text('HORNS', {align:'center',font:'50px Vagron', fill:'#c34c99', wordWrap:true, wordWrapWidth:500, stroke:'#FFFFFF', strokeThickness:3});
         // scaleConverter(this.hornLabel.height, this.closeButton.getContent().height, 1.2, this.hornLabel);
         this.clothTitle.getContent().position.x = windowWidth / 2 - this.clothTitle.getContent().width / 2 ;
@@ -268,7 +233,7 @@ var EndModal = Class.extend({
 
         this.envTitle = new SimpleSprite('titulo_greatlands.png');
         scaleConverter(this.envTitle.getContent().width, windowWidth, 1, this.envTitle);
-        
+
         // this.hornLabel = new PIXI.Text('HORNS', {align:'center',font:'50px Vagron', fill:'#c34c99', wordWrap:true, wordWrapWidth:500, stroke:'#FFFFFF', strokeThickness:3});
         // scaleConverter(this.hornLabel.height, this.closeButton.getContent().height, 1.2, this.hornLabel);
         this.envTitle.getContent().position.x = windowWidth / 2 - this.envTitle.getContent().width / 2 ;
@@ -298,11 +263,13 @@ var EndModal = Class.extend({
         this.container.parent.setChildIndex(this.container,this.container.parent.children.length -1);
         this.screen.updateable = false;
 
-        this.scrollContainer.position.x = windowWidth / 2 - this.scrollContainer.width / 2;
+        this.scrollContainer.position.x = 0;//windowWidth / 2 - this.scrollContainer.width / 2;
         this.bg.alpha = 0.7;
         this.scrollContainer.alpha = 1;
 
         TweenLite.from(this.getContent(), 0.3, {alpha:0});
+
+        // console.log(this.container.width, this.container.position, this.scrollContainer.position);
         // TweenLite.from(this.scrollContainer, 0.1, {alpha:0});
         // TweenLite.from(this.scrollContainer, 0.5, {y:-this.scrollContainer.height});
     },
@@ -333,7 +300,7 @@ var EndModal = Class.extend({
         // container.mouseout = container.touchend = function(mouseData){
         //     container.mouseDown = false;
         // };
-         
+
         container.mousedown  = container.touchstart = function(mouseData){
             container.mouseDown = true;
             container.initGlobalY = mouseData.global.y - container.position.y;
@@ -349,7 +316,7 @@ var EndModal = Class.extend({
                 TweenLite.killTweensOf(container.position);
             }
         };
-         
+
         container.mouseup  = container.touchend = function(mouseData){
             container.mouseDown = false;
             var posDest = verifyPos(container.position.y + container.lastVelY * 5);
